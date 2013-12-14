@@ -5,6 +5,7 @@ use Beable\Kernel;
 
 class Exception extends Kernel\Exception
 {
+	const MISSING_MANDATORY_CONFIG = 1;
 
 	/**
 	 * @return string
@@ -12,7 +13,9 @@ class Exception extends Kernel\Exception
 	public function getFormatedMessage()
 	{
 		switch ($this->code) {
-
+			case self::MISSING_MANDATORY_CONFIG:
+				return 'Missing mandatory configuration : '.$this->message;
+				break;
 		}
 		return parent::getFormatedMessage();
 	}
