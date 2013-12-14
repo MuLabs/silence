@@ -7,6 +7,7 @@ class Exception extends Kernel\Exception
 {
 	const ASSET_EMPTY = 1;
 	const INVALID_EXTENSION = 2;
+	const FILE_NOT_FOUND = 3;
 
 	/**
 	 * @return string
@@ -18,8 +19,10 @@ class Exception extends Kernel\Exception
 				return 'Asset is empty : ' . $this->message;
 				break;
 			case self::INVALID_EXTENSION:
-				list($ext, $file) = $this->message;
-				return 'Invalid extension (' . $ext . ') on ' . $file;
+				return 'Invalid extension : '.$this->message;
+				break;
+			case self::FILE_NOT_FOUND:
+				return 'File not found : '.$this->message;
 				break;
 		}
 		return parent::getFormatedMessage();

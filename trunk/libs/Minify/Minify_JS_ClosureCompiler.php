@@ -46,14 +46,6 @@ class Minify_JS_ClosureCompiler
 	public function min($js)
 	{
 		$postBody = $this->_buildPostBody($js);
-		$bytes = (function_exists('mb_strlen') && ((int)ini_get('mbstring.func_overload') & 2))
-			? mb_strlen($postBody, '8bit')
-			: strlen($postBody);
-		if ($bytes > 200000) {
-			throw new Minify_JS_ClosureCompiler_Exception(
-				'POST content larger than 200000 bytes'
-			);
-		}
 		$response = $this->_getResponse($postBody);
 		if (preg_match('/^Error\(\d\d?\):/', $response)) {
 			if (is_callable($this->_fallbackFunc)) {
