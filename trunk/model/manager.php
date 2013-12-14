@@ -133,13 +133,16 @@ abstract class Manager extends Kernel\Core
 		$entityClassname = strtolower($this->getEntityClassname());
 		call_user_func($stdOut, 'Start creating structure for entity ' . $entityClassname);
 		foreach ($this->properties as $table => $oneTableInfos) {
-
 			$properties = array();
 			$tableToken = '@' . $table;
 			call_user_func($stdOut, 'Start creating structure for table ' . $tableToken);
 
 			// Generate properties
 			foreach ($oneTableInfos['properties'] as $label => $oneProperty) {
+				if (!isset($oneProperty['db'])) {
+					continue;
+				}
+
 				$propToken = str_replace('@', ':', $tableToken) . '.' . $label;
 				call_user_func($stdOut, 'Generating property ' . $propToken);
 

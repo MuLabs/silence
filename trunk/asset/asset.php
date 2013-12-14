@@ -19,13 +19,13 @@ class Asset extends Kernel\Core
 		$file = reset($fileList);
 		$defaultExt = pathinfo($file, PATHINFO_EXTENSION);
 		if (!$manager->isExtensionAllowed($defaultExt)) {
-			throw new Exception(array($defaultExt, $file), Exception::INVALID_EXTENSION);
+			throw new Exception($defaultExt.' - '.$file, Exception::INVALID_EXTENSION);
 		}
 
 		foreach ($fileList as $file) {
 			$ext = pathinfo($file, PATHINFO_EXTENSION);
 			if ($ext !== $defaultExt) {
-				throw new Exception(array($ext, $file), Exception::INVALID_EXTENSION);
+				throw new Exception($ext.' - '.$file, Exception::INVALID_EXTENSION);
 			}
 		}
 

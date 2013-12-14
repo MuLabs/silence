@@ -4,7 +4,8 @@ namespace Beable;
 use Beable\Kernel;
 
 define('BEABLE_CONSOLE', true);
-require('setup.php');
+$absPath = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+require($absPath.'/setup.php');
 
 try {
 	$app = new App\Application();
