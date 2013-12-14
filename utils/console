@@ -1,0 +1,107 @@
+<?php
+namespace Beable;
+
+use Beable\Kernel;
+
+define('BEABLE_CONSOLE', true);
+require('setup.php');
+
+try {
+	$app = new App\Application();
+
+	$args = $argv;
+	array_shift($args);
+
+	$action = (count($args)) ? $args[0] : '';
+
+	#region Action switch
+	switch ($action) {
+		case 'dump-route':
+			display('Dumping all route...');
+			$format = strtolower(ask('Choose format [apache] : '));
+			switch ($format) {
+				case '':
+				case 'apache':
+					display('.htacces apache format file choosed...');
+					if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+						$app->getRouteManager()->dumpRoutes('Apache');
+					} else {
+						display('Action cancelled');
+					}
+					break;
+				case 'nginx':
+					display('nginx format file choosed...');
+					if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+						$app->getRouteManager()->dumpRoutes('Nginx');
+					} else {
+						display('Action cancelled');
+					}
+					break;
+				default:
+					throw new Kernel\Route\Exception($format, Kernel\Route\Exception::FORMAT_NOT_FOUND);
+					break;
+			}
+			break;
+		case 'flush-page-cache':
+			display('Flushing all page cached...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->getPageCache()->flush();
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'flush-entity-cache':
+			display('Flushing all entities cached...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->getEntityCache()->flush();
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'flush-assets':
+			display('Flushing all entities cached...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->getAssetManager()->flush();
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'update':
+			display('Updating application...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->update('\Beable\display');
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'install':
+			display(
+				"Installing application...\n/!\\ WARNING : Installing application when your application is already install delete all your old datas /!\\"
+			);
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->install('\Beable\display');
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		default:
+			throw new Kernel\Exception($action, Kernel\Exception::UNDEFINED_ACTION);
+			break;
+	}
+	#endregion
+} catch (Kernel\Exception $e) {
+	$e->display();
+}
+
+function ask($message)
+{
+	display($message);
+	return trim(fgets(STDIN));
+}
+
+function display($message)
+{
+	echo "\n" . $message;
+	ob_flush();
+	flush();
+}

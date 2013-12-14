@@ -1,0 +1,63 @@
+<?php
+namespace Beable\Kernel\Communication;
+
+use Beable\App\Application;
+use Beable\Kernel;
+
+/**
+ * Class Service
+ * Should be instanciated into the Application as :
+ *	$comS = new Kernel\Session\Service();
+ *	$manager->register('com', $comS);
+ *	$sessionS->addHandler('email', $comS->generateHandler('email', 'context'));
+ *
+ * @package Beable\Kernel\Session
+ * @author Olivier Stahl
+ */
+class Service extends Kernel\Service\Extended
+{
+	const DEFAULT_HANDLER = 'email';
+
+	/**
+	 * @param $message
+	 * @param $to
+	 * @param $from
+	 * @param $handler		Load an handler by its context name or handler class name
+	 * @return void
+	 * @throws \Exception
+	 */
+	public function send($message, $to, $from, $handler = self::DEFAULT_HANDLER)
+	{
+		try {
+			// Try to get context handler:
+			/** @var Handler $handler */
+			$handler = $this->getHandler($handler);
+
+			// Set handler infos:
+			$handler->setContent($message);
+			$handler->setDestination($to);
+			$handler->setOrigin($from);
+
+			// Fire send message:
+			$handler->send();
+		} catch (\Exception $e) {
+			throw $e;
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function getDirectory()
+	{
+		return 'communication';
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function getNamespace()
+	{
+		return '\\Beable\\Kernel\\Communication';
+	}
+}
