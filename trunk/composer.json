@@ -1,0 +1,17 @@
+{
+	"name": "beable/framework",
+	"type": "library",
+	"description": "PHP 5.4 Simple and efficient Framework",
+	"keywords": [],
+	"homepage": "https://github.com/rschiano/beable_framework",
+	"authors": [
+		{
+			"name": "Romain Schiano",
+			"email": "romain.schiano@beable.fr",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0"
+	}
+}
