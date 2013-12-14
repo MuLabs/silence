@@ -16,8 +16,7 @@ abstract class Application
 	protected $production = true;
 	protected $enableEsi = true;
 	protected $defaultDatabase;
-	protected $productionUrl;
-	protected $devUrl;
+	protected $siteUrl;
 	protected $projectName;
 
 
@@ -130,11 +129,14 @@ abstract class Application
 	 */
 	public function getUrl()
 	{
-		if ($this->isProduction()) {
-			return $this->productionUrl;
-		} else {
-			return $this->devUrl;
-		}
+		return $this->siteUrl;
+	}
+
+	/**
+	 * @param string $siteUrl
+	 */
+	public function setSiteUrl($siteUrl) {
+		$this->siteUrl = $siteUrl;
 	}
 
 	/**
@@ -143,6 +145,13 @@ abstract class Application
 	public function getName()
 	{
 		return $this->projectName;
+	}
+
+	/**
+	 * @param string $projectName
+	 */
+	public function setProjectName($projectName) {
+		$this->projectName = $projectName;
 	}
 
 	/**
