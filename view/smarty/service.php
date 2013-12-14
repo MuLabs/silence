@@ -26,7 +26,7 @@ class Service extends Kernel\View\Service
 
 	private function initialize()
 	{
-		require_once(KERNEL_LIBS_PATH . '/Smarty/Smarty.class.php');
+		require_once(VENDOR_PATH . '/smarty/smarty/distribution/libs/Smarty.class.php');
 		$this->smarty = new \Smarty();
 
 		$this->smarty->setTemplateDir($this->getDir());
