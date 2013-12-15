@@ -5,14 +5,20 @@ function autoLoader($name)
 	$prefix = substr($name, 0, strpos($name, '\\', strpos($name, '\\')+1)+1);
 	if ($prefix === 'Beable\\Kernel\\') {
 		$name = str_replace(array('Beable\\Kernel\\', '\\'), array('/', '/'), $name);
-		require(KERNEL_PATH . strtolower($name) . '.php');
+		$path = KERNEL_PATH;
 	} elseif ($prefix === 'Beable\\App\\') {
 		$name = str_replace(array('Beable\\App\\', '\\'), array('/', '/'), $name);
-		require(APP_PATH . '/' . strtolower($name) . '.php');
+		$path = APP_PATH;
 	} elseif ($prefix === 'Beable\\Bundle\\') {
 		$name = str_replace(array('Beable\\Bundle\\', '\\'), array('/', '/'), $name);
-		require(BUNDLE_PATH . '/' . strtolower($name) . '.php');
+		$path = BUNDLE_PATH;
 	}
+
+	$file = $path . '/' . strtolower($name) . '.php';
+	if (!file_exists($file)) {
+		throw new Exception('Class not found : ' . $name);
+	}
+	require($file);
 }
 
 spl_autoload_register('autoLoader');
