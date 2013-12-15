@@ -155,7 +155,7 @@ class Request
 				break;
 
 			case self::PARAM_TYPE_SESSION:
-				return $_REQUEST;
+				return $_SESSION;
 				break;
 
 			default:
@@ -181,6 +181,10 @@ class Request
 			case self::PARAM_TYPE_POST:
 				$_POST[$label] = $value;
 				$_REQUEST[$label] = $value;
+				break;
+
+			case self::PARAM_TYPE_SESSION:
+				$_SESSION[$label] = $value;
 				break;
 		}
 	}

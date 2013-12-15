@@ -6,6 +6,7 @@ use Beable\Kernel;
 abstract class Core extends Kernel\Core
 {
 	const DEFAULT_CONTEXT = 'murloc';
+	const DELIMITER = ',';
 
 	private $context;
 	private $config;
@@ -46,7 +47,7 @@ abstract class Core extends Kernel\Core
 
 		foreach ($configs as $context => $config) {
 			if ($context == $this->getContext()) {
-				$this->config = $this->parseConfig(explode(',', $config));
+				$this->config = $this->parseConfig(explode(self::DELIMITER, $config));
 				return;
 			}
 		}

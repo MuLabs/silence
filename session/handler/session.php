@@ -16,6 +16,7 @@ use Beable\Kernel;
 class Session extends Kernel\Session\Handler
 {
 	private static $sessionNumber = 0;
+	private $info = array();
 
 	/**
 	 * Start php session if needed and set context
@@ -27,6 +28,13 @@ class Session extends Kernel\Session\Handler
 		if (session_status() !== PHP_SESSION_ACTIVE) {
 			session_start();
 		}
+
+		// Get session value:
+		$this->info = $this->getApp()->getHttp()->getRequest()->getParameters(
+			$this->getContext(),
+			Kernel\Http\Request::PARAM_TYPE_SESSION,
+			array()
+		);
 	}
 
 	/**
@@ -34,6 +42,14 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function save()
 	{
+		// Store infos into session:
+		$this->getApp()->getHttp()->getRequest()->setParameter(
+			$this->getContext(),
+			Kernel\Http\Request::PARAM_TYPE_SESSION,
+			$this->getAll()
+		);
+
+		// Close session if needed:
 		self::$sessionNumber--;
 		if (self::$sessionNumber <= 0 && session_status() === PHP_SESSION_ACTIVE) {
 			session_write_close();
@@ -45,7 +61,7 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function get($name, $default = null)
 	{
-		return (isset($_SESSION[$this->getContext()][$name])) ? $_SESSION[$this->getContext()][$name] : $default;
+		return (isset($this->info[$name])) ? $this->info[$name] : $default;
 	}
 
 	/**
@@ -53,7 +69,7 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function getAll()
 	{
-		 return (isset($_SESSION[$this->getContext()])) ? $_SESSION[$this->getContext()] : array();
+		return $this->info;
 	}
 
 	/**
@@ -61,7 +77,7 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function getId()
 	{
-		 return session_id();
+		return session_id();
 	}
 
 	/**
@@ -69,8 +85,8 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function set($name, $value = null)
 	{
-		 $_SESSION[$this->getContext()][$name] = $value;
-		 return $value;
+		$this->info[$name] = $value;
+		return $value;
 	}
 
 	/**
@@ -78,6 +94,6 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function setAll($values = array())
 	{
-		 $_SESSION[$this->getContext()] = $values;
+		$this->info = $values;
 	}
 }
