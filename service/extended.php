@@ -23,7 +23,7 @@ abstract class Extended extends Core
 		try {
 			$handlers = $this->getHandlers();
 			foreach ($handlers as $handler) {
-				$handler->save();
+				$handler->__close();
 			}
 		} catch (Exception $e) {
 			throw new Exception($e->getMessage(), Exception::HANDLER_CLOSURE_ERROR);
@@ -124,7 +124,7 @@ abstract class Extended extends Core
 			$handler = new $class();
 			$handler->setApp($this->getApp());
 			$handler->setContext($context);
-			$handler->init();
+			$handler->__init();
 
 			// Return the handler instance:
 			return $handler;

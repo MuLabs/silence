@@ -17,7 +17,7 @@ class Email extends Kernel\Communication\Handler
 	/**
 	 * {@inheritdoc}
 	 */
-	public function init()
+	public function __init()
 	{
 		$this->setSubject($this->getConfig('subject', ''));
 		$from = $this->getConfig('autosend', '');
@@ -29,7 +29,7 @@ class Email extends Kernel\Communication\Handler
 	/**
 	 * {@inheritDoc}
 	 */
-	public function save()
+	public function __close()
 	{
 		try {
 			if ($this->getConfig('autosend', false) && $this->getStatus() === self::MESSAGE_READY) {

@@ -9,7 +9,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Delete the current session
-	 * (clean + save)
+	 * (clean + close)
 	 */
 	public function delete()
 	{
@@ -45,6 +45,12 @@ abstract class Handler extends Kernel\Handler\Core
 	 * @return string
 	 */
 	abstract public function getId();
+
+	/**
+	 * Save the current session values
+	 * @return void
+	 */
+	abstract public function save();
 
 	/**
 	 * Set a value in handler and return it

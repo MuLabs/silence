@@ -22,7 +22,7 @@ class Session extends Kernel\Session\Handler
 	 * Start php session if needed and set context
 	 * @param string $context
 	 */
-	public function init($context = '')
+	public function __init($context = '')
 	{
 		self::$sessionNumber++;
 		if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -40,6 +40,21 @@ class Session extends Kernel\Session\Handler
 	/**
 	 * {@inheritDoc}
 	 */
+	public function __close()
+	{
+		// Store infos into session:
+		$this->save();
+
+		// Close session if needed:
+		self::$sessionNumber--;
+		if (self::$sessionNumber <= 0 && session_status() === PHP_SESSION_ACTIVE) {
+			session_write_close();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function save()
 	{
 		// Store infos into session:
@@ -48,12 +63,6 @@ class Session extends Kernel\Session\Handler
 			Kernel\Http\Request::PARAM_TYPE_SESSION,
 			$this->getAll()
 		);
-
-		// Close session if needed:
-		self::$sessionNumber--;
-		if (self::$sessionNumber <= 0 && session_status() === PHP_SESSION_ACTIVE) {
-			session_write_close();
-		}
 	}
 
 	/**

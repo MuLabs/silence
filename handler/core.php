@@ -15,12 +15,12 @@ abstract class Core extends Kernel\Core
 	/**
 	 * Initialize the handler
 	 */
-	abstract public function init();
+	abstract public function __init();
 
 	/**
-	 * Correctly save the handler
+	 * Close the handler
 	 */
-	abstract public function save();
+	abstract public function __close();
 
 	/**
 	 * Get a configuration value
