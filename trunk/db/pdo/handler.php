@@ -6,19 +6,21 @@ use Beable\Kernel;
 class Handler extends Kernel\Db\Handler
 {
 	private $typeToSQL = array(
-		'tinyint' => 'TINYINT',
-		'smallint' => 'SMALLINT',
+		'tinyint' 	=> 'TINYINT',
+		'smallint' 	=> 'SMALLINT',
 		'mediumint' => 'MEDIUMINT',
-		'int' => 'INT',
-		'bigint' => 'BIGINT',
-		'bool' => 'TINYINT',
-		'string' => 'VARCHAR',
-		'varchar' => 'VARCHAR',
-		'char' => 'CHAR',
-		'blob' => 'BLOB',
-		'text' => 'TEXT',
+		'int' 		=> 'INT',
+		'bigint' 	=> 'BIGINT',
+		'timestamp' => 'TIMESTAMP',
+		'bool' 		=> 'TINYINT',
+		'string' 	=> 'VARCHAR',
+		'varchar' 	=> 'VARCHAR',
+		'char' 		=> 'CHAR',
+		'blob' 		=> 'BLOB',
+		'text' 		=> 'TEXT',
 		'long_blob' => 'LONG_BLOB',
 		'long_text' => 'LONG_TEXT',
+		'date' 		=> 'DATETIME',
 	);
 
 	public function __construct($dbDsn, $dbUsername, $dbPass)
@@ -133,7 +135,7 @@ class Handler extends Kernel\Db\Handler
 	 */
 	public function getInsertId()
 	{
-		return $this->getLink()->lastInsertId();
+		return (int)$this->getLink()->lastInsertId();
 	}
 
 	/**
