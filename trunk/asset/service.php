@@ -9,6 +9,7 @@ class Service extends Kernel\Service\Core
 
 	private $allowedExtension = array();
 	private $generator = array();
+	private $vars = array();
 
 	/**
 	 * @param array $fileList
@@ -32,6 +33,21 @@ class Service extends Kernel\Service\Core
 	public function registerExtension($ext, $generator)
 	{
 		$this->allowedExtension[$ext] = $generator;
+	}
+
+	/**
+	 * @param string $name
+	 * @param string $value
+	 */
+	public function registerVar($name, $value) {
+		$this->vars[$name] = $value;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getVars() {
+		return $this->vars;
 	}
 
 	/**
