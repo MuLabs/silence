@@ -33,7 +33,7 @@ class Cookie extends Kernel\Session\Handler
 	/**
 	 * Load current cookie and check it's validity
 	 */
-	public function init()
+	public function __init()
 	{
 		// Initialize configuration:
 		$this->salt   = $this->getConfig('salt', self::DEFAULT_SALT);
@@ -42,26 +42,30 @@ class Cookie extends Kernel\Session\Handler
 		$this->httponly = $this->getConfig('httponly', self::DEFAULT_HTTPONLY);
 
 		// Get cookie:
-		$cookie = $this->getApp()->getHttp()->getRequest()->getParameters(
-			$this->getContext(),
-			Kernel\Http\Request::PARAM_TYPE_COOKIE,
-			array()
-		);
+		$cookie = $this->__getCookie();
 
 		// Test cookie validity if not empty
 		if (is_array($cookie)) {
 			// Test validity:
 			if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify]!=$this->getId()) {
-				return; // TODO add log
+				return;
 			}
 			// Test timestamp:
 			if (!isset($cookie[$this->keyTime]) || time()-$cookie[$this->keyTime] > $this->expire*3600) {
-				return; // TODO add log
+				return;
 			}
 
 			// Store infos:
 			$this->info = $cookie;
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __close()
+	{
+		$this->save();
 	}
 
 	/**
@@ -76,7 +80,9 @@ class Cookie extends Kernel\Session\Handler
 
 		// Force the cookie to be cleaned if needed, but after rendering:
 		if (count($this->info) == 0) {
-			setcookie($this->getContext(), "");
+			foreach ($this->__getCookie() as $key=>$value) {
+				setcookie($this->getContext().'['.$key.']', null, -1);
+			}
 		}
 		else {
 			// Set protected keys:
@@ -145,5 +151,18 @@ class Cookie extends Kernel\Session\Handler
 	public function setAll($values = array())
 	{
 		$this->info = $values;
+	}
+
+	/**
+	 * Get correct cookie
+	 * @return array
+	 */
+	private function __getCookie()
+	{
+		return $this->getApp()->getHttp()->getRequest()->getParameters(
+			$this->getContext(),
+			Kernel\Http\Request::PARAM_TYPE_COOKIE,
+			array()
+		);;
 	}
 }
