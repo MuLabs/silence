@@ -60,6 +60,13 @@ abstract class Controller extends Kernel\Core
 	abstract public function fetch();
 
 	/**
+	 * Initialization function, can be empty
+	 */
+	public function initialize() {
+
+	}
+
+	/**
 	 * @throws Exception
 	 * @return string
 	 */
