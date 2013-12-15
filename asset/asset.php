@@ -39,7 +39,7 @@ class Asset extends Kernel\Core
 	/**
 	 * @return Service
 	 */
-	private function getManager()
+	public function getManager()
 	{
 		return $this->manager;
 	}
