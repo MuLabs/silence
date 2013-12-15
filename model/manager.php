@@ -13,6 +13,13 @@ abstract class Manager extends Kernel\Core
 	private $entityClassname;
 
 	/**
+	 * @return array
+	 */
+	public function getProperties() {
+		return $this->properties;
+	}
+
+	/**
 	 * @param array $idList
 	 * @param bool $keep_null
 	 * @return Entity[]
@@ -74,6 +81,10 @@ abstract class Manager extends Kernel\Core
 	 */
 	public function get($id)
 	{
+		if (empty($id)) {
+			return null;
+		}
+
 		if (!is_array($id)) {
 			$id = array($id);
 		}
