@@ -70,7 +70,7 @@ abstract class Extended extends Core
 
 		// Generate handler if needed:
 		if (!isset($this->handlers[$context])) {
-			$this->handlers[$context] = $this->generateHandler($type);
+			$this->addHandler($context, $this->generateHandler($type));
 		}
 
 		return $this->handlers[$context];
@@ -102,12 +102,12 @@ abstract class Extended extends Core
 
 	/**
 	 * Generate an handler of a given type with a given context
-	 * @param string $name
+	 * @param string $type
 	 * @param string $context
 	 * @return Handler\Core
 	 * @throws Exception
 	 */
-	public function generateHandler($name, $context = Handler\Core::DEFAULT_CONTEXT)
+	public function generateHandler($type, $context = Handler\Core::DEFAULT_CONTEXT)
 	{
 		// Test if setApp as been correctly done:
 		if (!$this->getApp() instanceof Application) {
@@ -115,11 +115,8 @@ abstract class Extended extends Core
 		}
 
 		// Get handler class
-		$type = ucfirst($name);
+		$type = ucfirst($type);
 		$class= $this->getNamespace().'\\Handler\\'.$type;
-		if (!is_file(__DIR__.'/../'.$this->getDirectory().'/handler/'.$name.'.php') || !class_exists($class)) {
-			throw new Exception($type, Exception::HANDLER_TYPE_NOT_FOUND);
-		}
 
 		try {
 			// Generate new handler and initialize it
@@ -132,7 +129,7 @@ abstract class Extended extends Core
 			// Return the handler instance:
 			return $handler;
 		} catch (Exception $e) {
-			throw new Exception($e->getMessage(), Exception::HANDLER_CREATION_ERROR);
+			throw new Exception($e->getMessage(), Exception::HANDLER_TYPE_NOT_FOUND);
 		}
 	}
 

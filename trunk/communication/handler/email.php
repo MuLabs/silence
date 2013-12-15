@@ -29,7 +29,7 @@ class Email extends Kernel\Communication\Handler
 	/**
 	 * {@inheritDoc}
 	 */
-	public function close()
+	public function save()
 	{
 		try {
 			if ($this->getConfig('autosend', false) && $this->getStatus() === self::MESSAGE_READY) {

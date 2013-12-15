@@ -15,7 +15,7 @@ use Beable\Kernel;
  */
 class Session extends Kernel\Session\Handler
 {
-	private static $session_number = 0;
+	private static $sessionNumber = 0;
 
 	/**
 	 * Start php session if needed and set context
@@ -23,29 +23,21 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function init($context = '')
 	{
-	 self::$session_number++;
-	 if (session_status() !== PHP_SESSION_ACTIVE) {
-	  session_start();
-	 }
+		self::$sessionNumber++;
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+			session_start();
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function close()
+	public function save()
 	{
-	 self::$session_number--;
-	 if (self::$session_number <= 0 && session_status() === PHP_SESSION_ACTIVE) {
-	  session_write_close();
-	 }
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function clean()
-	{
-	 $this->setAll();
+		self::$sessionNumber--;
+		if (self::$sessionNumber <= 0 && session_status() === PHP_SESSION_ACTIVE) {
+			session_write_close();
+		}
 	}
 
 	/**
@@ -53,7 +45,7 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function get($name, $default = null)
 	{
-	 return (isset($_SESSION[$this->getContext()][$name])) ? $_SESSION[$this->getContext()][$name] : $default;
+		return (isset($_SESSION[$this->getContext()][$name])) ? $_SESSION[$this->getContext()][$name] : $default;
 	}
 
 	/**
@@ -61,7 +53,7 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function getAll()
 	{
-	 return (isset($_SESSION[$this->getContext()])) ? $_SESSION[$this->getContext()] : array();
+		 return (isset($_SESSION[$this->getContext()])) ? $_SESSION[$this->getContext()] : array();
 	}
 
 	/**
@@ -69,7 +61,7 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function getId()
 	{
-	 return session_id();
+		 return session_id();
 	}
 
 	/**
@@ -77,8 +69,8 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function set($name, $value = null)
 	{
-	 $_SESSION[$this->getContext()][$name] = $value;
-	 return $value;
+		 $_SESSION[$this->getContext()][$name] = $value;
+		 return $value;
 	}
 
 	/**
@@ -86,6 +78,6 @@ class Session extends Kernel\Session\Handler
 	 */
 	public function setAll($values = array())
 	{
-	 $_SESSION[$this->getContext()] = $values;
+		 $_SESSION[$this->getContext()] = $values;
 	}
 }
