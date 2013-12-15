@@ -19,6 +19,7 @@ class Request
 	const PARAM_TYPE_POST = 2;
 	const PARAM_TYPE_COOKIE = 3;
 	const PARAM_TYPE_REQUEST = 4;
+	const PARAM_TYPE_SESSION = 5;
 
 	private $method;
 	private $time;
@@ -120,6 +121,10 @@ class Request
 				return (isset($_REQUEST[$label])) ? $_REQUEST[$label] : $default;
 				break;
 
+			case self::PARAM_TYPE_SESSION:
+				return (isset($_SESSION[$label])) ? $_SESSION[$label] : $default;
+				break;
+
 			default:
 				return $default;
 				break;
@@ -146,6 +151,10 @@ class Request
 				break;
 
 			case self::PARAM_TYPE_REQUEST:
+				return $_REQUEST;
+				break;
+
+			case self::PARAM_TYPE_SESSION:
 				return $_REQUEST;
 				break;
 
