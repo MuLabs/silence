@@ -5,13 +5,26 @@ use Beable\Kernel;
 
 abstract class Handler extends Kernel\Handler\Core
 {
-	protected $config_prefix = 'ses_';
+	protected $configPrefix = 'ses_';
+
+	/**
+	 * Delete the current session
+	 * (clean + save)
+	 */
+	public function delete()
+	{
+		$this->clean();
+		$this->save();
+	}
 
 	/**
 	 * Clean current handler values
 	 * This function is an alias of $this->setAll()
 	 */
-	abstract public function clean();
+	public function clean()
+	{
+		$this->setAll();
+	}
 
 	/**
 	 * Get a value if name exists in the handler context, else return a default value

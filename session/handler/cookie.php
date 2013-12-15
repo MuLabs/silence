@@ -17,8 +17,8 @@ use Beable\Kernel;
  */
 class Cookie extends Kernel\Session\Handler
 {
-	private $key_verify = 'mu_verify';
-	private $key_time   = 'mu_time';
+	private $keyVerify = 'mu_verify';
+	private $keyTime   = 'mu_time';
 	private $salt;
 	private $expire;		// In hours
 	private $secure;		// Bool
@@ -40,12 +40,12 @@ class Cookie extends Kernel\Session\Handler
 		$this->info = array();
 		if (isset($_COOKIE[$this->getContext()])) {
 			// Test validity:
-			if (!isset($_COOKIE[$this->getContext()][$this->key_verify]) || $_COOKIE[$this->getContext()][$this->key_verify]!=$this->getId()) {
+			if (!isset($_COOKIE[$this->getContext()][$this->keyVerify]) || $_COOKIE[$this->getContext()][$this->keyVerify]!=$this->getId()) {
 				// TODO add log
 				return;
 			}
 			// Test timestamp:
-			if (!isset($_COOKIE[$this->getContext()][$this->key_time]) || time()-$_COOKIE[$this->getContext()][$this->key_time] > $this->expire*3600) {
+			if (!isset($_COOKIE[$this->getContext()][$this->keyTime]) || time()-$_COOKIE[$this->getContext()][$this->keyTime] > $this->expire*3600) {
 				// TODO add log
 				return;
 			}
@@ -58,7 +58,7 @@ class Cookie extends Kernel\Session\Handler
 	/**
 	 * {@inheritDoc}
 	 */
-	public function close()
+	public function save()
 	{
 		// Force the cookie to be cleaned if needed, but after rendering:
 		if (count($this->info) == 0) {
@@ -66,8 +66,8 @@ class Cookie extends Kernel\Session\Handler
 		}
 		else {
 			// Set protected keys:
-			$this->info[$this->key_verify] = $this->getId();
-			$this->info[$this->key_time]   = time();
+			$this->info[$this->keyVerify] = $this->getId();
+			$this->info[$this->keyTime]   = time();
 
 			// Save values:
 			$expire = time() + $this->expire*3600;
@@ -87,14 +87,6 @@ class Cookie extends Kernel\Session\Handler
 			'secure' => (isset($config[1]) && $config[1]==1),
 			'httponly' => (isset($config[2]) && $config[2]==1)
 		);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function clean()
-	{
-		$this->setAll();
 	}
 
 	/**
@@ -127,7 +119,7 @@ class Cookie extends Kernel\Session\Handler
 	public function set($name, $value = null)
 	{
 		// Do not overload protected keys
-		if ($name != $this->key_verify || $name != $this->key_time) {
+		if ($name != $this->keyVerify || $name != $this->keyTime) {
 			$this->info[$name] = $value;
 		}
 		return $value;

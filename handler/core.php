@@ -9,7 +9,7 @@ abstract class Core extends Kernel\Core
 
 	private $context;
 	private $config;
-	protected $config_prefix = '';
+	protected $configPrefix = '';
 
 	/**
 	 * Initialize the handler
@@ -17,9 +17,9 @@ abstract class Core extends Kernel\Core
 	abstract public function init();
 
 	/**
-	 * Correctly close the handler
+	 * Correctly save the handler
 	 */
-	abstract public function close();
+	abstract public function save();
 
 	/**
 	 * Get a configuration value
@@ -42,7 +42,7 @@ abstract class Core extends Kernel\Core
 	protected function loadConfig()
 	{
 		$configManager = $this->getApp()->getConfigManager();
-		$configs = $configManager->get($this->config_prefix.$this->getClassName(), array());
+		$configs = $configManager->get($this->configPrefix.$this->getClassName(), array());
 
 		foreach ($configs as $context => $config) {
 			if ($context == $this->getContext()) {

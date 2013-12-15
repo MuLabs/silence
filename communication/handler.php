@@ -11,7 +11,7 @@ abstract class Handler extends Kernel\Handler\Core
 	const MESSAGE_SENT = 3;
 	const DELIMITER = ',';
 
-	protected $config_prefix = 'com_';
+	protected $configPrefix = 'com_';
 	private $subject = '';
 	private $content;
 	private $origin;
