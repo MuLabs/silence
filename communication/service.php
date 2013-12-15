@@ -22,7 +22,7 @@ class Service extends Kernel\Service\Extended
 	 * @param $message
 	 * @param $to
 	 * @param $from
-	 * @param $handler		Load an handler by its context name or handler class name
+	 * @param $handler		Load an handler by its type
 	 * @return void
 	 * @throws \Exception
 	 */
@@ -31,7 +31,7 @@ class Service extends Kernel\Service\Extended
 		try {
 			// Try to get context handler:
 			/** @var Handler $handler */
-			$handler = $this->getHandler($handler);
+			$handler = $this->getHandler($handler, $handler);	// Load an handler with context name = handler type
 
 			// Set handler infos:
 			$handler->setContent($message);

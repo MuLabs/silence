@@ -42,7 +42,7 @@ abstract class Extended extends Core
 			$this->handlers[$name] = $handler;
 		}
 		else {
-			throw new Exception($name, Exception::HANDLER_NAME_ALREADY_REGISTERED);
+			throw new Exception($name, Exception::CONTEXT_ALREADY_EXISTS);
 		}
 	}
 
@@ -55,24 +55,41 @@ abstract class Extended extends Core
 	}
 
 	/**
+	 * Return an handler by its type and context, generate it if needed
+	 * @param string $type
 	 * @param string $context
 	 * @throws Exception
 	 * @return Handler\Core
 	 */
-	public function getHandler($context)
+	public function getHandler($type, $context = Handler\Core::DEFAULT_CONTEXT)
 	{
-		try {
-			if (!isset($this->handlers[$context])) {
-				$this->handlers[$context] = $this->generateHandler($context);
-			}
-			return $this->handlers[$context];
-		} catch (Exception $e) {
-			if ($e->getCode() == Exception::HANDLER_TYPE_NOT_FOUND) {
-				throw new Exception($context, Exception::CONTEXT_TYPE_NOT_FOUND);
-			} else {
-				throw $e;
-			}
+		// Test if context already exists and handler type:
+		if (isset($this->handlers[$context]) && $this->handlers[$context]->getClassName() != ucfirst($type)) {
+			throw new Exception($context, Exception::CONTEXT_ALREADY_EXISTS);
 		}
+
+		// Generate handler if needed:
+		if (!isset($this->handlers[$context])) {
+			$this->handlers[$context] = $this->generateHandler($type);
+		}
+
+		return $this->handlers[$context];
+	}
+
+	/**
+	 * Return an handler by its context label.
+	 * Note that this function doesn't generate it.
+	 * @param string $context
+	 * @throws Exception
+	 * @return Handler\Core
+	 */
+	public function getHandlerByContext($context)
+	{
+		if (!isset($this->handlers[$context])) {
+			throw new Exception($context, Exception::CONTEXT_NOT_FOUND);
+		}
+
+		return $this->handlers[$context];
 	}
 
 	/**
