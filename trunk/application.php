@@ -307,6 +307,18 @@ abstract class Application
 	}
 
 	/**
+	 * @return Session\Service
+	 */
+	public function getSession()
+	{
+		try {
+			return $this->getServicer()->get('session');
+		} catch (Service\Exception $e) {
+			return null;
+		}
+	}
+
+	/**
 	 * @return Kernel\Model\Service
 	 */
 	public function getModelManager()
@@ -407,6 +419,7 @@ abstract class Application
 
 	/**
 	 * @param bool $sendData
+	 * @throws EndException
 	 * @return string
 	 */
 	private function dispatch($sendData = true)
@@ -423,6 +436,7 @@ abstract class Application
 
 		$response->setContent($content);
 		$response->send();
+		throw new Kernel\EndException();
 	}
 
 	/**
@@ -444,6 +458,7 @@ abstract class Application
 	 */
 	private function fetch()
 	{
+		$this->getController()->initialize();
 		// Fetch fragment and skip controller if request is only for fragment
 		$fragmentContent = $this->getController()->fetchFragment();
 		if (is_string($fragmentContent)) {
@@ -671,4 +686,5 @@ abstract class Application
 	{
 		$this->statics[] = $url;
 	}
+
 }

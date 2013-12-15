@@ -17,7 +17,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	 * @param $id
 	 * @throws Exception
 	 */
-	public function __construct(Manager $manager, $id)
+	final public function __construct(Manager $manager, $id)
 	{
 		$this->setApp($manager->getApp());
 		$this->setManager($manager);
