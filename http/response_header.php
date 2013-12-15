@@ -5,6 +5,7 @@ use beable\Kernel;
 
 class Response_header
 {
+	const MIME_TYPE_TEXT = 'text/plain';
 	const MIME_TYPE_HTML = 'text/html';
 	const MIME_TYPE_XML = 'text/xml';
 	const MIME_TYPE_CSS = 'text/css';

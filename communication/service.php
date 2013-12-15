@@ -1,7 +1,6 @@
 <?php
 namespace Beable\Kernel\Communication;
 
-use Beable\App\Application;
 use Beable\Kernel;
 
 /**
