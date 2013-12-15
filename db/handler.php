@@ -10,19 +10,21 @@ abstract class Handler extends Kernel\Core
 	const PARAM_BOOL = 3;
 
 	protected $knowActions = array(
-		'tinyint' => self::PARAM_INT,
-		'smallint' => self::PARAM_INT,
+		'tinyint' 	=> self::PARAM_INT,
+		'smallint' 	=> self::PARAM_INT,
 		'mediumint' => self::PARAM_INT,
-		'int' => self::PARAM_INT,
-		'bigint' => self::PARAM_INT,
-		'bool' => self::PARAM_BOOL,
-		'string' => self::PARAM_STR,
-		'varchar' => self::PARAM_STR,
-		'char' => self::PARAM_STR,
-		'blob' => self::PARAM_STR,
-		'text' => self::PARAM_STR,
+		'int' 		=> self::PARAM_INT,
+		'bigint' 	=> self::PARAM_INT,
+		'timestamp' => self::PARAM_INT,
+		'bool' 		=> self::PARAM_BOOL,
+		'string' 	=> self::PARAM_STR,
+		'varchar' 	=> self::PARAM_STR,
+		'char' 		=> self::PARAM_STR,
+		'blob' 		=> self::PARAM_STR,
+		'text' 		=> self::PARAM_STR,
 		'long_blob' => self::PARAM_STR,
 		'long_text' => self::PARAM_STR,
+		'date' 		=> self::PARAM_STR,
 	);
 	protected $typeCheckValues = array(
 		Query::TYPE_SELECT,
@@ -91,9 +93,23 @@ abstract class Handler extends Kernel\Core
 		while ($lastFound !== false && $values >= 0) {
 			$subQuery = substr($subQuery, 0, $lastFound);
 			$subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
-			$subPropQuery = substr($subPropQuery, 0, strpos($subPropQuery, ' '));
+			$posT = strpos($subPropQuery, "\t");
+			$pos = strlen($subPropQuery);
+			if ($posT !== false) {
+				$pos = $posT;
+			}
+			$posS = strpos($subPropQuery, ' ');
+			if ($posS !== false) {
+				$pos = min($pos, $posS);
+			}
+			$posN = strpos($subPropQuery, "\n");
+			if ($posN !== false) {
+				$pos = min($pos, $posN);
+			}
+
+			$subPropQuery = substr($subPropQuery, 0, $pos);
 			if (!$subPropQuery) {
-				throw new exception($subQuery, exception::INVALID_SUB_PROP_QUERY);
+				throw new exception($subQuery, Exception::INVALID_SUB_PROP_QUERY);
 			}
 			$subPropQuery = str_replace(
 				array(')', ',', ';', '(', '/', '\\'),
@@ -124,17 +140,15 @@ abstract class Handler extends Kernel\Core
 					'property' => $property
 				), exception::INVALID_PROPERTY_COUNT);
 			}
-
-			$property = $property['manager']->getproperty($property['group'], $property['property']);
+			$property = $property['manager']->getProperty($property['group'], $property['property']);
 			$propertyType = $this->knowActions[$property['type']];
 			$values[$valuesOffset] = array(
 				'type' => $propertyType,
-				'value' => ($checkValue ? $this->checkproperty(
+				'value' => ($checkValue ? $this->checkProperty(
 						$values[$valuesOffset],
 						$this->knowActions[$property['type']]
 					) : $values[$valuesOffset])
 			);
-
 			$lastFound = strrpos($subQuery, '?');
 			--$valuesOffset;
 		}
@@ -144,7 +158,6 @@ abstract class Handler extends Kernel\Core
 		$propertyPattern = '(?<property>[\w]+)';
 		$groupPattern = '(?<group>[\w]+)';
 		$managerPattern = '(?<manager>[\w]+)';
-
 		// replace all properties by their real name
 		#region :manager.group.property
 		while (preg_match(
@@ -153,7 +166,7 @@ abstract class Handler extends Kernel\Core
 			$property
 		)) {
 			$strQuery = preg_replace(
-				'#:' . $property['manager'] . '.' . $property['group'] . '.' . $property['property']. '(/[^\w\-])#i',
+				'#:' . $property['manager'] . '\.' . $property['group'] . '\.' . $property['property']. '(/[^\w\-])#i',
 				$this->getManager($property)->getPropertyForDb($property['group'], $property['property'], $query->isShortMode()) . '$1',
 				$strQuery, 1
 			);
@@ -168,7 +181,7 @@ abstract class Handler extends Kernel\Core
 		)) {
 			$property['manager'] = $query->getDefaultManager();
 			$strQuery = preg_replace(
-				'#:' . $property['group'] . '.' . $property['property'].'([^\w\-])#i',
+				'#:' . $property['group'] . '\.' . $property['property'].'([^\w\-])#i',
 				$property['manager']->getPropertyForDb($property['group'], $property['property'], $query->isShortMode()) . '$1',
 				$strQuery, 1
 			);
@@ -194,7 +207,7 @@ abstract class Handler extends Kernel\Core
 		#region @manager.group
 		while (preg_match('#@' . $managerPattern . '\.' . $groupPattern . '#i', $strQuery, $property)) {
 			$strQuery = preg_replace(
-				'#@' . $property['manager'] . '.' . $property['group']. '(/[^\w\-])#i',
+				'#@' . $property['manager'] . '\.' . $property['group']. '(/[^\w\-])#i',
 				$this->getManager($property)->getGroupForDb($property['group']) . '$1',
 				$strQuery, 1
 			);
@@ -260,7 +273,7 @@ abstract class Handler extends Kernel\Core
 		if (!isset($property['manager'])) {
 			throw new Exception(print_r($property, true), Exception::INVALID_MANAGER);
 		}
-		return $this->getApp()->getModelManager()->getOneManager($property['manager'][0]);
+		return $this->getApp()->getModelManager()->getOneManager($property['manager']);
 	}
 
 	/**

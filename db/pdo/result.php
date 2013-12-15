@@ -33,7 +33,7 @@ class Result extends Kernel\Db\Result
 	 */
 	public function fetchRow()
 	{
-		return $this->ressource ? $this->ressource->fetch() : null;
+		return $this->ressource ? $this->ressource->fetch(\PDO::FETCH_NUM) : null;
 	}
 
 	/**

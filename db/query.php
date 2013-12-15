@@ -140,7 +140,7 @@ class Query extends Kernel\Core
 	/**
 	 * @param Kernel\Model\Manager $manager
 	 */
-	public function setDefaultManager(Kernel\Model\Manager $manager)
+	public function setDefaultManager(Kernel\Model\Manager $manager = null)
 	{
 		$this->defaultManager = $manager;
 	}
