@@ -17,13 +17,18 @@ use Beable\Kernel;
  */
 class Cookie extends Kernel\Session\Handler
 {
+	const DEFAULT_EXPIRE 	= 12;
+	const DEFAULT_HTTPONLY 	= false;
+	const DEFAULT_SALT   	= 'Z10uzuhyNyH3FYN9';
+	const DEFAULT_SECURE 	= false;
+
 	private $keyVerify = 'mu_verify';
 	private $keyTime   = 'mu_time';
 	private $salt;
 	private $expire;		// In hours
 	private $secure;		// Bool
 	private $httponly;		// Bool
-	private $info;
+	private $info = array();
 
 	/**
 	 * Load current cookie and check it's validity
@@ -31,27 +36,31 @@ class Cookie extends Kernel\Session\Handler
 	public function init()
 	{
 		// Initialize configuration:
-		$this->salt   = $this->getConfig('salt', 'Z10uzuhyNyH3FYN9');
-		$this->expire = $this->getConfig('expire', 24);
-		$this->secure = $this->getConfig('secure', false);
-		$this->httponly = $this->getConfig('httponly', false);
+		$this->salt   = $this->getConfig('salt', self::DEFAULT_SALT);
+		$this->expire = $this->getConfig('expire', self::DEFAULT_EXPIRE);
+		$this->secure = $this->getConfig('secure', self::DEFAULT_SECURE);
+		$this->httponly = $this->getConfig('httponly', self::DEFAULT_HTTPONLY);
 
-		// Load cookie if verifying key is valid:
-		$this->info = array();
-		if (isset($_COOKIE[$this->getContext()])) {
+		// Get cookie:
+		$cookie = $this->getApp()->getHttp()->getRequest()->getParameters(
+			$this->getContext(),
+			Kernel\Http\Request::PARAM_TYPE_COOKIE,
+			array()
+		);
+
+		// Test cookie validity if not empty
+		if (is_array($cookie)) {
 			// Test validity:
-			if (!isset($_COOKIE[$this->getContext()][$this->keyVerify]) || $_COOKIE[$this->getContext()][$this->keyVerify]!=$this->getId()) {
-				// TODO add log
-				return;
+			if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify]!=$this->getId()) {
+				return; // TODO add log
 			}
 			// Test timestamp:
-			if (!isset($_COOKIE[$this->getContext()][$this->keyTime]) || time()-$_COOKIE[$this->getContext()][$this->keyTime] > $this->expire*3600) {
-				// TODO add log
-				return;
+			if (!isset($cookie[$this->keyTime]) || time()-$cookie[$this->keyTime] > $this->expire*3600) {
+				return; // TODO add log
 			}
 
 			// Store infos:
-			$this->info = $_COOKIE[$this->getContext()];
+			$this->info = $cookie;
 		}
 	}
 
@@ -60,6 +69,11 @@ class Cookie extends Kernel\Session\Handler
 	 */
 	public function save()
 	{
+		// Test if header has been already sent, in this case cookie couldn't be saved:
+		if (headers_sent()) {
+			return; // TODO Add log
+		}
+
 		// Force the cookie to be cleaned if needed, but after rendering:
 		if (count($this->info) == 0) {
 			setcookie($this->getContext(), "");
@@ -83,7 +97,7 @@ class Cookie extends Kernel\Session\Handler
 	protected function parseConfig(array $config = array())
 	{
 		return array(
-			'expire' => (isset($config[0])) ? $config[0] : 12,
+			'expire' => (isset($config[0])) ? $config[0] : self::DEFAULT_EXPIRE,
 			'secure' => (isset($config[1]) && $config[1]==1),
 			'httponly' => (isset($config[2]) && $config[2]==1)
 		);
