@@ -18,12 +18,12 @@ class Text extends Kernel\File\Handler
 	}
 
 	/**
-	 * Get mime type from Http\Response_header
+	 * Get mime type from Http\Header\Response
 	 * @return string
 	 */
 	protected function getMimeType()
 	{
-		return \Beable\Kernel\Http\Response_header::MIME_TYPE_TEXT;
+		return \Beable\Kernel\Http\Header\Response::MIME_TYPE_TEXT;
 	}
 
 	/**

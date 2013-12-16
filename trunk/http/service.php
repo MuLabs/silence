@@ -17,7 +17,7 @@ class Service extends Kernel\Service\Core
 	public function initRequest()
 	{
 		$request = new Request();
-		$request->setHeader(new Request_header());
+		$request->setHeader(new Header\Request());
 		if (!defined('MFC_TEST')) {
 			if (isset($_SERVER['REQUEST_METHOD'])) {
 				$request->setMethod($_SERVER['REQUEST_METHOD']);
@@ -35,7 +35,7 @@ class Service extends Kernel\Service\Core
 	public function initResponse()
 	{
 		$response = new Response();
-		$response->setHeader(new Response_header());
+		$response->setHeader(new Header\Response());
 		$this->httpResponse = $response;
 	}
 
