@@ -20,6 +20,7 @@ class Request
 	const PARAM_TYPE_COOKIE = 3;
 	const PARAM_TYPE_REQUEST = 4;
 	const PARAM_TYPE_SESSION = 5;
+	const PARAM_TYPE_SERVER = 6;
 
 	private $method;
 	private $time;
@@ -123,6 +124,10 @@ class Request
 
 			case self::PARAM_TYPE_SESSION:
 				return (isset($_SESSION[$label])) ? $_SESSION[$label] : $default;
+				break;
+
+			case self::PARAM_TYPE_SERVER:
+				return (isset($_SERVER[$label])) ? $_SERVER[$label] : $default;
 				break;
 
 			default:
