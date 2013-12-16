@@ -474,7 +474,7 @@ class Toolbox extends Service\Core
 	public function jsonPage($content)
 	{
 		$response = $this->getApp()->getHttp()->getResponse();
-		$response->getHeader()->setContentType(Kernel\Http\Response_header::MIME_TYPE_JSON);
+		$response->getHeader()->setContentType(Kernel\Http\Header\Response::MIME_TYPE_JSON);
 		$response->setContent($content);
 		$response->send();
 	}

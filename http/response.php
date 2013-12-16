@@ -10,7 +10,7 @@ class Response
 
 	public function __construct()
 	{
-		$this->header = new Response_header();
+		$this->header = new Header\Response();
 	}
 
 	private function __clone()
@@ -22,9 +22,9 @@ class Response
 	}
 
 	/**
-	 * @param Response_header $header
+	 * @param Header\Response $header
 	 */
-	public function setHeader(Response_header $header)
+	public function setHeader(Header\Response $header)
 	{
 		$this->header = $header;
 	}
@@ -38,7 +38,7 @@ class Response
 	}
 
 	/**
-	 * @return Response_header
+	 * @return Header\Response
 	 */
 	public function getHeader()
 	{

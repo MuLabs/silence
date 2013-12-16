@@ -71,9 +71,9 @@ class Request
 	/**     SETTER     **/
 	/********************/
 	/**
-	 * @param Request_header $header
+	 * @param Header\Request $header
 	 */
-	public function setHeader(Request_header $header)
+	public function setHeader(Header\Request $header)
 	{
 		$this->requestHeader = $header;
 	}
@@ -410,7 +410,7 @@ class Request
 	}
 
 	/**
-	 * @return Request_header
+	 * @return Header\Request
 	 */
 	public function getRequestHeader()
 	{

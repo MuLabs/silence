@@ -1,9 +1,9 @@
 <?php
-namespace Beable\Kernel\Http;
+namespace Beable\Kernel\Http\Header;
 
 use Beable\Kernel;
 
-class Request_header
+class Request
 {
 	private $accept;
 	private $acceptCharset;
@@ -14,14 +14,6 @@ class Request_header
 	private $referer;
 	private $userAgent;
 	private $https;
-
-	private function __clone()
-	{
-	}
-
-	public function __destruct()
-	{
-	}
 
 	/**
 	 * @return string

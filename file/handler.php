@@ -188,7 +188,7 @@ abstract class Handler extends Kernel\Handler\Core
 	abstract protected function format($line);
 
 	/**
-	 * Get mime type from Http\Response_header
+	 * Get mime type from Http\Header\Response
 	 * @return string
 	 */
 	abstract protected function getMimeType();

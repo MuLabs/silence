@@ -1,9 +1,9 @@
 <?php
-namespace Beable\Kernel\Http;
+namespace Beable\Kernel\Http\Header;
 
-use beable\Kernel;
+use Beable\Kernel;
 
-class Response_header
+class Response
 {
 	const MIME_TYPE_TEXT = 'text/plain';
 	const MIME_TYPE_HTML = 'text/html';
@@ -22,18 +22,6 @@ class Response_header
 	private $contentFilename;
 	private $location;
 	private $code = 200;
-
-	public function __construct()
-	{
-	}
-
-	public function __clone()
-	{
-	}
-
-	public function __destruct()
-	{
-	}
 
 	public function send()
 	{
