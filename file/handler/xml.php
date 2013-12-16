@@ -3,6 +3,7 @@ namespace Beable\Kernel\File\Handler;
 
 use Beable\Kernel;
 use Beable\Kernel\Http;
+use Beable\Kernel\File\Exception;
 
 class Xml extends Kernel\File\Handler
 {
@@ -26,7 +27,7 @@ class Xml extends Kernel\File\Handler
 	 */
 	public function add($line)
 	{
-		throw new Exception('addChild', Kernel\File\Exception::FUNCTION_NOT_IMPLEMENT);
+		throw new Exception('addChild', Exception::FUNCTION_NOT_IMPLEMENT);
 	}
 
 	/**
@@ -57,7 +58,7 @@ class Xml extends Kernel\File\Handler
 	 */
 	public function addMultiple($lines = array())
 	{
-		throw new Exception('addChild', Kernel\File\Exception::FUNCTION_NOT_IMPLEMENT);
+		throw new Exception('addChild', Exception::FUNCTION_NOT_IMPLEMENT);
 	}
 
 	/**
@@ -104,18 +105,18 @@ class Xml extends Kernel\File\Handler
 	 * Open file and store datas
 	 * @param $file
 	 * @param array $parameters
-	 * @throws \Beable\Kernel\File\Exception
+	 * @throws Exception
 	 */
 	public function open($file, array $parameters = array())
 	{
 		if ($file!='' && !file_exists($file)) {
-			throw new Kernel\File\Exception($file, Kernel\File\Exception::FILE_NOT_EXISTS);
+			throw new Exception($file, Exception::FILE_NOT_EXISTS);
 		}
 
 		// Read file:
 		$data = '';
 		if (!$handle = @fopen($file, 'r')) {
-			throw new Kernel\File\Exception($file, Kernel\File\Exception::FILE_NOT_READABLE);
+			throw new Exception($file, Exception::FILE_NOT_READABLE);
 		}
 		// Store data:
 		while (!feof($handle)) {
@@ -131,7 +132,7 @@ class Xml extends Kernel\File\Handler
 		// Load document:
 		try {
 			$this->load($data);
-		} catch (Kernel\File\Exception $e) {
+		} catch (Exception $e) {
 			throw $e;
 		}
 	}
@@ -142,17 +143,17 @@ class Xml extends Kernel\File\Handler
 	 * @param bool $data_is_url
 	 * @param string $ns
 	 * @param bool $is_prefix
-	 * @throws \Beable\Kernel\File\Exception
+	 * @throws Exception
 	 */
 	public function load($data, $options = 0, $data_is_url = false, $ns = '', $is_prefix = false)
 	{
 		try {
 			$this->content = new \SimpleXMLElement($data, $options, $data_is_url, $ns, $is_prefix);
 			if (!$this->content) {
-				throw new Kernel\File\Exception('xml', Kernel\File\Exception::INCORRECT_FORMAT);
+				throw new Exception('xml', Exception::INCORRECT_FORMAT);
 			}
-		} catch (\Exception $e) {
-			throw new Kernel\File\Exception($e->getMessage(), Kernel\File\Exception::INCORRECT_FORMAT);
+		} catch (Exception $e) {
+			throw new Exception($e->getMessage(), Exception::INCORRECT_FORMAT);
 		}
 	}
 
