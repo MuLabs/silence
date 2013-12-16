@@ -8,25 +8,13 @@ class Text extends Kernel\File\Handler
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function formatStored($line)
+	protected function format($line)
 	{
 		if (is_array($line)) {
-			$line = implode(self::SEPARATOR_VALUE, $line);
+			$line = implode($this->sep_value, $line);
 		};
 
 		return $line;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function formatOutput($handle, $line, $header = false)
-	{
-		if ($header && is_array($line)) {
-			$line = implode(self::SEPARATOR_VALUE, $line);
-		}
-
-		fwrite($handle, $line);
 	}
 
 	/**
@@ -36,5 +24,17 @@ class Text extends Kernel\File\Handler
 	protected function getMimeType()
 	{
 		return \Beable\Kernel\Http\Response_header::MIME_TYPE_TEXT;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function writeLine($handle, $line)
+	{
+		if (is_array($line)) {
+			$line = implode($this->sep_value, $line);
+		}
+
+		return fwrite($handle, $line);
 	}
 }

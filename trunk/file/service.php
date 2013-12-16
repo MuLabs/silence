@@ -29,11 +29,12 @@ class Service extends Kernel\Service\Extended
 	/**
 	 * Open a file and generate an handler of the correct type
 	 * @param $file
+	 * @param array $parameters
 	 * @param $handler  Get handler name or try to determine it by extension (if set to null)
 	 * @return Handler
 	 * @throws Exception
 	 */
-	public function open($file, $handler = null)
+	public function open($file, array $parameters = array(), $handler = null)
 	{
 		try {
 			// Determine if an handler exists:
@@ -45,7 +46,7 @@ class Service extends Kernel\Service\Extended
 			// Get handler:
 			/** @var Handler $handler */
 			$handler = $this->getHandler($handler);
-			$handler->open($file);
+			$handler->open($file, $parameters);
 
 			// Return handler:
 			return $handler;

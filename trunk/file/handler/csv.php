@@ -8,32 +8,18 @@ class Csv extends Kernel\File\Handler
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function formatStored($line)
+	protected function format($line)
 	{
 		if (!is_array($line)) {
-			$line = explode(self::SEPARATOR_VALUE, $line);
+			$line = explode($this->sep_value, $line);
 		};
 		
 		foreach ($line as $key=>$value) {
 			if (!preg_match('#^[0-9,]+$#', $value)) {
-				$line[$key] = self::SEPARATOR_STRING.html_entity_decode(htmlspecialchars_decode(preg_replace("#\\n#", " - ", $value))).self::SEPARATOR_STRING;
+				$line[$key] = $this->sep_string.html_entity_decode(htmlspecialchars_decode(preg_replace("#\\n#", " - ", $value))).$this->sep_string;
 			}
 		}
 		return $line;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function formatOutput($handle, $line, $header = false)
-	{
-		if (!is_array($line)) {
-			$line = explode(self::SEPARATOR_VALUE, $line);
-		}
-
-		if (is_array($line) && count($line)>0) {
-			fputcsv($handle, $line);
-		}
 	}
 
 	/**
@@ -43,5 +29,19 @@ class Csv extends Kernel\File\Handler
 	protected function getMimeType()
 	{
 		return \Beable\Kernel\Http\Response_header::MIME_TYPE_CSV;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function writeLine($handle, $line)
+	{
+		if (!is_array($line)) {
+			$line = explode($this->sep_value, $line);
+		}
+
+		if (is_array($line) && count($line)>0) {
+			fputcsv($handle, $line);
+		}
 	}
 }
