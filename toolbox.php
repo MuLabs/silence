@@ -287,237 +287,24 @@ class Toolbox extends Service\Core
 		'vous'
 	);
 
-	/**
-	 * @return string
-	 */
-	public function getCurrentVersion()
-	{
-		return self::CURRENT_VERSION;
-	}
-
-	public function registerAutoload($autoload)
-	{
-		if (is_callable($autoload)) {
-			$autoloadFunctions = spl_autoload_functions();
-			// Remove all autoload functions
-			foreach ($autoloadFunctions as $oneAutoload) {
-				spl_autoload_unregister($oneAutoload);
-			}
-
-			// Set this new function first autoload function
-			spl_autoload_register($autoload);
-
-			// Re-set all autoload functions
-			foreach ($autoloadFunctions as $oneAutoload) {
-				spl_autoload_register($oneAutoload);
-			}
-		}
-	}
-
-	public function removeLimits()
-	{
-		set_time_limit(0);
-		ini_set('memory_limit', '1500M');
-	}
-
-	/**
-	 * @param string $string
-	 * @return string
-	 */
-	public function cleanString($string)
-	{
-		return htmlspecialchars(trim($string), ENT_NOQUOTES);
-	}
-
-	/**
-	 * @param string $string
-	 * @param bool $wordFiltering
-	 * @return string
-	 */
-	public function rewriteString($string, $wordFiltering = true)
-	{
-		$string = self::replaceAccents($string);
-		$string = utf8_decode($string);
-		$string = preg_replace(
-			array('/(^|\W)\w{1,2}\'/', '/\'\w{1,2}(\W|$)/', '/\W+/', '/\-+/', '/\-+$/', '/^\-+/'),
-			array('-', '-', '-', '-', '', ''),
-			$string
-		);
-		$arrayStringLower = explode('-', strtolower($string));
-		$arrayString = explode('-', $string);
-
-		if ($wordFiltering) {
-			$arrayStringLower = array_diff($arrayStringLower, self::getBannedKeywords());
-			uasort($arrayStringLower, 'mfc_utils::size_cmp');
-			$j = 0;
-			foreach ($arrayStringLower as $key => $content) {
-				if ($content != '') {
-					$length = strlen($content);
-					// Cleaning keywords to avoid infinite URLs...
-					if ($j >= 3
-						|| ($j >= 1 /* ensure have at least one string */
-							&& (($length > 60 /* too big to be a real keyword! */
-									|| $length <= 1) /* too short for a keyword...*/
-								&& !preg_match('/[^a-z]/', $arrayString[$key]) /* AND not a single char! */
-							)
-						)
-					) {
-						unset($arrayString[$key]);
-					} else {
-						$j++;
-					}
-				}
-			}
-		}
-		$stringFinal = '';
-		foreach ($arrayString as $key => $content) {
-			if (isset($arrayStringLower[$key]) && trim($arrayString[$key]) != '') {
-				$stringFinal .= $arrayStringLower[$key] . '-';
-			}
-		}
-		if ($stringFinal != '') {
-			$stringFinal = substr($stringFinal, 0, -1);
-		} else {
-			$stringFinal = 'default';
-		}
-		return urlencode($stringFinal);
-	}
-
-	/**
-	 * @param string $a
-	 * @param string $b
-	 * @return int
-	 */
-	public function sizeCmp($a, $b)
-	{
-		$lowera = strtolower($a);
-		$lowerb = strtolower($b);
-		if ($lowera != $a && $lowerb == $b) {
-			return -1;
-		} elseif ($lowerb != $b && $lowera == $a) {
-			return 1;
-		}
-		if (strlen($a) == strlen($b)) {
-			return 0;
-		}
-		return (strlen($a) > strlen($b)) ? -1 : 1;
-	}
-
-	/**
-	 * @param    string $string
-	 * @return    string
-	 */
-	public function replaceAccents($string)
-	{
-		$charset = mb_detect_encoding($string, 'UTF-8,ISO-8859-1,ISO-8859-15');
-		$string = htmlentities($string, ENT_NOQUOTES, $charset);
-		$string = preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde|cedil);/u', '$1', $string);
-		return html_entity_decode($string, ENT_NOQUOTES, 'UTF-8');
-	}
-
+	/************************************************************************************
+	 **  ARRAY                                                                       **
+	 ************************************************************************************/
+	#region ARRAY
 	/**
 	 * @return array
 	 */
-	public function getBannedKeywords()
+	public function createArray()
 	{
-		return $this->bannedKeywords;
-	}
-
-	/**
-	 * @param string $string
-	 * @return array
-	 */
-	public function extractKeywords($string)
-	{
-		$keywords = explode('_', self::rewriteString($string));
-
-		return $keywords;
-	}
-
-	/**
-	 * @param string $key
-	 * @return string
-	 */
-	public function sha1Encode($key)
-	{
-		return sha1(self::PREFIX_PASS_HASH . $key . self::SUFFIX_PASS_HASH);
-	}
-
-	/**
-	 * @param string $dir
-	 * @param bool $onlyDir
-	 */
-	public function recursiveRmdir($dir, $onlyDir = false)
-	{
-		if (file_exists($dir) && $dh = opendir($dir)) {
-			while (($filename = readdir($dh)) !== false) {
-				if ($filename != '.' && $filename != '..') {
-					$file = $dir . '/' . $filename;
-					if (is_dir($file)) {
-						self::recursiveRmdir($file, $onlyDir);
-					} elseif (!$onlyDir) {
-						@unlink($file);
-					}
-				}
-			}
-			closedir($dh);
-			@rmdir($dir);
+		$args  = func_get_args();
+		$array = array();
+		$i = 0;
+		while(isset($args[$i*2])) {
+			$array[$args[$i*2]] = $args[$i*2+1];
+			++$i;
 		}
-	}
 
-	/**
-	 * @param string $date
-	 * @return int
-	 */
-	public function daysFromNow($date)
-	{
-		$time = strtotime(date('Y-m-d 00:00:00'));
-		return floor((strtotime($date) - $time) / 86400);
-	}
-
-	/**
-	 * @param string $date
-	 * @return int
-	 */
-	public function minutesFromNow($date)
-	{
-		$time = strtotime($date);
-		$currentTime = time();
-
-		$hour = (int)date('H', $time) * 3600 + (int)date('i', $time) * 60;
-		$currentHour = (int)date('H', $currentTime) * 3600 + (int)date('i', $currentTime) * 60;
-		return ($hour - $currentHour) / 60;
-	}
-
-	/**
-	 * @param string $content
-	 */
-	public function jsonPage($content)
-	{
-		$response = $this->getApp()->getHttp()->getResponse();
-		$response->getHeader()->setContentType(Kernel\Http\Response_header::MIME_TYPE_JSON);
-		$response->setContent($content);
-		$response->send();
-	}
-
-	/**
-	 * @param int $base
-	 * @param int $percent
-	 * @return int
-	 */
-	public function percentFromValue($base, $percent)
-	{
-		return (int)(($base * $percent) / 10000);
-	}
-
-	/**
-	 * @param int $base
-	 * @param int $value
-	 * @return int
-	 */
-	public function valueFromPercent($base, $value)
-	{
-		return (int)(($value / $base) * 10000);
+		return $array;
 	}
 
 	/**
@@ -619,7 +406,149 @@ class Toolbox extends Service\Core
 
 		return $return;
 	}
+	#endregion
 
+	/************************************************************************************
+	 **  DATE                                                                       **
+	 ************************************************************************************/
+	#region DATE
+	/**
+	 * @param string $date
+	 * @return int
+	 */
+	public function daysFromNow($date)
+	{
+		$time = strtotime(date('Y-m-d 00:00:00'));
+		return floor((strtotime($date) - $time) / 86400);
+	}
+
+	/**
+	 * @param string $date
+	 * @return int
+	 */
+	public function minutesFromNow($date)
+	{
+		$time = strtotime($date);
+		$currentTime = time();
+
+		$hour = (int)date('H', $time) * 3600 + (int)date('i', $time) * 60;
+		$currentHour = (int)date('H', $currentTime) * 3600 + (int)date('i', $currentTime) * 60;
+		return ($hour - $currentHour) / 60;
+	}
+	#endregion
+
+	/************************************************************************************
+	 **  ENCRYPTION                                                                       **
+	 ************************************************************************************/
+	#region ENCRYPTION
+	/**
+	 * @param string $key
+	 * @return string
+	 */
+	public function sha1Encode($key)
+	{
+		return sha1(self::PREFIX_PASS_HASH . $key . self::SUFFIX_PASS_HASH);
+	}
+
+	/**
+	 * Generate a random string using sha1Encode
+	 * Replace generate_activation_key and generate_random_string
+	 * @return string
+	 */
+	public function generateRandomKey($length = 10)
+	{
+		$key = $this->sha1Encode(time().uniqid());
+		$start = rand(0, strlen($key)-$length-1);
+		return substr($key, $start, $length);
+	}
+	#endregion
+
+	/************************************************************************************
+	 **  FILE                                                                       **
+	 ************************************************************************************/
+	#region FILE
+	/**
+	 * Send response in json
+	 * @param string $content
+	 */
+	public function jsonPage($content)
+	{
+		$response = $this->getApp()->getHttp()->getResponse();
+		$response->getHeader()->setContentType(Kernel\Http\Response_header::MIME_TYPE_JSON);
+		$response->setContent($content);
+		$response->send();
+	}
+
+	/**
+	 * @param string $dir
+	 * @param bool $onlyDir
+	 */
+	public function recursiveRmdir($dir, $onlyDir = false)
+	{
+		if (file_exists($dir) && $dh = opendir($dir)) {
+			while (($filename = readdir($dh)) !== false) {
+				if ($filename != '.' && $filename != '..') {
+					$file = $dir . '/' . $filename;
+					if (is_dir($file)) {
+						$this->recursiveRmdir($file, $onlyDir);
+					} elseif (!$onlyDir) {
+						@unlink($file);
+					}
+				}
+			}
+			closedir($dh);
+			@rmdir($dir);
+		}
+	}
+	#endregion
+
+	/************************************************************************************
+	 **  MATHS                                                                       **
+	 ************************************************************************************/
+	#region MATHS
+	/**
+	 * @param float $value
+	 * @return float
+	 */
+	public function inchToCm($value)
+	{
+		return $value * self::INCH_TO_CM;
+	}
+
+	/**
+	 * @param float $value
+	 * @return float
+	 */
+	public function cmToInch($value)
+	{
+		return $value / self::INCH_TO_CM;
+	}
+
+	/**
+	 * @param int $base
+	 * @param int $percent
+	 * @return int
+	 */
+	public function percentFromValue($base, $percent)
+	{
+		return (int)(($base * $percent) / 10000);
+	}
+
+	/**
+	 * @param int $base
+	 * @param int $value
+	 * @return int
+	 */
+	public function valueFromPercent($base, $value)
+	{
+		return (int)(($value / $base) * 10000);
+	}
+	#endregion
+
+	/************************************************************************************
+	 **  MONEY                                                                       **
+	 ************************************************************************************/
+	#region MONEY
 	/**
 	 * @param int $value
 	 * @param string $separator
@@ -669,6 +598,112 @@ class Toolbox extends Service\Core
 	{
 		return $value - self::priceTtcToHt($value);
 	}
+	#endregion
+
+	/************************************************************************************
+	 **  STRING                                                                       **
+	 ************************************************************************************/
+	#region STRING
+	/**
+	 * @param string $string
+	 * @return string
+	 */
+	public function cleanString($string)
+	{
+		return htmlspecialchars(trim($string), ENT_NOQUOTES);
+	}
+
+	/**
+	 * Compare two string size
+	 * @param string $a
+	 * @param string $b
+	 * @return int
+	 */
+	public function compareLength($a, $b)
+	{
+		$lowera = strtolower($a);
+		$lowerb = strtolower($b);
+		if ($lowera != $a && $lowerb == $b) {
+			return - 1;
+		} elseif ($lowerb != $b && $lowera == $a) {
+			return 1;
+		}
+		if (strlen($a) == strlen($b)) {
+			return 0;
+		}
+		return (strlen($a) > strlen($b)) ? - 1 : 1;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getBannedKeywords()
+	{
+		return $this->bannedKeywords;
+	}
+
+	/**
+	 * @param string $string
+	 * @return array
+	 */
+	public function extractKeywords($string)
+	{
+		return explode('_', $this->rewriteString($string));
+	}
+
+	/**
+	 * @param string $string
+	 * @return string
+	 */
+	public function getValidComparator($string)
+	{
+		switch ($string) {
+			case '>':
+				$string = '>';
+				break;
+			case '<':
+				$string = '<';
+				break;
+			case '<>':
+				$string = '<>';
+				break;
+			case '=':
+			default :
+				$string = '=';
+				break;
+		}
+
+		return $string;
+	}
+
+	/**
+	 * @param $comp
+	 * @param $string
+	 * @return string
+	 */
+	public function getValidLikeComparator($comp, $string)
+	{
+		switch ($comp) {
+			case '>':
+				$string = 'LIKE "%'. $string .'"';
+				break;
+			case '<':
+				$string = 'LIKE "'. $string .'%"';
+				break;
+			case '<>':
+				$string = 'LIKE "%'. $string .'%"';
+				break;
+			case '!=':
+				$string = 'NOT LIKE "%'. $string .'%"';
+				break;
+			case '=':
+			default :
+				$string = '= "' . $string . '"';
+				break;
+		}
+
+		return $string;
+	}
 
 	/**
 	 * @param string $text
@@ -680,20 +715,195 @@ class Toolbox extends Service\Core
 	}
 
 	/**
-	 * @param float $value
-	 * @return float
+	 * @param int $prefix
+	 * @param string $number
+	 * @return string
 	 */
-	public function inchToCm($value)
+	public function formatPhoneNumber($prefix, $number)
 	{
-		return $value * self::INCH_TO_CM;
+		return '+'.(int)$prefix.$number;
 	}
 
 	/**
-	 * @param float $value
-	 * @return float
+	 * Replace each accent character by the correct character without it
+	 * @param string $string
+	 * @return string
 	 */
-	public function cmToInch($value)
+	public function replaceAccents($string)
 	{
-		return $value / self::INCH_TO_CM;
+		$charset = mb_detect_encoding($string, 'UTF-8,ISO-8859-1,ISO-8859-15');
+		$string = htmlentities($string, ENT_NOQUOTES, $charset);
+		$string = preg_replace('/&([a-zA-Z])(uml|acute|grave|circ|tilde|cedil);/u', '$1', $string);
+		return html_entity_decode($string, ENT_NOQUOTES, 'UTF-8');
 	}
+
+	/**
+	 * @param string $string
+	 * @param bool $wordFiltering
+	 * @return string
+	 */
+	public function rewriteString($string, $wordFiltering = true)
+	{
+		$string = self::replaceAccents($string);
+		$string = utf8_decode($string);
+		$string = preg_replace(
+			array('/(^|\W)\w{1,2}\'/', '/\'\w{1,2}(\W|$)/', '/\W+/', '/\-+/', '/\-+$/', '/^\-+/'),
+			array('-', '-', '-', '-', '', ''),
+			$string
+		);
+		$arrayStringLower = explode('-', strtolower($string));
+		$arrayString = explode('-', $string);
+
+		if ($wordFiltering) {
+			$arrayStringLower = array_diff($arrayStringLower, self::getBannedKeywords());
+			uasort($arrayStringLower, 'mfc_utils::size_cmp');
+			$j = 0;
+			foreach ($arrayStringLower as $key => $content) {
+				if ($content != '') {
+					$length = strlen($content);
+					// Cleaning keywords to avoid infinite URLs...
+					if ($j >= 3
+						|| ($j >= 1 /* ensure have at least one string */
+							&& (($length > 60 /* too big to be a real keyword! */
+									|| $length <= 1) /* too short for a keyword...*/
+								&& !preg_match('/[^a-z]/', $arrayString[$key]) /* AND not a single char! */
+							)
+						)
+					) {
+						unset($arrayString[$key]);
+					} else {
+						$j++;
+					}
+				}
+			}
+		}
+		$stringFinal = '';
+		foreach ($arrayString as $key => $content) {
+			if (isset($arrayStringLower[$key]) && trim($arrayString[$key]) != '') {
+				$stringFinal .= $arrayStringLower[$key] . '-';
+			}
+		}
+		if ($stringFinal != '') {
+			$stringFinal = substr($stringFinal, 0, -1);
+		} else {
+			$stringFinal = 'default';
+		}
+		return urlencode($stringFinal);
+	}
+	#endregion
+
+	/************************************************************************************
+	 **  SYSTEM                                                                       **
+	 ************************************************************************************/
+	#region SYSTEM
+	/**
+	 * @return string
+	 */
+	public function getCurrentVersion()
+	{
+		return self::CURRENT_VERSION;
+	}
+
+	/**
+	 * Get current OS name
+	 * @return string
+	 */
+	public function getOS()
+	{
+		$userAgent = $this->getApp()->getHttp()->getRequest()->getParameters('HTTP_USER_AGENT', Kernel\Http\Request::PARAM_TYPE_SERVER, '');
+		$testArray = array(
+			'/windows nt 6.2/i'     =>  'Windows 8',
+			'/windows nt 6.1/i'     =>  'Windows 7',
+			'/windows nt 6.0/i'     =>  'Windows Vista',
+			'/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
+			'/windows nt 5.1/i'     =>  'Windows XP',
+			'/windows xp/i'         =>  'Windows XP',
+			'/windows nt 5.0/i'     =>  'Windows 2000',
+			'/windows me/i'         =>  'Windows ME',
+			'/win98/i'              =>  'Windows 98',
+			'/win95/i'              =>  'Windows 95',
+			'/win16/i'              =>  'Windows 3.11',
+			'/macintosh|mac os x/i' =>  'Mac OS X',
+			'/mac_powerpc/i'        =>  'Mac OS 9',
+			'/linux/i'              =>  'Linux',
+			'/ubuntu/i'             =>  'Ubuntu',
+			'/iphone/i'             =>  'iPhone',
+			'/ipod/i'               =>  'iPod',
+			'/ipad/i'               =>  'iPad',
+			'/android/i'            =>  'Android',
+			'/blackberry/i'         =>  'BlackBerry',
+			'/webos/i'              =>  'Mobile'
+		);
+
+		foreach ($testArray as $regex => $value) {
+			if (preg_match($regex, $userAgent)) {
+				return $value;
+			}
+		}
+
+		// Return default:
+		return "Unknown OS Platform";
+	}
+
+	/**
+	 * Get current browser name
+	 * @return string
+	 */
+	public function getBrowser()
+	{
+		$userAgent = $this->getApp()->getHttp()->getRequest()->getParameters('HTTP_USER_AGENT', Kernel\Http\Request::PARAM_TYPE_SERVER, '');
+		$testArray = array(
+			'/msie/i'       =>  'Internet Explorer',
+			'/firefox/i'    =>  'Firefox',
+			'/safari/i'     =>  'Safari',
+			'/chrome/i'     =>  'Chrome',
+			'/opera/i'      =>  'Opera',
+			'/netscape/i'   =>  'Netscape',
+			'/maxthon/i'    =>  'Maxthon',
+			'/konqueror/i'  =>  'Konqueror',
+			'/mobile/i'     =>  'Handheld Browser'
+		);
+
+		foreach ($testArray as $regex => $value) {
+			if (preg_match($regex, $userAgent)) {
+				return $value;
+			}
+		}
+
+		// Return default:
+		return "Unknown Browser";
+	}
+
+	/**
+	 * Remove php memory and time limits
+	 */
+	public function removeLimits()
+	{
+		set_time_limit(0);
+		ini_set('memory_limit', '1500M');
+	}
+
+	/**
+	 * Register the aulodoader
+	 * @param $autoload
+	 */
+	public function registerAutoload($autoload)
+	{
+		if (is_callable($autoload)) {
+			$autoloadFunctions = spl_autoload_functions();
+			// Remove all autoload functions
+			foreach ($autoloadFunctions as $oneAutoload) {
+				spl_autoload_unregister($oneAutoload);
+			}
+
+			// Set this new function first autoload function
+			spl_autoload_register($autoload);
+
+			// Re-set all autoload functions
+			foreach ($autoloadFunctions as $oneAutoload) {
+				spl_autoload_register($oneAutoload);
+			}
+		}
+	}
+	#endregion
 }
