@@ -10,6 +10,8 @@ class Exception extends Service\Exception
 	const INCORRECT_FORMAT 	= 101;
 	const FILE_NOT_READABLE	= 102;
 	const FILE_NOT_WRITABE	= 103;
+	const FUNCTION_NOT_IMPLEMENT= 104;
+	const FUNCTION_NOT_EXITS	= 105;
 
 	/**
 	 * @return string
@@ -28,6 +30,12 @@ class Exception extends Service\Exception
 				break;
 			case self::FILE_NOT_WRITABE:
 				return 'Cannot write file -- ' . $this->message;
+				break;
+			case self::FUNCTION_NOT_IMPLEMENT:
+				return 'Function not implement for this handler, use ' . $this->message . ' instead';
+				break;
+			case self::FUNCTION_NOT_EXITS:
+				return 'Function not exists for this handler -- ' . $this->message;
 				break;
 		}
 		return parent::getFormatedMessage();
