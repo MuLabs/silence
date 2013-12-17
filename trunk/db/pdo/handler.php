@@ -12,6 +12,7 @@ class Handler extends Kernel\Db\Handler
 		'int' 		=> 'INT',
 		'bigint' 	=> 'BIGINT',
 		'timestamp' => 'TIMESTAMP',
+		'float' 	=> 'FLOAT',
 		'bool' 		=> 'TINYINT',
 		'string' 	=> 'VARCHAR',
 		'varchar' 	=> 'VARCHAR',
@@ -66,6 +67,9 @@ class Handler extends Kernel\Db\Handler
 				break;
 			case self::PARAM_BOOL:
 				$value = \PDO::PARAM_BOOL;
+				break;
+			case self::PARAM_FLOAT:
+				$value = \PDO::PARAM_INT;
 				break;
 		}
 
