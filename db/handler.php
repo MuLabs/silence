@@ -5,9 +5,10 @@ use Beable\Kernel;
 
 abstract class Handler extends Kernel\Core
 {
-	const PARAM_INT = 1;
-	const PARAM_STR = 2;
-	const PARAM_BOOL = 3;
+	const PARAM_INT 	= 1;
+	const PARAM_STR 	= 2;
+	const PARAM_BOOL 	= 3;
+	const PARAM_FLOAT	= 4;
 
 	protected $knowActions = array(
 		'tinyint' 	=> self::PARAM_INT,
@@ -16,6 +17,7 @@ abstract class Handler extends Kernel\Core
 		'int' 		=> self::PARAM_INT,
 		'bigint' 	=> self::PARAM_INT,
 		'timestamp' => self::PARAM_INT,
+		'float' 	=> self::PARAM_FLOAT,
 		'bool' 		=> self::PARAM_BOOL,
 		'string' 	=> self::PARAM_STR,
 		'varchar' 	=> self::PARAM_STR,
@@ -256,6 +258,9 @@ abstract class Handler extends Kernel\Core
 				break;
 			case self::PARAM_BOOL:
 				return (int)(bool)$value;
+				break;
+			case self::PARAM_FLOAT:
+				return (float)$value;
 				break;
 			default:
 				return $value;
