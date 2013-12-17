@@ -475,7 +475,7 @@ class Toolbox extends Service\Core
 	{
 		$response = $this->getApp()->getHttp()->getResponse();
 		$response->getHeader()->setContentType(Kernel\Http\Header\Response::MIME_TYPE_JSON);
-		$response->setContent($content);
+		$response->setContent(json_encode($content));
 		$response->send();
 	}
 
@@ -756,7 +756,7 @@ class Toolbox extends Service\Core
 
 		if ($wordFiltering) {
 			$arrayStringLower = array_diff($arrayStringLower, self::getBannedKeywords());
-			uasort($arrayStringLower, 'mfc_utils::size_cmp');
+			uasort($arrayStringLower, array($this, 'sizeCmp'));
 			$j = 0;
 			foreach ($arrayStringLower as $key => $content) {
 				if ($content != '') {
@@ -789,6 +789,26 @@ class Toolbox extends Service\Core
 			$stringFinal = 'default';
 		}
 		return urlencode($stringFinal);
+	}
+
+	/**
+	 * @static
+	 * @param string $a
+	 * @param string $b
+	 * @return int
+	 */
+	public function sizeCmp($a, $b) {
+		$lowera = strtolower($a);
+		$lowerb = strtolower($b);
+		if ($lowera != $a && $lowerb == $b) {
+			return - 1;
+		} elseif ($lowerb != $b && $lowera == $a) {
+			return 1;
+		}
+		if (strlen($a) == strlen($b)) {
+			return 0;
+		}
+		return (strlen($a) > strlen($b)) ? - 1 : 1;
 	}
 	#endregion
 
