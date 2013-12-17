@@ -42,7 +42,8 @@ class Service extends Kernel\Service\Core
 			$className = '\\Beable\\Bundle\\' . $bundleName . '\\Model\\Manager\\' . $classAlias;
 		}
 
-		$this->allowedEntities[$entityType] = strtolower($classAlias);
+		$classAlias = strtolower($classAlias);
+		$this->allowedEntities[$entityType] = $classAlias;
 		$this->entityClassName[$classAlias] = $className;
 	}
 
