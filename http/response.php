@@ -52,5 +52,6 @@ class Response
 		if ($this->content) {
 			echo $this->content;
 		}
+		throw new Kernel\EndException();
 	}
 }

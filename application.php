@@ -436,7 +436,6 @@ abstract class Application
 
 		$response->setContent($content);
 		$response->send();
-		throw new Kernel\EndException();
 	}
 
 	/**
