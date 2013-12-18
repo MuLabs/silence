@@ -92,7 +92,7 @@ class Cookie extends Kernel\Session\Handler
 			// Save values:
 			$expire = time() + $this->expire*3600;
 			foreach ($this->info as $key=>$value) {
-				setcookie($this->getContext().'['.$key.']', $value, $expire, '', '', $this->secure, $this->httponly);
+				setcookie($this->getContext().'['.$key.']', $value, $expire, '/', '', $this->secure, $this->httponly);
 			}
 		}
 	}
