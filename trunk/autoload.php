@@ -2,6 +2,7 @@
 
 function autoLoader($name)
 {
+	$path = '';
 	$prefix = substr($name, 0, strpos($name, '\\', strpos($name, '\\')+1)+1);
 	if ($prefix === 'Beable\\Kernel\\') {
 		$name = str_replace(array('Beable\\Kernel\\', '\\'), array('/', '/'), $name);
