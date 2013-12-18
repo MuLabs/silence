@@ -7,6 +7,7 @@ class Service extends Kernel\Service\Core
 {
 	const ASSET_DIR = 'assets';
 
+	private $forceRegenerate = false;
 	private $allowedExtension = array();
 	private $generator = array();
 	private $vars = array();
@@ -65,7 +66,7 @@ class Service extends Kernel\Service\Core
 	 */
 	public function getGenerator(Asset $asset)
 	{
-		if (!isset($this->generator[$asset->getKey()])) {
+		if ($this->forceRegenerate || !isset($this->generator[$asset->getKey()])) {
 			$className = $this->allowedExtension[$asset->getExt()];
 			/** @var Generator $generator */
 			$generator = new $className($asset);
@@ -78,5 +79,10 @@ class Service extends Kernel\Service\Core
 	public function flush()
 	{
 		$this->getApp()->getToolbox()->recursiveRmdir(APP_STATIC_PATH . '/assets');
+	}
+
+	public function setForceRegenerate($force = false)
+	{
+		$this->forceRegenerate = $force;
 	}
 }
