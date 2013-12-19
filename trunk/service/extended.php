@@ -63,11 +63,6 @@ abstract class Extended extends Core
 	 */
 	public function getHandler($type, $context = Handler\Core::DEFAULT_CONTEXT)
 	{
-		// Test if context already exists and handler type:
-		if (isset($this->handlers[$context]) && $this->handlers[$context]->getClassName() != ucfirst($type)) {
-			throw new Exception($context, Exception::CONTEXT_ALREADY_EXISTS);
-		}
-
 		// Generate handler if needed:
 		if (!isset($this->handlers[$context])) {
 			$this->addHandler($context, $this->generateHandler($type));

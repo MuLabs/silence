@@ -86,6 +86,49 @@ abstract class View extends Kernel\Core
 	}
 
 	/**
+	 * @param string $label
+	 * @param mixed $default
+	 * @return mixed|null
+	 */
+	public function get($label, $default = null)
+	{
+		return $this->getApp()->getHttp()->getRequest()->getParameters(
+			$label,
+			Kernel\Http\Request::PARAM_TYPE_GET,
+			$default
+		);
+	}
+
+	/**
+	 * @param string $label
+	 * @param mixed $default
+	 * @return mixed|null
+	 */
+	public function post($label, $default = null)
+	{
+		return $this->getApp()->getHttp()->getRequest()->getParameters(
+			$label,
+			Kernel\Http\Request::PARAM_TYPE_POST,
+			$default
+		);
+	}
+
+	/**
+	 * @param string $label
+	 * @param mixed $default
+	 * @return mixed|null
+	 */
+	public function request($label, $default = null)
+	{
+		return $this->getApp()->getHttp()->getRequest()->getParameters(
+			$label,
+			Kernel\Http\Request::PARAM_TYPE_REQUEST,
+			$default
+		);
+	}
+
+
+	/**
 	 * @param string $target
 	 * @param null|string $fragment
 	 * @return string
