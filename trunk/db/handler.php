@@ -122,7 +122,7 @@ abstract class Handler extends Kernel\Core
 			$propertyCount = count($property);
 			if ($propertyCount === 3) {
 				$property = array(
-					'manager' => explode('-', $property[0]),
+					'manager' => $property[0],
 					'group' => $property[1],
 					'property' => $property[2],
 				);
@@ -208,6 +208,7 @@ abstract class Handler extends Kernel\Core
 
 		#region @manager.group
 		while (preg_match('#@' . $managerPattern . '\.' . $groupPattern . '#i', $strQuery, $property)) {
+
 			$strQuery = preg_replace(
 				'#@' . $property['manager'] . '\.' . $property['group']. '(/[^\w\-])#i',
 				$this->getManager($property)->getGroupForDb($property['group']) . '$1',
