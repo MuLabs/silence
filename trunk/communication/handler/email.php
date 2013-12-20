@@ -19,11 +19,8 @@ class Email extends Kernel\Communication\Handler
 	 */
 	public function __init()
 	{
+		$this->setOrigin($this->getConfig('from', ''));
 		$this->setSubject($this->getConfig('subject', ''));
-		$from = $this->getConfig('autosend', '');
-		if ($from != '') {
-			$this->setOrigin($from);
-		}
 	}
 
 	/**
