@@ -132,7 +132,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Set destination, formated by the handler
-	 * @param $to		Format : see handler formatDestination
+	 * @param mixed $to		Format : see handler formatDestination
 	 * @throws Exception
 	 */
 	public function setDestination($to)
@@ -161,7 +161,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Set the origin, formated by the handler
-	 * @param $from		Format : see handler formatOrigin
+	 * @param mixed $from	Format : see handler formatOrigin
 	 * @throws Exception
 	 */
 	public function setOrigin($from)
