@@ -170,6 +170,41 @@ class Request
 	}
 
 	/**
+	 * Test if TYPE have at least one parameter
+	 * Ex: haveParameters(PARAM_TYPE_GET)
+	 * @param $type
+	 * @return bool|int
+	 */
+	public function haveParameters($type)
+	{
+		switch ($type) {
+			case self::PARAM_TYPE_GET:
+				return (count($_GET));
+				break;
+
+			case self::PARAM_TYPE_POST:
+				return (count($_POST));
+				break;
+
+			case self::PARAM_TYPE_COOKIE:
+				return (count($_COOKIE));
+				break;
+
+			case self::PARAM_TYPE_REQUEST:
+				return (count($_REQUEST));
+				break;
+
+			case self::PARAM_TYPE_SESSION:
+				return (count($_SESSION));
+				break;
+
+			default:
+				return false;
+				break;
+		}
+	}
+
+	/**
 	 * @param string $label
 	 * @param int $type
 	 * @param mixed $value
