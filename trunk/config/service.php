@@ -65,7 +65,7 @@ class Service extends Kernel\Service\Core
 			return;
 		}
 
-		$datas = parse_ini_file($file, true);
+		$datas = parse_ini_file($file, true, INI_SCANNER_RAW);
 		$this->datas = $this->mergeDatas($this->datas, $datas);
 	}
 
