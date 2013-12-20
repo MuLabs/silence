@@ -296,11 +296,11 @@ class Toolbox extends Service\Core
 	 */
 	public function createArray()
 	{
-		$args  = func_get_args();
+		$args = func_get_args();
 		$array = array();
 		$i = 0;
-		while(isset($args[$i*2])) {
-			$array[$args[$i*2]] = $args[$i*2+1];
+		while (isset($args[$i * 2])) {
+			$array[$args[$i * 2]] = $args[$i * 2 + 1];
 			++$i;
 		}
 
@@ -406,6 +406,7 @@ class Toolbox extends Service\Core
 
 		return $return;
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -435,6 +436,7 @@ class Toolbox extends Service\Core
 		$currentHour = (int)date('H', $currentTime) * 3600 + (int)date('i', $currentTime) * 60;
 		return ($hour - $currentHour) / 60;
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -457,10 +459,11 @@ class Toolbox extends Service\Core
 	 */
 	public function generateRandomKey($length = 10)
 	{
-		$key = $this->sha1Encode(time().uniqid());
-		$start = rand(0, strlen($key)-$length-1);
+		$key = $this->sha1Encode(time() . uniqid());
+		$start = rand(0, strlen($key) - $length - 1);
 		return substr($key, $start, $length);
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -500,6 +503,7 @@ class Toolbox extends Service\Core
 			@rmdir($dir);
 		}
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -543,6 +547,7 @@ class Toolbox extends Service\Core
 	{
 		return (int)(($value / $base) * 10000);
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -598,6 +603,7 @@ class Toolbox extends Service\Core
 	{
 		return $value - self::priceTtcToHt($value);
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -624,14 +630,14 @@ class Toolbox extends Service\Core
 		$lowera = strtolower($a);
 		$lowerb = strtolower($b);
 		if ($lowera != $a && $lowerb == $b) {
-			return - 1;
+			return -1;
 		} elseif ($lowerb != $b && $lowera == $a) {
 			return 1;
 		}
 		if (strlen($a) == strlen($b)) {
 			return 0;
 		}
-		return (strlen($a) > strlen($b)) ? - 1 : 1;
+		return (strlen($a) > strlen($b)) ? -1 : 1;
 	}
 
 	/**
@@ -678,27 +684,26 @@ class Toolbox extends Service\Core
 
 	/**
 	 * @param $comp
-	 * @param $string
 	 * @return string
 	 */
-	public function getValidLikeComparator($comp, $string)
+	public function getValidLikeComparator($comp)
 	{
 		switch ($comp) {
 			case '>':
-				$string = 'LIKE "%'. $string .'"';
+				$string = 'LIKE "%?"';
 				break;
 			case '<':
-				$string = 'LIKE "'. $string .'%"';
+				$string = 'LIKE "?%"';
 				break;
 			case '<>':
-				$string = 'LIKE "%'. $string .'%"';
+				$string = 'LIKE "%?%"';
 				break;
 			case '!=':
-				$string = 'NOT LIKE "%'. $string .'%"';
+				$string = 'NOT LIKE "%?%"';
 				break;
 			case '=':
 			default :
-				$string = '= "' . $string . '"';
+				$string = '= ?';
 				break;
 		}
 
@@ -721,7 +726,7 @@ class Toolbox extends Service\Core
 	 */
 	public function formatPhoneNumber($prefix, $number)
 	{
-		return '+'.(int)$prefix.$number;
+		return '+' . (int)$prefix . $number;
 	}
 
 	/**
@@ -797,19 +802,21 @@ class Toolbox extends Service\Core
 	 * @param string $b
 	 * @return int
 	 */
-	public function sizeCmp($a, $b) {
+	public function sizeCmp($a, $b)
+	{
 		$lowera = strtolower($a);
 		$lowerb = strtolower($b);
 		if ($lowera != $a && $lowerb == $b) {
-			return - 1;
+			return -1;
 		} elseif ($lowerb != $b && $lowera == $a) {
 			return 1;
 		}
 		if (strlen($a) == strlen($b)) {
 			return 0;
 		}
-		return (strlen($a) > strlen($b)) ? - 1 : 1;
+		return (strlen($a) > strlen($b)) ? -1 : 1;
 	}
+
 	#endregion
 
 	/************************************************************************************
@@ -830,29 +837,33 @@ class Toolbox extends Service\Core
 	 */
 	public function getOS()
 	{
-		$userAgent = $this->getApp()->getHttp()->getRequest()->getParameters('HTTP_USER_AGENT', Kernel\Http\Request::PARAM_TYPE_SERVER, '');
+		$userAgent = $this->getApp()->getHttp()->getRequest()->getParameters(
+			'HTTP_USER_AGENT',
+			Kernel\Http\Request::PARAM_TYPE_SERVER,
+			''
+		);
 		$testArray = array(
-			'/windows nt 6.2/i'     =>  'Windows 8',
-			'/windows nt 6.1/i'     =>  'Windows 7',
-			'/windows nt 6.0/i'     =>  'Windows Vista',
-			'/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
-			'/windows nt 5.1/i'     =>  'Windows XP',
-			'/windows xp/i'         =>  'Windows XP',
-			'/windows nt 5.0/i'     =>  'Windows 2000',
-			'/windows me/i'         =>  'Windows ME',
-			'/win98/i'              =>  'Windows 98',
-			'/win95/i'              =>  'Windows 95',
-			'/win16/i'              =>  'Windows 3.11',
-			'/macintosh|mac os x/i' =>  'Mac OS X',
-			'/mac_powerpc/i'        =>  'Mac OS 9',
-			'/linux/i'              =>  'Linux',
-			'/ubuntu/i'             =>  'Ubuntu',
-			'/iphone/i'             =>  'iPhone',
-			'/ipod/i'               =>  'iPod',
-			'/ipad/i'               =>  'iPad',
-			'/android/i'            =>  'Android',
-			'/blackberry/i'         =>  'BlackBerry',
-			'/webos/i'              =>  'Mobile'
+			'/windows nt 6.2/i' => 'Windows 8',
+			'/windows nt 6.1/i' => 'Windows 7',
+			'/windows nt 6.0/i' => 'Windows Vista',
+			'/windows nt 5.2/i' => 'Windows Server 2003/XP x64',
+			'/windows nt 5.1/i' => 'Windows XP',
+			'/windows xp/i' => 'Windows XP',
+			'/windows nt 5.0/i' => 'Windows 2000',
+			'/windows me/i' => 'Windows ME',
+			'/win98/i' => 'Windows 98',
+			'/win95/i' => 'Windows 95',
+			'/win16/i' => 'Windows 3.11',
+			'/macintosh|mac os x/i' => 'Mac OS X',
+			'/mac_powerpc/i' => 'Mac OS 9',
+			'/linux/i' => 'Linux',
+			'/ubuntu/i' => 'Ubuntu',
+			'/iphone/i' => 'iPhone',
+			'/ipod/i' => 'iPod',
+			'/ipad/i' => 'iPad',
+			'/android/i' => 'Android',
+			'/blackberry/i' => 'BlackBerry',
+			'/webos/i' => 'Mobile'
 		);
 
 		foreach ($testArray as $regex => $value) {
@@ -871,17 +882,21 @@ class Toolbox extends Service\Core
 	 */
 	public function getBrowser()
 	{
-		$userAgent = $this->getApp()->getHttp()->getRequest()->getParameters('HTTP_USER_AGENT', Kernel\Http\Request::PARAM_TYPE_SERVER, '');
+		$userAgent = $this->getApp()->getHttp()->getRequest()->getParameters(
+			'HTTP_USER_AGENT',
+			Kernel\Http\Request::PARAM_TYPE_SERVER,
+			''
+		);
 		$testArray = array(
-			'/msie/i'       =>  'Internet Explorer',
-			'/firefox/i'    =>  'Firefox',
-			'/safari/i'     =>  'Safari',
-			'/chrome/i'     =>  'Chrome',
-			'/opera/i'      =>  'Opera',
-			'/netscape/i'   =>  'Netscape',
-			'/maxthon/i'    =>  'Maxthon',
-			'/konqueror/i'  =>  'Konqueror',
-			'/mobile/i'     =>  'Handheld Browser'
+			'/msie/i' => 'Internet Explorer',
+			'/firefox/i' => 'Firefox',
+			'/safari/i' => 'Safari',
+			'/chrome/i' => 'Chrome',
+			'/opera/i' => 'Opera',
+			'/netscape/i' => 'Netscape',
+			'/maxthon/i' => 'Maxthon',
+			'/konqueror/i' => 'Konqueror',
+			'/mobile/i' => 'Handheld Browser'
 		);
 
 		foreach ($testArray as $regex => $value) {
