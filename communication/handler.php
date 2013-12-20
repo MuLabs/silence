@@ -108,7 +108,7 @@ abstract class Handler extends Kernel\Handler\Core
 	 */
 	public function getSubject()
 	{
-		return $this->content;
+		return $this->subject;
 	}
 
 	/**
