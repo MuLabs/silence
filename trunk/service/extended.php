@@ -65,7 +65,7 @@ abstract class Extended extends Core
 	{
 		// Generate handler if needed:
 		if (!isset($this->handlers[$context])) {
-			$this->addHandler($context, $this->generateHandler($type));
+			$this->addHandler($context, $this->generateHandler($type, $context));
 		}
 
 		return $this->handlers[$context];
