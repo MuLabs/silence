@@ -2,6 +2,7 @@
 namespace Beable\Kernel\Communication\Handler;
 
 use Beable\Kernel;
+use Beable\Kernel\Communication;
 
 /**
  * Email Handler ::
@@ -32,7 +33,7 @@ class Email extends Kernel\Communication\Handler
 			if ($this->getConfig('autosend', false) && $this->getStatus() === self::MESSAGE_READY) {
 				$this->send();
 			}
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			// TODO log error
 			return;
 		}
@@ -125,7 +126,7 @@ class Email extends Kernel\Communication\Handler
 	 * Test emails validity
 	 * @param $emails
 	 * @return bool
-	 * @throws Exception
+	 * @throws Communication\Exception
 	 */
 	private function checkEmails($emails)
 	{
@@ -134,7 +135,7 @@ class Email extends Kernel\Communication\Handler
 		}
 		foreach ($emails as $email) {
 			if (!preg_match('#^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$#', $email)) {
-				throw new Exception('incorrectly formated email : '.$email);
+				throw new Communication\Exception('incorrectly formated email : '.$email);
 			}
 		}
 		return $emails;
