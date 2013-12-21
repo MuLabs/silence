@@ -30,4 +30,13 @@ class Service extends Kernel\Service\Extended
 	{
 		return '\\Beable\\Kernel\\Session';
 	}
+
+	/**
+	 * @param string $type
+	 * @param string $context
+	 * @return Kernel\Session\Handler
+	 */
+	public function getHandler($type, $context = Kernel\Handler\Core::DEFAULT_CONTEXT) {
+		return parent::getHandler($type, $context);
+	}
 }

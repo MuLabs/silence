@@ -5,12 +5,14 @@ use Beable\Kernel;
 
 class Response
 {
-	const MIME_TYPE_TEXT = 'text/plain';
-	const MIME_TYPE_HTML = 'text/html';
-	const MIME_TYPE_XML = 'text/xml';
-	const MIME_TYPE_CSS = 'text/css';
-	const MIME_TYPE_CSV = 'text/csv';
-	const MIME_TYPE_JSON = 'application/json';
+	const MIME_TYPE_TEXT 	= 'text/plain';
+	const MIME_TYPE_HTML 	= 'text/html';
+	const MIME_TYPE_XML 	= 'text/xml';
+	const MIME_TYPE_CSS 	= 'text/css';
+	const MIME_TYPE_JSON 	= 'application/json';
+	const MIME_TYPE_CSV 	= 'text/csv;charset=UTF-8';
+	const MIME_TYPE_PDF 	= 'application/pdf;charset=UTF-8';
+	const MIME_TYPE_XLSX 	= 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
 	const MIME_TYPE_JPEG = 'image/jpeg';
 	const MIME_TYPE_JPG = 'image/jpg';
