@@ -6,7 +6,6 @@ use Beable\Kernel;
 abstract class Entity extends Kernel\Core implements \JsonSerializable
 {
 	protected $manager;
-	protected $mainId = array();
 	protected $unsavedChanges = array();
 	protected $initialValues = array();
 	protected $id;
@@ -21,19 +20,19 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	{
 		$this->setApp($manager->getApp());
 		$this->setManager($manager);
-		$this->setMainId($id);
+		$this->setId($id);
 
 		$this->initialize();
 	}
 
-	protected abstract function initialize();
+	abstract protected function initialize();
 
 #endregion Initialization
 
 	public function isValid()
 	{
-		$mainId = $this->getMainId();
-		return !empty($mainId);
+		$id = $this->getId();
+		return !empty($id);
 	}
 
 #region Getters
@@ -50,18 +49,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	 */
 	public function getId()
 	{
-		if (is_null($this->id)) {
-			$this->id = $this->getManager()->packId($this->mainId);
-		}
 		return $this->id;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getMainId()
-	{
-		return $this->mainId;
 	}
 
 	/**
@@ -69,7 +57,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	 */
 	public function getCacheKey()
 	{
-		return $this->getManager()->getCacheKey($this->getMainId());
+		return $this->getManager()->getCacheKey($this->getId());
 	}
 
 	/**
@@ -92,12 +80,12 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	}
 
 	/**
-	 * @param array $id
+	 * @param int $id
 	 * @return void
 	 */
-	public function setMainId(array $id)
+	public function setId($id)
 	{
-		$this->mainId = $id;
+		$this->id = $id;
 	}
 
 	/**
@@ -121,12 +109,14 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		if (!count($this->unsavedChanges)) {
 			return true;
 		}
+		$manager = $this->getManager();
 
 		$updateDatas = ':' . implode(' = ?, :', array_keys($this->unsavedChanges)) . ' = ?';
 		$updateValues = array_values($this->unsavedChanges);
+		$updateValues[] = $this->getId();
 
-		$query = new Kernel\Db\Query('UPDATE @ SET ' . $updateDatas . ' WHERE ' . $this->getSaveWhere(
-			), $updateValues, $this->getManager());
+		$sql = 'UPDATE @ SET ' . $updateDatas . ' WHERE '.$manager->getSpecificWhere();
+		$query = new Kernel\Db\Query($sql, $updateValues, $manager);
 		$handler = $this->getApp()->getDatabase()->getHandler('sys');
 		$handler->sendQuery($query);
 
@@ -134,9 +124,34 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	}
 
 	/**
-	 * @return string
+	 * @return bool
 	 */
-	abstract protected function getSaveWhere();
+	public function delete() {
+		$manager = $this->getManager();
+		if (!$manager->getProperty($manager->getDefaultGroup(), 'delete')) {
+			return false;
+		}
+
+		$sql = 'UPDATE @ SET :delete = ? WHERE '.$manager->getSpecificWhere();
+		$query = new Kernel\Db\Query($sql, array(1, $this->getId()), $manager);
+		$handler = $this->getApp()->getDatabase()->getHandler('sys');
+		$handler->sendQuery($query);
+
+		return true;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function remove() {
+		$manager = $this->getManager();
+		$sql = 'DELETE FROM @ WHERE '.$manager->getSpecificWhere();
+		$query = new Kernel\Db\Query($sql, array($this->getId()), $manager);
+		$handler = $this->getApp()->getDatabase()->getHandler('sys');
+		$handler->sendQuery($query);
+
+		return true;
+	}
 
 #endregion
 

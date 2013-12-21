@@ -229,7 +229,7 @@ abstract class Manager extends Kernel\Core
 	 */
 	public function getCacheKey($id)
 	{
-		return $this->getEntityClassname() . '|' . $this->packId($id);
+		return $this->getEntityClassname() . '|' . $id;
 	}
 
 	/**
@@ -314,13 +314,11 @@ abstract class Manager extends Kernel\Core
 	}
 
 	/**
-	 * @param array $id
 	 * @return string
 	 */
-	public function packId(array $id)
-	{
-		return implode('_', $id);
+	protected function getSpecificWhere() {
+		return ':'.$this->getMainProperty().' = ?';
 	}
 
-	abstract public function create(array $parameters = array());
+	abstract protected function getMainProperty();
 }
