@@ -307,7 +307,7 @@ abstract class Application
 	}
 
 	/**
-	 * @return Session\Service
+	 * @return Kernel\Session\Service
 	 */
 	public function getSession()
 	{

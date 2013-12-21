@@ -72,6 +72,14 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
+	 * @param $entityType
+	 * @return Manager
+	 */
+	public function getManagerFromType($entityType) {
+		return $this->getOneManager($this->getEntityAliasFromType($entityType));
+	}
+
+	/**
 	 * @param string $classAlias
 	 * @return int
 	 * @throws Exception
