@@ -29,9 +29,6 @@ abstract class Manager extends Kernel\Core
 		$cacheKeys = array();
 		$entities = array();
 		foreach ($idList as $key => $id) {
-			if (!is_array($id)) {
-				$idList[$key] = array($id);
-			}
 			$cacheKey = $this->getCacheKey($idList[$key]);
 
 			if (isset($this->entities[$cacheKey])) {
@@ -85,10 +82,6 @@ abstract class Manager extends Kernel\Core
 			return null;
 		}
 
-		if (!is_array($id)) {
-			$id = array($id);
-		}
-
 		$key = $this->getCacheKey($id);
 		if (isset($this->entities[$key])) {
 			return $this->entities[$key];
@@ -121,7 +114,7 @@ abstract class Manager extends Kernel\Core
 	 * @param array $id
 	 * @return Kernel\Model\Entity
 	 */
-	private function generateEntity(array $id)
+	private function generateEntity($id)
 	{
 		/** @var Entity $entity */
 		$classname = $this->getEntityClassname();
@@ -316,7 +309,8 @@ abstract class Manager extends Kernel\Core
 	/**
 	 * @return string
 	 */
-	protected function getSpecificWhere() {
+	public function getSpecificWhere()
+	{
 		return ':'.$this->getMainProperty().' = ?';
 	}
 
