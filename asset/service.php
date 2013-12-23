@@ -19,7 +19,6 @@ class Service extends Kernel\Service\Core
 	public function getAsset(array $fileList)
 	{
 		$asset = new Asset($this, $fileList);
-
 		if (!$asset->exists()) {
 			$asset->generate();
 		}
@@ -40,14 +39,16 @@ class Service extends Kernel\Service\Core
 	 * @param string $name
 	 * @param string $value
 	 */
-	public function registerVar($name, $value) {
+	public function registerVar($name, $value)
+	{
 		$this->vars[$name] = $value;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getVars() {
+	public function getVars()
+	{
 		return $this->vars;
 	}
 

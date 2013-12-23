@@ -49,7 +49,9 @@ class Asset extends Kernel\Core
 	 */
 	private function generateKey()
 	{
-		return sha1(json_encode($this->fileList));
+		$list = $this->getFileList();
+		sort($list);
+		return sha1(json_encode($list));
 	}
 
 	/**
