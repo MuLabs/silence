@@ -17,17 +17,17 @@ use Beable\Kernel;
  */
 class Cookie extends Kernel\Session\Handler
 {
-	const DEFAULT_EXPIRE 	= 12;
-	const DEFAULT_HTTPONLY 	= false;
-	const DEFAULT_SALT   	= 'Z10uzuhyNyH3FYN9';
-	const DEFAULT_SECURE 	= false;
+	const DEFAULT_EXPIRE = 12;
+	const DEFAULT_HTTPONLY = false;
+	const DEFAULT_SALT = 'Z10uzuhyNyH3FYN9';
+	const DEFAULT_SECURE = false;
 
 	private $keyVerify = 'mu_verify';
-	private $keyTime   = 'mu_time';
+	private $keyTime = 'mu_time';
 	private $salt;
-	private $expire;		// In hours
-	private $secure;		// Bool
-	private $httponly;		// Bool
+	private $expire; // In hours
+	private $secure; // Bool
+	private $httponly; // Bool
 	private $info = array();
 
 	/**
@@ -36,22 +36,25 @@ class Cookie extends Kernel\Session\Handler
 	public function __init()
 	{
 		// Initialize configuration:
-		$this->salt   = $this->getConfig('salt', self::DEFAULT_SALT);
+		$this->salt = $this->getConfig('salt', self::DEFAULT_SALT);
 		$this->expire = $this->getConfig('expire', self::DEFAULT_EXPIRE);
 		$this->secure = $this->getConfig('secure', self::DEFAULT_SECURE);
 		$this->httponly = $this->getConfig('httponly', self::DEFAULT_HTTPONLY);
 
 		// Get cookie:
 		$cookie = $this->__getCookie();
+		foreach ($cookie as $key => $jsonValue) {
+			$cookie[$key] = json_decode($jsonValue, true);
+		}
 
 		// Test cookie validity if not empty
 		if (is_array($cookie)) {
 			// Test validity:
-			if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify]!=$this->getId()) {
+			if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify] != $this->getId()) {
 				return;
 			}
 			// Test timestamp:
-			if (!isset($cookie[$this->keyTime]) || time()-$cookie[$this->keyTime] > $this->expire*3600) {
+			if (!isset($cookie[$this->keyTime]) || time() - $cookie[$this->keyTime] > $this->expire * 3600) {
 				return;
 			}
 
@@ -80,19 +83,26 @@ class Cookie extends Kernel\Session\Handler
 
 		// Force the cookie to be cleaned if needed, but after rendering:
 		if (count($this->info) == 0) {
-			foreach ($this->__getCookie() as $key=>$value) {
-				setcookie($this->getContext().'['.$key.']', null, -1);
+			foreach ($this->__getCookie() as $key => $value) {
+				setcookie($this->getContext() . '[' . $key . ']', null, -1);
 			}
-		}
-		else {
+		} else {
 			// Set protected keys:
 			$this->info[$this->keyVerify] = $this->getId();
-			$this->info[$this->keyTime]   = time();
+			$this->info[$this->keyTime] = time();
 
 			// Save values:
-			$expire = time() + $this->expire*3600;
-			foreach ($this->info as $key=>$value) {
-				setcookie($this->getContext().'['.$key.']', $value, $expire, '/', '', $this->secure, $this->httponly);
+			$expire = time() + $this->expire * 3600;
+			foreach ($this->info as $key => $value) {
+				setcookie(
+					$this->getContext() . '[' . $key . ']',
+					json_encode($value),
+					$expire,
+					'/',
+					'',
+					$this->secure,
+					$this->httponly
+				);
 			}
 		}
 	}
@@ -104,8 +114,8 @@ class Cookie extends Kernel\Session\Handler
 	{
 		return array(
 			'expire' => (isset($config[0])) ? $config[0] : self::DEFAULT_EXPIRE,
-			'secure' => (isset($config[1]) && $config[1]==1),
-			'httponly' => (isset($config[2]) && $config[2]==1)
+			'secure' => (isset($config[1]) && $config[1] == 1),
+			'httponly' => (isset($config[2]) && $config[2] == 1)
 		);
 	}
 
@@ -130,7 +140,7 @@ class Cookie extends Kernel\Session\Handler
 	 */
 	public function getId()
 	{
-		return md5($this->getContext().'--'.$this->salt);
+		return md5($this->getContext() . '--' . $this->salt);
 	}
 
 	/**
@@ -163,6 +173,6 @@ class Cookie extends Kernel\Session\Handler
 			$this->getContext(),
 			Kernel\Http\Request::PARAM_TYPE_COOKIE,
 			array()
-		);;
+		);
 	}
 }

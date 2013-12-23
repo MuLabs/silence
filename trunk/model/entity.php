@@ -97,6 +97,9 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		if (!isset($this->initialValues[$propertyName])) {
 			$this->initialValues[$propertyName] = $value;
 		} else {
+			if (is_array($value)) {
+				$value = json_encode($value);
+			}
 			$this->unsavedChanges[$propertyName] = $value;
 		}
 	}
@@ -115,7 +118,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$updateValues = array_values($this->unsavedChanges);
 		$updateValues[] = $this->getId();
 
-		$sql = 'UPDATE @ SET ' . $updateDatas . ' WHERE '.$manager->getSpecificWhere();
+		$sql = 'UPDATE @ SET ' . $updateDatas . ' WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, $updateValues, $manager);
 		$handler = $this->getApp()->getDatabase()->getHandler('sys');
 		$handler->sendQuery($query);
@@ -126,13 +129,14 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	/**
 	 * @return bool
 	 */
-	public function delete() {
+	public function delete()
+	{
 		$manager = $this->getManager();
 		if (!$manager->getProperty($manager->getDefaultGroup(), 'delete')) {
 			return false;
 		}
 
-		$sql = 'UPDATE @ SET :delete = ? WHERE '.$manager->getSpecificWhere();
+		$sql = 'UPDATE @ SET :delete = ? WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, array(1, $this->getId()), $manager);
 		$handler = $this->getApp()->getDatabase()->getHandler('sys');
 		$handler->sendQuery($query);
@@ -143,9 +147,10 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	/**
 	 * @return bool
 	 */
-	public function remove() {
+	public function remove()
+	{
 		$manager = $this->getManager();
-		$sql = 'DELETE FROM @ WHERE '.$manager->getSpecificWhere();
+		$sql = 'DELETE FROM @ WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, array($this->getId()), $manager);
 		$handler = $this->getApp()->getDatabase()->getHandler('sys');
 		$handler->sendQuery($query);
