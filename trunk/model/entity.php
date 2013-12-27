@@ -9,6 +9,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	protected $unsavedChanges = array();
 	protected $initialValues = array();
 	protected $id;
+	protected $isInitialized = false;
 
 #region Initialization
 	/**
@@ -23,6 +24,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$this->setId($id);
 
 		$this->initialize();
+		$this->isInitialized = true;
 	}
 
 	abstract protected function initialize();
@@ -94,7 +96,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	 */
 	protected function setProperty($propertyName, $value)
 	{
-		if (!isset($this->initialValues[$propertyName])) {
+		if (!$this->isInitialized) {
 			$this->initialValues[$propertyName] = $value;
 		} else {
 			if (is_array($value)) {
