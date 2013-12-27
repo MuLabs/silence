@@ -55,8 +55,8 @@ abstract class Application
 			// stop profiler
 			$xhprofData = \xhprof_disable();
 
-			include_once KERNEL_LIBS_PATH . "/xhprof/utils/xhprof_lib.php";
-			include_once KERNEL_LIBS_PATH . "/xhprof/utils/xhprof_runs.php";
+			include_once VENDOR_PATH . "/facebook/xhprof/xhprof_lib/utils/xhprof_lib.php";
+			include_once VENDOR_PATH . "/facebook/xhprof/xhprof_lib/utils/xhprof_runs.php";
 
 			$xhprofPath = TEMP_PATH . '/xhprof/';
 			if (!file_exists($xhprofPath)) {
@@ -64,7 +64,7 @@ abstract class Application
 			}
 			$xhprofRuns = new \XHProfRuns_Default($xhprofPath);
 
-			$id = date('Ymd_His_') . uniqid();
+			$id = uniqid();
 			$xhprofRuns->save_run($xhprofData, strtolower(str_replace(' ', '_', $this->getName())), $id);
 		}
 	}
