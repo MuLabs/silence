@@ -92,7 +92,7 @@ abstract class Handler extends Kernel\Core
 		$valuesOffset = count($values) - 1;
 		$lastFound = strrpos($strQuery, '?');
 		$subQuery = $strQuery;
-		while ($lastFound !== false && $values >= 0) {
+		while ($lastFound !== false) {
 			$subQuery = substr($subQuery, 0, $lastFound);
 			$subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
 			$posT = strpos($subPropQuery, "\t");
