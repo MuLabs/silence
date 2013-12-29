@@ -47,7 +47,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	}
 
 	/**
-	 * @return string
+	 * @return int
 	 */
 	public function getId()
 	{
