@@ -168,7 +168,7 @@ abstract class Handler extends Kernel\Core
 			$property
 		)) {
 			$strQuery = preg_replace(
-				'#:' . $property['manager'] . '\.' . $property['group'] . '\.' . $property['property']. '(/[^\w\-]$)#i',
+				'#:' . $property['manager'] . '\.' . $property['group'] . '\.' . $property['property'] . '([^\w\-]|$)#i',
 				$this->getManager($property)->getPropertyForDb($property['group'], $property['property'], $query->isShortMode()) . '$1',
 				$strQuery, 1
 			);
@@ -210,7 +210,7 @@ abstract class Handler extends Kernel\Core
 		while (preg_match('#@' . $managerPattern . '\.' . $groupPattern . '#i', $strQuery, $property)) {
 
 			$strQuery = preg_replace(
-				'#@' . $property['manager'] . '\.' . $property['group']. '(/[^\w\-]|$)#i',
+				'#@' . $property['manager'] . '\.' . $property['group'] . '([^\w\-]|$)#i',
 				$this->getManager($property)->getGroupForDb($property['group']) . '$1',
 				$strQuery, 1
 			);
