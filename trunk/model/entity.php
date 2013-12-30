@@ -134,11 +134,11 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	public function delete()
 	{
 		$manager = $this->getManager();
-		if (!$manager->getProperty($manager->getDefaultGroup(), 'delete')) {
+		if (!$manager->getProperty($manager->getDefaultGroup(), 'deleted')) {
 			return false;
 		}
 
-		$sql = 'UPDATE @ SET :delete = ? WHERE ' . $manager->getSpecificWhere();
+		$sql = 'UPDATE @ SET :deleted = ? WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, array(1, $this->getId()), $manager);
 		$handler = $this->getApp()->getDatabase()->getHandler('sys');
 		$handler->sendQuery($query);
