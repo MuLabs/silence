@@ -17,7 +17,7 @@ function autoLoader($name)
 
 	$file = $path . '/' . strtolower($name) . '.php';
 	if (!file_exists($file)) {
-		throw new Exception('Class not found : ' . $name);
+		throw new Exception('Class not found : ' . $name . ' | File : ' . $file);
 	}
 	require($file);
 }
