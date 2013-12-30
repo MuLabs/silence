@@ -684,27 +684,28 @@ class Toolbox extends Service\Core
 
 	/**
 	 * @param $comp
+	 * @param $value
 	 * @return string
 	 */
-	public function getValidLikeComparator($comp)
+	public function getValidLikeValue($comp, $value)
 	{
 		switch ($comp) {
 			case '>':
-				$string = 'LIKE "%?"';
+				$string = '%' . $value;
 				break;
 			case '<':
-				$string = 'LIKE "?%"';
+				$string = $value . '%';
 				break;
 			case '<>':
-				$string = 'LIKE "%?%"';
+				$string = '%' . $value . '%';
 				break;
 			case '!=':
-				$string = 'NOT LIKE "%?%"';
+				$string = '%' . $value . '%';
 				break;
 			case '=':
 			default :
-				$string = '= ?';
-				break;
+			$string = $value;
+			break;
 		}
 
 		return $string;
