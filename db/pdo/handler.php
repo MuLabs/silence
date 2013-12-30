@@ -44,8 +44,7 @@ class Handler extends Kernel\Db\Handler
 		}
 
 		if (!$statement->execute()) {
-			$message = $statement->errorInfo()[2];
-			throw new Exception(print_r($message, true), Exception::QUERY_FAIL);
+			throw new Exception(print_r($statement->errorInfo(), true), Exception::QUERY_FAIL);
 		}
 
 		return new Result($this, $statement);
