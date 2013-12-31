@@ -126,7 +126,7 @@ class Handler extends Kernel\Db\Handler
 	 */
 	public function getErrors()
 	{
-		return $this->getLink()->errorCode() . ' - ' . $this->getLink()->errorInfo();
+		return $this->getLink()->errorCode() . ' - ' . print_r($this->getLink()->errorInfo(), true);
 	}
 
 	/**
