@@ -16,10 +16,10 @@ function autoLoader($name)
 	}
 
 	$file = $path . '/' . strtolower($name) . '.php';
-	if (!file_exists($file)) {
-		throw new Exception('Class not found : ' . $name . ' | File : ' . $file);
+	if (file_exists($file)) {
+		require($file);
 	}
-	require($file);
+	//throw new Exception('Class not found : ' . $name . ' | File : ' . $file);
 }
 
 spl_autoload_register('autoLoader');
