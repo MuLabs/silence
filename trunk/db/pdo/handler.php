@@ -103,6 +103,10 @@ class Handler extends Kernel\Db\Handler
 				$statement = $this->getLink()->query($query);
 			}
 
+			if (!$statement) {
+				throw new \PDOException();
+			}
+
 			return new Result($this, $statement);
 		} catch (\PDOException $e) {
 			throw new Exception($this->getLastError() . ' == ON == ' . $query, Exception::QUERY_FAIL);
