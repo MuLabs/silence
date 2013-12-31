@@ -91,7 +91,7 @@ class Handler extends Kernel\Db\Handler
 		try {
 			if ($this->hasLogs()) {
 				$time_a = microtime(true);
-				$result = $this->getLink()->query($query);
+				$statement = $this->getLink()->query($query);
 				$time_b = microtime(true);
 				$this->getApp()->getDatabase()->log(
 					array(
@@ -100,10 +100,10 @@ class Handler extends Kernel\Db\Handler
 					)
 				);
 			} else {
-				$result = $this->getLink()->exec($query);
+				$statement = $this->getLink()->query($query);
 			}
 
-			return $result;
+			return new Result($this, $statement);
 		} catch (\PDOException $e) {
 			throw new Exception($this->getLastError() . ' == ON == ' . $query, Exception::QUERY_FAIL);
 		}
