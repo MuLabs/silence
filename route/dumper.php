@@ -17,7 +17,7 @@ abstract class Dumper extends Kernel\Core
 	public function prepareRuleVars(Route $route)
 	{
 		$pattern = $route->getPattern();
-		if ($pattern{0} == '/') {
+		if (strlen($pattern) && $pattern{0} == '/') {
 			$pattern = substr($pattern, 1);
 		}
 		$pattern = str_replace('/', '\/', '^' . $pattern . '$');
