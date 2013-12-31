@@ -299,7 +299,7 @@ abstract class Handler extends Kernel\Core
 
 	/**
 	 * @param string $query
-	 * @return mixed
+	 * @return Result
 	 */
 	public abstract function query($query);
 
