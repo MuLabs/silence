@@ -31,7 +31,7 @@ class Service extends Kernel\View\Service
 
 		$this->smarty->setTemplateDir($this->getDir());
 		$this->smarty->setCompileDir($this->getCompileDir());
-		$this->smarty->registerFilter('pre', array($this, 'stripPrefilter'));
+		//$this->smarty->registerFilter('pre', array($this, 'stripPrefilter'));
 		$this->caching = 0;
 
 		$this->getApp()->getToolbox()->registerAutoload('\\smartyAutoload');
