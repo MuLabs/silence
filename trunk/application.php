@@ -163,6 +163,14 @@ abstract class Application
 	}
 
 	/**
+	 * @param string $db
+	 */
+	public function setDefaultDatabase($db)
+	{
+		$this->defaultDatabase = $db;
+	}
+
+	/**
 	 * @param int $time
 	 */
 	public function setStartTime($time)

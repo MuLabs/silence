@@ -6,14 +6,14 @@ use Beable\Kernel\Http;
 
 abstract class Handler extends Kernel\Handler\Core
 {
-	const DEFAULT_SEPARATOR_LINE  = "\n";
-	const DEFAULT_SEPARATOR_STRING= '"';
+	const DEFAULT_SEPARATOR_LINE = "\n";
+	const DEFAULT_SEPARATOR_STRING = '"';
 	const DEFAULT_SEPARATOR_VALUE = ',';
 
 	protected $configPrefix = 'file_';
-	protected $sep_line   = self::DEFAULT_SEPARATOR_LINE;
+	protected $sep_line = self::DEFAULT_SEPARATOR_LINE;
 	protected $sep_string = self::DEFAULT_SEPARATOR_STRING;
-	protected $sep_value  = self::DEFAULT_SEPARATOR_VALUE;
+	protected $sep_value = self::DEFAULT_SEPARATOR_VALUE;
 	protected $content = array();
 	private $filename;
 
@@ -107,7 +107,7 @@ abstract class Handler extends Kernel\Handler\Core
 	{
 		$handle = @fopen($name, 'w');
 		if (!$handle) {
-			throw new Exception($file, Exception::FILE_NOT_WRITABE);
+			throw new Exception($name, Exception::FILE_NOT_WRITABE);
 		}
 
 		// Output headers:
@@ -121,19 +121,20 @@ abstract class Handler extends Kernel\Handler\Core
 		}
 
 		// Close file handler:
-		fclose($fp);
+		fclose($handle);
 	}
 
 	/**
 	 * Send content from server
 	 * @param $name
+	 * @throws \Beable\Kernel\EndException
 	 */
 	public function send($name)
 	{
 		// Get content:
 		$content = '';
 		foreach ($this->content as $line) {
-			$content.= $this->toString($line).$this->sep_line;
+			$content .= $this->toString($line) . $this->sep_line;
 		}
 
 		// Set headers:
@@ -147,7 +148,7 @@ abstract class Handler extends Kernel\Handler\Core
 		$http->send();
 
 		// Exite if needed:
-		exit();
+		throw new Kernel\EndException();
 	}
 
 	/**
@@ -168,7 +169,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Correctly format a line to string
-	 * @param mixed $line	line content to output
+	 * @param mixed $line line content to output
 	 * @return string
 	 */
 	protected function toString($line)
