@@ -39,6 +39,14 @@ class Service extends Kernel\View\Service
 
 	public function stripPrefilter($source, \Smarty_Internal_Template $template)
 	{
-		return str_replace(array("\r\n", "\r", "\n"), '', $source);
+		$pos = strpos($source, '<script');
+		if ($pos === false) {
+			return str_replace(array("\r\n", "\r", "\n"), '', $source);
+		}
+
+		$subStr1 = substr($source, 0, $pos);
+		$subStr2 = substr($source, $pos);
+
+		return str_replace(array("\r\n", "\r", "\n"), '', $subStr1) . $subStr2;
 	}
 }
