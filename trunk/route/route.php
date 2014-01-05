@@ -164,7 +164,7 @@ class Route extends Kernel\Core
 			}
 		}
 
-		if ($pattern{0} != '/') {
+		if (isset($pattern{0}) && $pattern{0} != '/') {
 			$pattern = '/' . $pattern;
 		}
 
