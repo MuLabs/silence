@@ -30,6 +30,14 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	abstract protected function initialize();
 
 #endregion Initialization
+	/**
+	 * @return bool
+	 */
+	public function isInitialized()
+	{
+		return $this->isInitialized;
+	}
+
 
 	public function isValid()
 	{
