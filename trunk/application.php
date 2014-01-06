@@ -607,15 +607,15 @@ abstract class Application
 				$updateTodo[] = $filename;
 			}
 		}
-
+		sort($updateTodo);
 		$count = count($updateTodo);
 		call_user_func($stdOut, $count . ' updates to do...');
 
 		$i = 1;
 		foreach ($updateTodo as $filename) {
-			call_user_func($stdOut, 'Start update ' . $i . '/' . $count);
-			touch(APP_UPDATE_DONE_PATH . '/' . $filename);
+			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : '.$filename );
 			require_once(APP_UPDATE_PATH . '/' . $filename);
+			touch(APP_UPDATE_DONE_PATH . '/' . $filename);
 			call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
 		}
 	}
