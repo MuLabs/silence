@@ -117,6 +117,10 @@ class Service extends Kernel\Service\Core
 	 */
 	public function getEntityFromTypeAndId($entityType, $entityId)
 	{
+		if (!$entityId && !$entityType) {
+			return null;
+		}
+
 		return $this->getOneManager($this->getEntityAliasFromType($entityType))->get($entityId);
 	}
 
