@@ -74,13 +74,4 @@ abstract class Service extends Kernel\Service\Core
 	 * @return Handler
 	 */
 	abstract protected function generateHandler($contextName);
-
-	/**
-	 * @param string $query
-	 * @return void
-	 */
-	public function log($query)
-	{
-		$this->logs[] = $query;
-	}
 }

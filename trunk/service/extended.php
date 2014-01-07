@@ -126,13 +126,4 @@ abstract class Extended extends Core
 			throw new Exception($e->getMessage(), Exception::HANDLER_TYPE_NOT_FOUND);
 		}
 	}
-
-	/**
-	 * @param string $message
-	 * @return void
-	 */
-	public function log($message)
-	{
-		$this->logs[] = $message;
-	}
 }

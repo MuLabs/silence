@@ -15,6 +15,7 @@ abstract class Handler extends Kernel\Handler\Core
 	protected $sep_string = self::DEFAULT_SEPARATOR_STRING;
 	protected $sep_value = self::DEFAULT_SEPARATOR_VALUE;
 	protected $content = array();
+	protected $appendHandler = array();
 	private $filename;
 
 	/**
@@ -122,6 +123,27 @@ abstract class Handler extends Kernel\Handler\Core
 
 		// Close file handler:
 		fclose($handle);
+	}
+
+	/**
+	 * Append content into a file
+	 * @param $name
+	 * @throws Exception
+	 */
+	public function append($name)
+	{
+		if (!isset($this->appendHandler[$name])) {
+			$this->appendHandler[$name] = @fopen($name, 'a');
+		}
+
+		if (!$this->appendHandler[$name]) {
+			throw new Exception($name, Exception::FILE_NOT_WRITABE);
+		}
+
+		// Output content:
+		foreach ($this->content as $line) {
+			$this->writeLine($this->appendHandler[$name], $this->toString($line));
+		}
 	}
 
 	/**

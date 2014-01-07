@@ -8,11 +8,7 @@ class Exception extends \Exception
 	const UNDEFINED_ACTION = 1;
 	const CONSOLE_EXPECTED = 2;
 	const NO_STATIC_REGISTRED = 3;
-
-	public function display()
-	{
-		echo get_called_class() . ' : ' . $this->getFormatedMessage() . "<br />\n";
-	}
+	const NO_LOGGER = 4;
 
 	/**
 	 * @return string
@@ -28,6 +24,9 @@ class Exception extends \Exception
 				break;
 			case self::NO_STATIC_REGISTRED:
 				return 'No static URL defined please use "registerStatic" function';
+				break;
+			case self::NO_LOGGER:
+				return 'No logger set on object : ' . $this->message;
 				break;
 			default:
 				return 'Undefined error : ' . $this->message;
