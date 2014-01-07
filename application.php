@@ -402,20 +402,19 @@ abstract class Application
 	}
 
 	/**
-	 * @param string $controllerName
+	 * @param string $routeName
 	 * @param array $parameters
 	 * @param bool $sendData
 	 * @return string
 	 */
-	public function redirect($controllerName, array $parameters = array(), $sendData = true)
+	public function redirect($routeName, array $parameters = array(), $sendData = true)
 	{
-		$route = $this->getFactory()->getRoute($controllerName);
-		$this->route = $route;
-
 		foreach ($parameters as $key => $value) {
 			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_POST, $value);
 			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 		}
+		$this->getHttp()->getRequest()->setParameter('rn', Kernel\Http\Request::PARAM_TYPE_GET, $routeName);
+		$this->route = $this->getRouteManager()->selectRoute();
 
 		return $this->dispatch($sendData);
 	}
