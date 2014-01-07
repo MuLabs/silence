@@ -1,8 +1,8 @@
 <?php
-namespace Beable\Kernel;
+namespace Mu\Kernel;
 
-use Beable\App;
-use Beable\Kernel;
+use Mu\App;
+use Mu\Kernel;
 
 trait CoreTrait
 {

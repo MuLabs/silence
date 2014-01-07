@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Php\Extension;
+namespace Mu\Kernel\View\Php\Extension;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Core
 {

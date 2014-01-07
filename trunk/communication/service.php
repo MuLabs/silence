@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Communication;
+namespace Mu\Kernel\Communication;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
  * Class Service
@@ -10,7 +10,7 @@ use Beable\Kernel;
  *	$manager->register('com', $comS);
  *	$sessionS->addHandler('email', $comS->generateHandler('email', 'context'));
  *
- * @package Beable\Kernel\Session
+ * @package Mu\Kernel\Session
  * @author Olivier Stahl
  */
 class Service extends Kernel\Service\Extended
@@ -57,6 +57,6 @@ class Service extends Kernel\Service\Extended
 	 */
 	protected function getNamespace()
 	{
-		return '\\Beable\\Kernel\\Communication';
+		return __NAMESPACE__;
 	}
 }

@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel;
+namespace Mu\Kernel;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Application
 {
@@ -72,11 +72,11 @@ abstract class Application
 	private function registerDefaultServices()
 	{
 		$servicer = $this->getServicer();
-		$servicer->register('toolbox', '\Beable\Kernel\Toolbox');
-		$servicer->register('http', '\Beable\Kernel\Http\Service');
-		$servicer->register('factory', '\Beable\Kernel\Factory');
-		$servicer->register('route', '\Beable\Kernel\Route\Service');
-		$servicer->register('config', '\Beable\Kernel\Config\Service');
+		$servicer->register('toolbox', '\Mu\Kernel\Toolbox');
+		$servicer->register('http', '\Mu\Kernel\Http\Service');
+		$servicer->register('factory', '\Mu\Kernel\Factory');
+		$servicer->register('route', '\Mu\Kernel\Route\Service');
+		$servicer->register('config', '\Mu\Kernel\Config\Service');
 	}
 
 	abstract protected function initialize();
@@ -359,7 +359,7 @@ abstract class Application
 	 */
 	private function getControllerClassname()
 	{
-		return '\\Beable\\App\\Controller\\' . $this->getRoute()->getControllerName();
+		return '\\Mu\\App\\Controller\\' . $this->getRoute()->getControllerName();
 	}
 
 	/**
@@ -551,7 +551,7 @@ abstract class Application
 	 */
 	public function update($stdOut = '\print')
 	{
-		if (!defined('BEABLE_CONSOLE')) {
+		if (!defined('MU_CONSOLE')) {
 			throw new Exception('', Exception::CONSOLE_EXPECTED);
 		}
 		$this->initializeUpdate();
@@ -569,7 +569,7 @@ abstract class Application
 	 */
 	public function install($stdOut = '\print')
 	{
-		if (!defined('BEABLE_CONSOLE')) {
+		if (!defined('MU_CONSOLE')) {
 			throw new Exception('', Exception::CONSOLE_EXPECTED);
 		}
 		$this->initializeInstall();

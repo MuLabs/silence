@@ -1,11 +1,12 @@
 <?php
-namespace Beable\Kernel\Asset\Generator;
+namespace Mu\Kernel\Asset\Generator;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Less extends Kernel\Asset\Generator\Css
 {
 	private $lesser;
+
 	/**
 	 * @return int
 	 */
@@ -17,7 +18,7 @@ class Less extends Kernel\Asset\Generator\Css
 		}
 
 
-		$content = $this->lesser->compile($this->dumpVars()."\n".$this->getFullContent());
+		$content = $this->lesser->compile($this->dumpVars() . "\n" . $this->getFullContent());
 		$content = $this->minify($content);
 		$path = $this->getAsset()->getPath();
 		$dirPath = dirname($path);
@@ -30,12 +31,13 @@ class Less extends Kernel\Asset\Generator\Css
 	/**
 	 * @return string
 	 */
-	public function dumpVars() {
+	public function dumpVars()
+	{
 		$content = '';
 		$vars = $this->getAsset()->getManager()->getVars();
 
-		foreach ($vars as $key=>$value) {
-			$content .= '@'.$key.' = \''.$value.'\'; ';
+		foreach ($vars as $key => $value) {
+			$content .= '@' . $key . ' = \'' . $value . '\'; ';
 		}
 
 		return $content;

@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Session;
+namespace Mu\Kernel\Session;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
  * Class Service
@@ -10,7 +10,7 @@ use Beable\Kernel;
  *	$manager->register('session', $sessionS);
  *	$sessionS->addHandler('session', $sessionS->generateHandler('cookie'));
  *
- * @package Beable\Kernel\Session
+ * @package Mu\Kernel\Session
  * @author Olivier Stahl
  */
 class Service extends Kernel\Service\Extended
@@ -28,7 +28,7 @@ class Service extends Kernel\Service\Extended
 	 */
 	protected function getNamespace()
 	{
-		return '\\Beable\\Kernel\\Session';
+		return __NAMESPACE__;
 	}
 
 	/**

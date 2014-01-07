@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Controller;
+namespace Mu\Kernel\Controller;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Controller extends Kernel\Core
 {
@@ -62,7 +62,8 @@ abstract class Controller extends Kernel\Core
 	/**
 	 * Initialization function, can be empty
 	 */
-	public function initialize() {
+	public function initialize()
+	{
 
 	}
 
@@ -118,7 +119,7 @@ abstract class Controller extends Kernel\Core
 	 ************************************************************************************/
 
 	/**
-	 * @return \Beable\Kernel\View\View
+	 * @return \Mu\Kernel\View\View
 	 */
 	protected function getView()
 	{

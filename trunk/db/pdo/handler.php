@@ -1,27 +1,27 @@
 <?php
-namespace Beable\Kernel\Db\PDO;
+namespace Mu\Kernel\Db\PDO;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Handler extends Kernel\Db\Handler
 {
 	private $typeToSQL = array(
-		'tinyint' 	=> 'TINYINT',
-		'smallint' 	=> 'SMALLINT',
+		'tinyint' => 'TINYINT',
+		'smallint' => 'SMALLINT',
 		'mediumint' => 'MEDIUMINT',
-		'int' 		=> 'INT',
-		'bigint' 	=> 'BIGINT',
+		'int' => 'INT',
+		'bigint' => 'BIGINT',
 		'timestamp' => 'TIMESTAMP',
-		'float' 	=> 'FLOAT',
-		'bool' 		=> 'TINYINT',
-		'string' 	=> 'VARCHAR',
-		'varchar' 	=> 'VARCHAR',
-		'char' 		=> 'CHAR',
-		'blob' 		=> 'BLOB',
-		'text' 		=> 'TEXT',
+		'float' => 'FLOAT',
+		'bool' => 'TINYINT',
+		'string' => 'VARCHAR',
+		'varchar' => 'VARCHAR',
+		'char' => 'CHAR',
+		'blob' => 'BLOB',
+		'text' => 'TEXT',
 		'long_blob' => 'LONG_BLOB',
 		'long_text' => 'LONG_TEXT',
-		'date' 		=> 'DATETIME',
+		'date' => 'DATETIME',
 	);
 
 	public function __construct($dbDsn, $dbUsername, $dbPass)

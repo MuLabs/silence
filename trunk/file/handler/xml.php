@@ -1,9 +1,9 @@
 <?php
-namespace Beable\Kernel\File\Handler;
+namespace Mu\Kernel\File\Handler;
 
-use Beable\Kernel;
-use Beable\Kernel\Http;
-use Beable\Kernel\File\Exception;
+use Mu\Kernel;
+use Mu\Kernel\Http;
+use Mu\Kernel\File\Exception;
 
 class Xml extends Kernel\File\Handler
 {
@@ -35,7 +35,7 @@ class Xml extends Kernel\File\Handler
 	 * @param null $value
 	 * @param null $namespace
 	 */
-	public function addAttribute ($name, $value = null, $namespace = null)
+	public function addAttribute($name, $value = null, $namespace = null)
 	{
 		$this->content->addAttribute($name, $value, $namespace);
 	}
@@ -46,7 +46,7 @@ class Xml extends Kernel\File\Handler
 	 * @param null $namespace
 	 * @return \SimpleXMLElement
 	 */
-	public function addChild ($name, $value = null, $namespace = null)
+	public function addChild($name, $value = null, $namespace = null)
 	{
 		return $this->content->addChild($name, $value, $namespace);
 	}
@@ -67,8 +67,8 @@ class Xml extends Kernel\File\Handler
 	public function clean()
 	{
 		$this->load(
-			'<'.self::DEFAULT_NODE.'>
-			</'.self::DEFAULT_NODE.'>'
+			'<' . self::DEFAULT_NODE . '>
+			</' . self::DEFAULT_NODE . '>'
 		);
 	}
 
@@ -77,7 +77,7 @@ class Xml extends Kernel\File\Handler
 	 * @param bool $is_prefix
 	 * @return \SimpleXMLElement
 	 */
-	public function children ($ns = null, $is_prefix = false)
+	public function children($ns = null, $is_prefix = false)
 	{
 		return $this->content->children($ns, $is_prefix);
 	}
@@ -87,7 +87,7 @@ class Xml extends Kernel\File\Handler
 	 * @param bool $recursive
 	 * @return array
 	 */
-	public function getNamespaces ($recursive = false)
+	public function getNamespaces($recursive = false)
 	{
 		return $this->content->getNamespaces($recursive);
 	}
@@ -96,7 +96,7 @@ class Xml extends Kernel\File\Handler
 	 * @param bool $recursive
 	 * @return array
 	 */
-	public function getDocNamespaces ($recursive = false)
+	public function getDocNamespaces($recursive = false)
 	{
 		return $this->content->getDocNamespaces($recursive);
 	}
@@ -109,7 +109,7 @@ class Xml extends Kernel\File\Handler
 	 */
 	public function open($file, array $parameters = array())
 	{
-		if ($file!='' && !file_exists($file)) {
+		if ($file != '' && !file_exists($file)) {
 			throw new Exception($file, Exception::FILE_NOT_EXISTS);
 		}
 
@@ -122,7 +122,7 @@ class Xml extends Kernel\File\Handler
 		while (!feof($handle)) {
 			$line = fgets($handle);
 			if ($line !== false) {
-				$data.= $line;
+				$data .= $line;
 			}
 		}
 
@@ -206,7 +206,7 @@ class Xml extends Kernel\File\Handler
 	 */
 	protected function getMimeType()
 	{
-		return \Beable\Kernel\Http\Header\Response::MIME_TYPE_XML;
+		return \Mu\Kernel\Http\Header\Response::MIME_TYPE_XML;
 	}
 
 	/**

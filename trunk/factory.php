@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel;
+namespace Mu\Kernel;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Factory extends Kernel\Service\Core
 {
@@ -33,7 +33,7 @@ class Factory extends Kernel\Service\Core
 	public function getRoute($controllerName = null)
 	{
 		/** @var Kernel\Route\Route $route */
-		$route = $this->get('\\Beable\\Kernel\\Route\\Route');
+		$route = $this->get('\\Mu\\Kernel\\Route\\Route');
 		$route->setControllerName($controllerName);
 
 		return $route;

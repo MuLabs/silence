@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Cache\Handler;
+namespace Mu\Kernel\Cache\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class File extends Kernel\Cache\Handler\Core
 {

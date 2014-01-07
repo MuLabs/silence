@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\File\Handler;
+namespace Mu\Kernel\File\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Text extends Kernel\File\Handler
 {
@@ -23,7 +23,7 @@ class Text extends Kernel\File\Handler
 	 */
 	protected function getMimeType()
 	{
-		return \Beable\Kernel\Http\Header\Response::MIME_TYPE_TEXT;
+		return \Mu\Kernel\Http\Header\Response::MIME_TYPE_TEXT;
 	}
 
 	/**

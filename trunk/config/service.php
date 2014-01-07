@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Config;
+namespace Mu\Kernel\Config;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {

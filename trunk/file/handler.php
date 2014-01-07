@@ -1,8 +1,8 @@
 <?php
-namespace Beable\Kernel\File;
+namespace Mu\Kernel\File;
 
-use Beable\Kernel;
-use Beable\Kernel\Http;
+use Mu\Kernel;
+use Mu\Kernel\Http;
 
 abstract class Handler extends Kernel\Handler\Core
 {
@@ -127,7 +127,7 @@ abstract class Handler extends Kernel\Handler\Core
 	/**
 	 * Send content from server
 	 * @param $name
-	 * @throws \Beable\Kernel\EndException
+	 * @throws \Mu\Kernel\EndException
 	 */
 	public function send($name)
 	{

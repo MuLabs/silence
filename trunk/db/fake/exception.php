@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Db\Fake;
+namespace Mu\Kernel\Db\Fake;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Exception extends Kernel\Db\Exception
 {

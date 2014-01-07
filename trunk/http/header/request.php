@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Http\Header;
+namespace Mu\Kernel\Http\Header;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Request
 {

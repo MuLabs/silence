@@ -1,9 +1,9 @@
 <?php
-namespace Beable;
+namespace Mu;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
-define('BEABLE_CONSOLE', true);
+define('MU_CONSOLE', true);
 $absPath = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
 require_once $absPath.'/setup.php';
 
@@ -70,7 +70,7 @@ try {
 		case 'update':
 			display('Updating application...');
 			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
-				$app->update('\Beable\display');
+				$app->update('\Mu\display');
 			} else {
 				display('Action cancelled');
 			}
@@ -80,7 +80,7 @@ try {
 				"Installing application...\n/!\\ WARNING : Installing application when your application is already install delete all your old datas /!\\"
 			);
 			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
-				$app->install('\Beable\display');
+				$app->install('\Mu\display');
 			} else {
 				display('Action cancelled');
 			}

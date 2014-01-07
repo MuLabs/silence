@@ -1,8 +1,8 @@
 <?php
-namespace Beable\Kernel\View\Extension;
+namespace Mu\Kernel\View\Extension;
 
-use Beable\App;
-use Beable\Kernel;
+use Mu\App;
+use Mu\Kernel;
 
 trait Core
 {

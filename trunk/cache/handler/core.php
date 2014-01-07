@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Cache\Handler;
+namespace Mu\Kernel\Cache\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Core extends Kernel\Core
 {

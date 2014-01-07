@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View;
+namespace Mu\Kernel\View;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class View extends Kernel\Core
 {

@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Service;
+namespace Mu\Kernel\Service;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Core extends Kernel\Core
 {

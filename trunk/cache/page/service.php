@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Cache\Page;
+namespace Mu\Kernel\Cache\Page;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {

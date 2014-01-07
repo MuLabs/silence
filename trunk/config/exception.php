@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Config;
+namespace Mu\Kernel\Config;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Exception extends Kernel\Exception
 {
@@ -14,7 +14,7 @@ class Exception extends Kernel\Exception
 	{
 		switch ($this->code) {
 			case self::MISSING_MANDATORY_CONFIG:
-				return 'Missing mandatory configuration : '.$this->message;
+				return 'Missing mandatory configuration : ' . $this->message;
 				break;
 		}
 		return parent::getFormatedMessage();

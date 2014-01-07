@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Session\Handler;
+namespace Mu\Kernel\Session\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
  * Session Handler ::
@@ -10,7 +10,7 @@ use Beable\Kernel;
  *
  * Configuration: no configuration
  *
- * @package Beable\Kernel\Session\Handler
+ * @package Mu\Kernel\Session\Handler
  * @author Olivier Stahl
  */
 class Session extends Kernel\Session\Handler

@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Json;
+namespace Mu\Kernel\View\Json;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\View\Service
 {

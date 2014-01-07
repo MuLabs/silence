@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Php;
+namespace Mu\Kernel\View\Php;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\View\Service
 {

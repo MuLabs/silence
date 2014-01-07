@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Session\Handler;
+namespace Mu\Kernel\Session\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
  * Cookie Handler ::
@@ -12,7 +12,7 @@ use Beable\Kernel;
  * ; context = expire(in hour),secure(int),httponly(int)
  * murloc = 24,0,0
  *
- * @package Beable\Kernel\Session\Handler
+ * @package Mu\Kernel\Session\Handler
  * @author Olivier Stahl
  */
 class Cookie extends Kernel\Session\Handler

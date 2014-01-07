@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Route;
+namespace Mu\Kernel\Route;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Route extends Kernel\Core
 {

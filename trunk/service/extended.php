@@ -1,9 +1,9 @@
 <?php
-namespace Beable\Kernel\Service;
+namespace Mu\Kernel\Service;
 
-use Beable\App\Application;
-use Beable\Kernel;
-use Beable\Kernel\Handler;
+use Mu\App\Application;
+use Mu\Kernel;
+use Mu\Kernel\Handler;
 
 abstract class Extended extends Core
 {
@@ -40,8 +40,7 @@ abstract class Extended extends Core
 	{
 		if (!isset($this->handlers[$name])) {
 			$this->handlers[$name] = $handler;
-		}
-		else {
+		} else {
 			throw new Exception($name, Exception::CONTEXT_ALREADY_EXISTS);
 		}
 	}
@@ -111,7 +110,7 @@ abstract class Extended extends Core
 
 		// Get handler class
 		$type = ucfirst($type);
-		$class= $this->getNamespace().'\\Handler\\'.$type;
+		$class = $this->getNamespace() . '\\Handler\\' . $type;
 
 		try {
 			// Generate new handler and initialize it

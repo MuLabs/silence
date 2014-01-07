@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Session;
+namespace Mu\Kernel\Session;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Handler extends Kernel\Handler\Core
 {
