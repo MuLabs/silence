@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Model;
+namespace Mu\Kernel\Model;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Manager extends Kernel\Core
 {
@@ -15,7 +15,8 @@ abstract class Manager extends Kernel\Core
 	/**
 	 * @return array
 	 */
-	public function getProperties() {
+	public function getProperties()
+	{
 		return $this->properties;
 	}
 
@@ -165,7 +166,10 @@ abstract class Manager extends Kernel\Core
 
 			// Generate tables infos
 			$tableExtra = $handler->getStructureFromTableInfos($oneTableInfos);
-			$query = new Kernel\Db\Query('CREATE TABLE ' . $tableToken . ' (' . implode(', ', $properties) . ') ' . $tableExtra, array(), $this);
+			$query = new Kernel\Db\Query('CREATE TABLE ' . $tableToken . ' (' . implode(
+				', ',
+				$properties
+			) . ') ' . $tableExtra, array(), $this);
 			$query->setShortMode(true);
 			$handler->sendQuery($query);
 
@@ -311,7 +315,7 @@ abstract class Manager extends Kernel\Core
 	 */
 	public function getSpecificWhere()
 	{
-		return ':'.$this->getMainProperty().' = ?';
+		return ':' . $this->getMainProperty() . ' = ?';
 	}
 
 	abstract protected function getMainProperty();

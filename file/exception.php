@@ -1,17 +1,17 @@
 <?php
-namespace Beable\Kernel\File;
+namespace Mu\Kernel\File;
 
-use Beable\Kernel;
-use Beable\Kernel\Service;
+use Mu\Kernel;
+use Mu\Kernel\Service;
 
 class Exception extends Service\Exception
 {
-	const FILE_NOT_EXISTS 	= 100;
-	const INCORRECT_FORMAT 	= 101;
-	const FILE_NOT_READABLE	= 102;
-	const FILE_NOT_WRITABE	= 103;
-	const FUNCTION_NOT_IMPLEMENT= 104;
-	const FUNCTION_NOT_EXITS	= 105;
+	const FILE_NOT_EXISTS = 100;
+	const INCORRECT_FORMAT = 101;
+	const FILE_NOT_READABLE = 102;
+	const FILE_NOT_WRITABE = 103;
+	const FUNCTION_NOT_IMPLEMENT = 104;
+	const FUNCTION_NOT_EXITS = 105;
 
 	/**
 	 * @return string

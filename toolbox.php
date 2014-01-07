@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel;
+namespace Mu\Kernel;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Toolbox extends Service\Core
 {
@@ -704,8 +704,8 @@ class Toolbox extends Service\Core
 				break;
 			case '=':
 			default :
-			$string = $value;
-			break;
+				$string = $value;
+				break;
 		}
 
 		return $string;

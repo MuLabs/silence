@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Cache;
+namespace Mu\Kernel\Cache;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Exception extends Kernel\Exception
 {

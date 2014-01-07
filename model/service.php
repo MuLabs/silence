@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Model;
+namespace Mu\Kernel\Model;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
@@ -37,9 +37,9 @@ class Service extends Kernel\Service\Core
 	public function registerEntity($entityType, $classAlias, $bundleName = false)
 	{
 		if ($bundleName === false) {
-			$className = '\\Beable\\App\\Model\\Manager\\' . $classAlias;
+			$className = '\\Mu\\App\\Model\\Manager\\' . $classAlias;
 		} else {
-			$className = '\\Beable\\Bundle\\' . $bundleName . '\\Model\\Manager\\' . $classAlias;
+			$className = '\\Mu\\Bundle\\' . $bundleName . '\\Model\\Manager\\' . $classAlias;
 		}
 
 		$classAlias = strtolower($classAlias);

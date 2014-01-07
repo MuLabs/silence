@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Twig;
+namespace Mu\Kernel\View\Twig;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\View\Service
 {

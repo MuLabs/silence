@@ -1,16 +1,16 @@
 <?php
-namespace Beable\Kernel\Communication;
+namespace Mu\Kernel\Communication;
 
-use Beable\Kernel;
-use Beable\Kernel\Service;
+use Mu\Kernel;
+use Mu\Kernel\Service;
 
 class Exception extends Service\Exception
 {
-	const INCORRECT_FORMAT_CONTENT 		= 100;
-	const INCORRECT_FORMAT_DESTINATION 	= 101;
-	const INCORRECT_FORMAT_ORIGIN 		= 102;
+	const INCORRECT_FORMAT_CONTENT = 100;
+	const INCORRECT_FORMAT_DESTINATION = 101;
+	const INCORRECT_FORMAT_ORIGIN = 102;
 	const STATUS_NOT_READY = 103;
-	const SENDING_FAILURE  = 104;
+	const SENDING_FAILURE = 104;
 
 	/**
 	 * @return string

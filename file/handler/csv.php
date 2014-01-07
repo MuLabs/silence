@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\File\Handler;
+namespace Mu\Kernel\File\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Csv extends Kernel\File\Handler
 {
@@ -13,10 +13,12 @@ class Csv extends Kernel\File\Handler
 		if (!is_array($line)) {
 			$line = explode($this->sep_value, $line);
 		};
-		
-		foreach ($line as $key=>$value) {
+
+		foreach ($line as $key => $value) {
 			if (!preg_match('#^[0-9,]+$#', $value)) {
-				$line[$key] = $this->sep_string.html_entity_decode(htmlspecialchars_decode(preg_replace("#\\n#", " - ", $value))).$this->sep_string;
+				$line[$key] = $this->sep_string . html_entity_decode(
+						htmlspecialchars_decode(preg_replace("#\\n#", " - ", $value))
+					) . $this->sep_string;
 			}
 		}
 		return $line;
@@ -28,7 +30,7 @@ class Csv extends Kernel\File\Handler
 	 */
 	protected function getMimeType()
 	{
-		return \Beable\Kernel\Http\Header\Response::MIME_TYPE_CSV;
+		return \Mu\Kernel\Http\Header\Response::MIME_TYPE_CSV;
 	}
 
 	/**
@@ -40,7 +42,7 @@ class Csv extends Kernel\File\Handler
 			$line = explode($this->sep_value, $line);
 		}
 
-		if (is_array($line) && count($line)>0) {
+		if (is_array($line) && count($line) > 0) {
 			fputcsv($handle, $line);
 		}
 	}

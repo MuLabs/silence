@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Model;
+namespace Mu\Kernel\Model;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Entity extends Kernel\Core implements \JsonSerializable
 {

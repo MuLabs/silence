@@ -1,11 +1,11 @@
 <?php
-namespace Beable\Kernel\File;
+namespace Mu\Kernel\File;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
  * Class Service
- * @package Beable\Kernel\File
+ * @package Mu\Kernel\File
  * @author Olivier Stahl
  */
 class Service extends Kernel\Service\Extended
@@ -68,6 +68,6 @@ class Service extends Kernel\Service\Extended
 	 */
 	protected function getNamespace()
 	{
-		return '\\Beable\\Kernel\\File';
+		return __NAMESPACE__;
 	}
 }

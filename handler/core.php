@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Handler;
+namespace Mu\Kernel\Handler;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Core extends Kernel\Core
 {
@@ -43,7 +43,7 @@ abstract class Core extends Kernel\Core
 	protected function loadConfig()
 	{
 		$configManager = $this->getApp()->getConfigManager();
-		$configs = $configManager->get($this->configPrefix.$this->getClassName(), array());
+		$configs = $configManager->get($this->configPrefix . $this->getClassName(), array());
 
 		foreach ($configs as $context => $config) {
 			if ($context == $this->getContext()) {
@@ -80,6 +80,7 @@ abstract class Core extends Kernel\Core
 		// Return context:
 		return $this->context;
 	}
+
 	public function setContext($context = self::DEFAULT_CONTEXT)
 	{
 		if (!isset($this->context) && is_string($context) && $context != '') {

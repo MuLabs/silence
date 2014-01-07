@@ -1,10 +1,10 @@
 <?php
-namespace Beable\Kernel\Db;
+namespace Mu\Kernel\Db;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
- * @namespace Beable\Kernel\Db
+ * @namespace Mu\Kernel\Db
  */
 abstract class Result
 {

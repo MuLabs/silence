@@ -1,10 +1,10 @@
 <?php
-namespace Beable\Kernel\Db\Fake;
+namespace Mu\Kernel\Db\Fake;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 /**
- * @namespace Beable\Kernel\Db\Fake;
+ * @namespace Mu\Kernel\Db\Fake;
  */
 class Result extends Kernel\Db\Result
 {

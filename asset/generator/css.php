@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Asset\Generator;
+namespace Mu\Kernel\Asset\Generator;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Css extends Kernel\Asset\Generator
 {

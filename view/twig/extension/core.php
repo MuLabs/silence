@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Twig\Extension;
+namespace Mu\Kernel\View\Twig\Extension;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Core extends \Twig_Extension
 {

@@ -3,15 +3,15 @@
 function autoLoader($name)
 {
 	$path = '';
-	$prefix = substr($name, 0, strpos($name, '\\', strpos($name, '\\')+1)+1);
-	if ($prefix === 'Beable\\Kernel\\') {
-		$name = str_replace(array('Beable\\Kernel\\', '\\'), array('/', '/'), $name);
+	$prefix = substr($name, 0, strpos($name, '\\', strpos($name, '\\') + 1) + 1);
+	if ($prefix === 'Mu\\Kernel\\') {
+		$name = str_replace(array('Mu\\Kernel\\', '\\'), array('/', '/'), $name);
 		$path = KERNEL_PATH;
-	} elseif ($prefix === 'Beable\\App\\') {
-		$name = str_replace(array('Beable\\App\\', '\\'), array('/', '/'), $name);
+	} elseif ($prefix === 'Mu\\App\\') {
+		$name = str_replace(array('Mu\\App\\', '\\'), array('/', '/'), $name);
 		$path = APP_PATH;
-	} elseif ($prefix === 'Beable\\Bundle\\') {
-		$name = str_replace(array('Beable\\Bundle\\', '\\'), array('/', '/'), $name);
+	} elseif ($prefix === 'Mu\\Bundle\\') {
+		$name = str_replace(array('Mu\\Bundle\\', '\\'), array('/', '/'), $name);
 		$path = BUNDLE_PATH;
 	}
 

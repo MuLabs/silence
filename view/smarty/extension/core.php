@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Smarty\Extension;
+namespace Mu\Kernel\View\Smarty\Extension;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Core
 {

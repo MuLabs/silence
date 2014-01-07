@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Route\Dumper;
+namespace Mu\Kernel\Route\Dumper;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Nginx extends Kernel\Route\Dumper
 {

@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\View\Smarty;
+namespace Mu\Kernel\View\Smarty;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class View extends Kernel\View\View
 {

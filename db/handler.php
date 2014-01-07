@@ -1,32 +1,32 @@
 <?php
-namespace Beable\Kernel\Db;
+namespace Mu\Kernel\Db;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Handler extends Kernel\Core
 {
-	const PARAM_INT 	= 1;
-	const PARAM_STR 	= 2;
-	const PARAM_BOOL 	= 3;
-	const PARAM_FLOAT	= 4;
+	const PARAM_INT = 1;
+	const PARAM_STR = 2;
+	const PARAM_BOOL = 3;
+	const PARAM_FLOAT = 4;
 
 	protected $knowActions = array(
-		'tinyint' 	=> self::PARAM_INT,
-		'smallint' 	=> self::PARAM_INT,
+		'tinyint' => self::PARAM_INT,
+		'smallint' => self::PARAM_INT,
 		'mediumint' => self::PARAM_INT,
-		'int' 		=> self::PARAM_INT,
-		'bigint' 	=> self::PARAM_INT,
+		'int' => self::PARAM_INT,
+		'bigint' => self::PARAM_INT,
 		'timestamp' => self::PARAM_INT,
-		'float' 	=> self::PARAM_FLOAT,
-		'bool' 		=> self::PARAM_BOOL,
-		'string' 	=> self::PARAM_STR,
-		'varchar' 	=> self::PARAM_STR,
-		'char' 		=> self::PARAM_STR,
-		'blob' 		=> self::PARAM_STR,
-		'text' 		=> self::PARAM_STR,
+		'float' => self::PARAM_FLOAT,
+		'bool' => self::PARAM_BOOL,
+		'string' => self::PARAM_STR,
+		'varchar' => self::PARAM_STR,
+		'char' => self::PARAM_STR,
+		'blob' => self::PARAM_STR,
+		'text' => self::PARAM_STR,
 		'long_blob' => self::PARAM_STR,
 		'long_text' => self::PARAM_STR,
-		'date' 		=> self::PARAM_STR,
+		'date' => self::PARAM_STR,
 	);
 	protected $typeCheckValues = array(
 		Query::TYPE_SELECT,
@@ -116,7 +116,8 @@ abstract class Handler extends Kernel\Core
 			$subPropQuery = str_replace(
 				array(')', ',', ';', '(', '/', '\\'),
 				'',
-				$subPropQuery);
+				$subPropQuery
+			);
 
 			$property = explode('.', $subPropQuery);
 			$propertyCount = count($property);
@@ -169,8 +170,13 @@ abstract class Handler extends Kernel\Core
 		)) {
 			$strQuery = preg_replace(
 				'#:' . $property['manager'] . '\.' . $property['group'] . '\.' . $property['property'] . '([^\w\-]|$)#i',
-				$this->getManager($property)->getPropertyForDb($property['group'], $property['property'], $query->isShortMode()) . '$1',
-				$strQuery, 1
+				$this->getManager($property)->getPropertyForDb(
+					$property['group'],
+					$property['property'],
+					$query->isShortMode()
+				) . '$1',
+				$strQuery,
+				1
 			);
 		}
 		#endregion
@@ -183,9 +189,14 @@ abstract class Handler extends Kernel\Core
 		)) {
 			$property['manager'] = $query->getDefaultManager();
 			$strQuery = preg_replace(
-				'#:' . $property['group'] . '\.' . $property['property'].'([^\w\-]|$)#i',
-				$property['manager']->getPropertyForDb($property['group'], $property['property'], $query->isShortMode()) . '$1',
-				$strQuery, 1
+				'#:' . $property['group'] . '\.' . $property['property'] . '([^\w\-]|$)#i',
+				$property['manager']->getPropertyForDb(
+					$property['group'],
+					$property['property'],
+					$query->isShortMode()
+				) . '$1',
+				$strQuery,
+				1
 			);
 		}
 		#endregion
@@ -199,9 +210,14 @@ abstract class Handler extends Kernel\Core
 			$property['manager'] = $query->getDefaultManager();
 			$property['group'] = $query->getDefaultManager()->getDefaultGroup();
 			$strQuery = preg_replace(
-				'#:' . $property['property']. '([^\w\-]|$)#i',
-				$property['manager']->getPropertyForDb($property['group'], $property['property'], $query->isShortMode()) . '$1',
-				$strQuery, 1
+				'#:' . $property['property'] . '([^\w\-]|$)#i',
+				$property['manager']->getPropertyForDb(
+					$property['group'],
+					$property['property'],
+					$query->isShortMode()
+				) . '$1',
+				$strQuery,
+				1
 			);
 		}
 		#endregion
@@ -212,7 +228,8 @@ abstract class Handler extends Kernel\Core
 			$strQuery = preg_replace(
 				'#@' . $property['manager'] . '\.' . $property['group'] . '([^\w\-]|$)#i',
 				$this->getManager($property)->getGroupForDb($property['group']) . '$1',
-				$strQuery, 1
+				$strQuery,
+				1
 			);
 		}
 		#endregion
@@ -221,9 +238,10 @@ abstract class Handler extends Kernel\Core
 		while (preg_match('#@' . $groupPattern . '#i', $strQuery, $property)) {
 			$property['manager'] = $query->getDefaultManager();
 			$strQuery = preg_replace(
-				'#@' . $property['group']. '([^\w\-]|$)#i',
+				'#@' . $property['group'] . '([^\w\-]|$)#i',
 				$property['manager']->getGroupForDb($property['group']) . '$1',
-				$strQuery, 1
+				$strQuery,
+				1
 			);
 		}
 		#endregion
@@ -235,7 +253,8 @@ abstract class Handler extends Kernel\Core
 			$strQuery = preg_replace(
 				'#@([^\w\-]|$)#i',
 				$property['manager']->getGroupForDb($property['group'], $query->isShortMode()) . '$1',
-				$strQuery, 1
+				$strQuery,
+				1
 			);
 		}
 		#endregion

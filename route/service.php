@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Route;
+namespace Mu\Kernel\Route;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
@@ -140,7 +140,7 @@ class Service extends Kernel\Service\Core
 	public function dumpRoutes($type = 'Apache')
 	{
 		$this->loadRoutes();
-		$dumperName = '\\Beable\\Kernel\\Route\\Dumper\\' . $type;
+		$dumperName = '\\Mu\\Kernel\\Route\\Dumper\\' . $type;
 		/** @var Dumper $dumper */
 		$dumper = new $dumperName();
 		$dumper->dumpRoutes($this->getRoutes());

@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Communication;
+namespace Mu\Kernel\Communication;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 abstract class Handler extends Kernel\Handler\Core
 {
@@ -20,7 +20,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Attach one or more file to this communication thread
-	 * @param $files	List of file path separated by DELIMITER
+	 * @param $files    List of file path separated by DELIMITER
 	 * @return int
 	 */
 	public function attache($files)
@@ -48,7 +48,8 @@ abstract class Handler extends Kernel\Handler\Core
 	 * Try to send current message throw the handler
 	 * @throws Exception
 	 */
-	public function send()	{
+	public function send()
+	{
 		if ($this->getStatus() !== self::MESSAGE_READY) {
 			throw new Exception('sending', Exception::STATUS_NOT_READY);
 		}
@@ -98,7 +99,11 @@ abstract class Handler extends Kernel\Handler\Core
 			$this->content = $this->formatContent($message);
 			$this->checkStatus();
 		} catch (Exception $e) {
-			throw new Exception($e->getMessage().' -- '.substr($message, 0, 100).'...', Exception::INCORRECT_FORMAT_CONTENT);
+			throw new Exception($e->getMessage() . ' -- ' . substr(
+				$message,
+				0,
+				100
+			) . '...', Exception::INCORRECT_FORMAT_CONTENT);
 		}
 	}
 
@@ -132,7 +137,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Set destination, formated by the handler
-	 * @param mixed $to		Format : see handler formatDestination
+	 * @param mixed $to Format : see handler formatDestination
 	 * @throws Exception
 	 */
 	public function setDestination($to)
@@ -140,13 +145,16 @@ abstract class Handler extends Kernel\Handler\Core
 		try {
 			$formated = $this->formatDestination($to);
 			if (is_array($formated)) {
-				$this->destination = (!isset($this->destination)) ? $formated : array_merge($this->destination, $formated);
+				$this->destination = (!isset($this->destination)) ? $formated : array_merge(
+					$this->destination,
+					$formated
+				);
 			} else {
-				$this->destination.= (!isset($this->destination)) ? $formated : $this->delimiter.$formated;
+				$this->destination .= (!isset($this->destination)) ? $formated : $this->delimiter . $formated;
 			}
 			$this->checkStatus();
 		} catch (Exception $e) {
-			throw new Exception($e->getMessage().' -- '.$to, Exception::INCORRECT_FORMAT_DESTINATION);
+			throw new Exception($e->getMessage() . ' -- ' . $to, Exception::INCORRECT_FORMAT_DESTINATION);
 		}
 	}
 
@@ -161,7 +169,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Set the origin, formated by the handler
-	 * @param mixed $from	Format : see handler formatOrigin
+	 * @param mixed $from Format : see handler formatOrigin
 	 * @throws Exception
 	 */
 	public function setOrigin($from)
@@ -171,7 +179,7 @@ abstract class Handler extends Kernel\Handler\Core
 			$this->origin = (!is_array($formated)) ? $formated : array_shift($formated);
 			$this->checkStatus();
 		} catch (Exception $e) {
-			throw new Exception($e->getMessage().' -- '.$from, Exception::INCORRECT_FORMAT_ORIGIN);
+			throw new Exception($e->getMessage() . ' -- ' . $from, Exception::INCORRECT_FORMAT_ORIGIN);
 		}
 	}
 

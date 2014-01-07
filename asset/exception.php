@@ -1,7 +1,7 @@
 <?php
-namespace Beable\Kernel\Asset;
+namespace Mu\Kernel\Asset;
 
-use Beable\Kernel;
+use Mu\Kernel;
 
 class Exception extends Kernel\Exception
 {
@@ -19,10 +19,10 @@ class Exception extends Kernel\Exception
 				return 'Asset is empty : ' . $this->message;
 				break;
 			case self::INVALID_EXTENSION:
-				return 'Invalid extension : '.$this->message;
+				return 'Invalid extension : ' . $this->message;
 				break;
 			case self::FILE_NOT_FOUND:
-				return 'File not found : '.$this->message;
+				return 'File not found : ' . $this->message;
 				break;
 		}
 		return parent::getFormatedMessage();
