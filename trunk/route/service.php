@@ -33,19 +33,28 @@ class Service extends Kernel\Service\Core
 	public function selectRoute()
 	{
 		$this->loadRoutes();
-		$http_request = $this->getApp()->getHttp()->getRequest();
+		$httpRequest = $this->getApp()->getHttp()->getRequest();
 
 		foreach ($this->getRoutes() as $route) {
-			if ($route->check($http_request)) {
+			if ($route->check($httpRequest)) {
 				$this->setCurrentRoute($route);
 				$params = $route->getParameters();
 
 				foreach ($params as $key => $value) {
 					if (!is_int($key)) {
-						$http_request->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
+						$httpRequest->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 					}
 				}
 
+				if ($httpRequest->getMethod() == Kernel\Http\Request::METHOD_GET) {
+					$parameters = $httpRequest->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+					unset($parameters['rn']);
+					$url = $this->getUrl($route->getName(), $parameters);
+
+					if (str_replace($this->getApp()->getUrl(), '', $url) !== $httpRequest->getRequestUri()) {
+						$this->getApp()->redirect($route->getName(), $parameters, true);
+					}
+				}
 				return $route;
 			}
 		}

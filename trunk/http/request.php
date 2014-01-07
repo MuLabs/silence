@@ -83,7 +83,21 @@ class Request
 	 */
 	public function setMethod($method)
 	{
-		$this->method = $method;
+		switch ($method) {
+			default:
+			case 'GET':
+				$this->method = self::METHOD_GET;
+				break;
+			case 'POST':
+				$this->method = self::METHOD_POST;
+				break;
+			case 'PUSH':
+				$this->method = self::METHOD_PUSH;
+				break;
+			case 'HEAD':
+				$this->method = self::METHOD_HEAD;
+				break;
+		}
 	}
 
 	/**
@@ -314,6 +328,14 @@ class Request
 	public function getRequestUri()
 	{
 		return $this->requestUri;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getRequestScheme()
+	{
+		return $this->requestScheme;
 	}
 
 	/**
