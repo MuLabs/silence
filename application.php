@@ -25,28 +25,36 @@ abstract class Application
 	 ************************************************************************************/
 	public function __construct()
 	{
-		ob_start();
-		$this->startMicrotime = microtime(true);
-		if (isset($_GET['XHPROF'])) {
-			\xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+		try {
+			ob_start();
+			$this->startMicrotime = microtime(true);
+			if (isset($_GET['XHPROF'])) {
+				\xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+			}
+			$this->initialize();
+
+			#region Register Servicer
+			$servicer = new Service\Servicer();
+			$servicer->setApp($this);
+			$this->setServicer($servicer);
+			$this->registerDefaultServices();
+			$this->loadConfiguration();
+			$this->registerCustomServices();
+			#endregion
+
+			#region Register Bundler
+			$bundler = new Bundle\Bundler();
+			$bundler->setApp($this);
+			$this->setBundler($bundler);
+			$this->registerBundles();
+			#endregion
+		} catch (Kernel\EndException $e) {
+
+		} catch (Kernel\Exception $e) {
+			$this->getLogger()->log(__CLASS__, $e->getFormatedMessage());
+		} catch (\Exception $e) {
+			$this->getLogger()->log(__CLASS__, $e->getMessage());
 		}
-		$this->initialize();
-
-		#region Register Servicer
-		$servicer = new Service\Servicer();
-		$servicer->setApp($this);
-		$this->setServicer($servicer);
-		$this->registerDefaultServices();
-		$this->loadConfiguration();
-		$this->registerCustomServices();
-		#endregion
-
-		#region Register Bundler
-		$bundler = new Bundle\Bundler();
-		$bundler->setApp($this);
-		$this->setBundler($bundler);
-		$this->registerBundles();
-		#endregion
 	}
 
 	public function __destruct()
@@ -72,6 +80,7 @@ abstract class Application
 	private function registerDefaultServices()
 	{
 		$servicer = $this->getServicer();
+		$servicer->register('log', '\Mu\Kernel\Log\Service');
 		$servicer->register('toolbox', '\Mu\Kernel\Toolbox');
 		$servicer->register('http', '\Mu\Kernel\Http\Service');
 		$servicer->register('factory', '\Mu\Kernel\Factory');
@@ -243,6 +252,14 @@ abstract class Application
 	}
 
 	/**
+	 * @return Log\Service
+	 */
+	public function getLogger()
+	{
+		return $this->getServicer()->get('log');
+	}
+
+	/**
 	 * @return Db\Service
 	 */
 	public function getDatabase()
@@ -397,8 +414,16 @@ abstract class Application
 
 	public function start()
 	{
-		$this->route = $this->getRouteManager()->selectRoute();
-		$this->dispatch();
+		try {
+			$this->route = $this->getRouteManager()->selectRoute();
+			$this->dispatch();
+		} catch (Kernel\EndException $e) {
+
+		} catch (Kernel\Exception $e) {
+			$this->getLogger()->log(__CLASS__, $e->getFormatedMessage());
+		} catch (\Exception $e) {
+			$this->getLogger()->log(__CLASS__, $e->getMessage());
+		}
 	}
 
 	/**

@@ -35,6 +35,6 @@ class Text extends Kernel\File\Handler
 			$line = implode($this->sep_value, $line);
 		}
 
-		return fwrite($handle, $line);
+		return fwrite($handle, $line . "\r\n");
 	}
 }

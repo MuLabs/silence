@@ -43,9 +43,21 @@ class Handler extends Kernel\Db\Handler
 			$statement->bindValue($offset + 1, $value['value'], $type);
 		}
 
+		$time_a = microtime(true);
 		if (!$statement->execute()) {
 			throw new Exception(print_r($statement->errorInfo(), true), Exception::QUERY_FAIL);
 		}
+		$time = (microtime(true) - $time_a) * 1000;
+		if ($time > 1) {
+			$this->log(
+				__CLASS__,
+				array(
+					'query' => $query->getQuery(),
+					'time' => $time . ' ms',
+				)
+			);
+		}
+
 
 		return new Result($this, $statement);
 	}
@@ -89,18 +101,17 @@ class Handler extends Kernel\Db\Handler
 	public function query($query)
 	{
 		try {
-			if ($this->hasLogs()) {
-				$time_a = microtime(true);
-				$statement = $this->getLink()->query($query);
-				$time_b = microtime(true);
-				$this->getApp()->getDatabase()->log(
+			$time_a = microtime(true);
+			$statement = $this->getLink()->query($query);
+			$time = (microtime(true) - $time_a) * 1000;
+			if ($time > 1) {
+				$this->log(
+					__CLASS__,
 					array(
-						'query' => $query,
-						'time' => $time_b - $time_a
+						'query' => $query->getQuery(),
+						'time' => $time . ' ms',
 					)
 				);
-			} else {
-				$statement = $this->getLink()->query($query);
 			}
 
 			if (!$statement) {
