@@ -160,8 +160,11 @@ class Route extends Kernel\Core
 		$paramString = array();
 		$pattern = $this->getPattern();
 		foreach ($parameters as $key => $value) {
+			if ($value == '') {
+				continue;
+			}
 			$count = 0;
-			$pattern = preg_replace('#{' . $key . '}#ui', $value, $pattern, -1, $count);
+			$pattern = str_replace('{' . $key . '}', $value, $pattern, $count);
 
 			if (!$count) {
 				$paramString[] .= $key . '=' . $value;
@@ -169,15 +172,13 @@ class Route extends Kernel\Core
 		}
 
 		$defaultVars = $this->getDefaultVars();
-		if (preg_match_all('#{([^\/\}]+)}#ui', $pattern, $matches)) {
-			array_shift($matches);
-			foreach ($matches as $match) {
-				$match = reset($match);
-				if (!isset($defaultVars[$match])) {
-					throw new Exception($match, Exception::MISSING_PARAMETER);
-				}
+		foreach ($defaultVars as $key => $value) {
+			$pattern = str_replace('{' . $key . '}', $value, $pattern);
+		}
 
-				$pattern = preg_replace('#{' . $match . '}#ui', $defaultVars[$match], $pattern);
+		if (preg_match_all('#{([^\/\}]+)}#ui', $pattern, $matches)) {
+			if (count($matches) > 1) {
+				throw new Exception(reset($matches), Exception::MISSING_PARAMETER);
 			}
 		}
 
