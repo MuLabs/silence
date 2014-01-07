@@ -359,7 +359,11 @@ abstract class Application
 	 */
 	private function getControllerClassname()
 	{
-		return '\\Mu\\App\\Controller\\' . $this->getRoute()->getControllerName();
+		if ($this->getRoute()->getBundleName()) {
+			return '\\Mu\\Bundle\\'.$this->getRoute()->getBundleName().'\\Controller\\' . $this->getRoute()->getControllerName();
+		} else {
+			return '\\Mu\\App\\Controller\\' . $this->getRoute()->getControllerName();
+		}
 	}
 
 	/**
@@ -367,7 +371,11 @@ abstract class Application
 	 */
 	private function getControllerFilename()
 	{
-		return APP_CONTROLLER_PATH . '/' . strtolower($this->getRoute()->getControllerName()) . '.php';
+		if ($this->getRoute()->getBundleName()) {
+			return BUNDLE_PATH . '/'.strtolower($this->getRoute()->getBundleName()). '/controller/' . strtolower($this->getRoute()->getControllerName()) . '.php';
+		} else {
+			return APP_CONTROLLER_PATH . '/' . strtolower($this->getRoute()->getControllerName()) . '.php';
+		}
 	}
 
 	/************************************************************************************

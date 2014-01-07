@@ -7,6 +7,7 @@ class Route extends Kernel\Core
 {
 	private $parameters = array();
 	private $controllerName;
+	private $bundleName;
 	private $defaultVars = array();
 	private $pattern;
 	private $name;
@@ -25,6 +26,22 @@ class Route extends Kernel\Core
 	public function setControllerName($controllerName)
 	{
 		$this->controllerName = $controllerName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBundleName()
+	{
+		return $this->bundleName;
+	}
+
+	/**
+	 * @param string $bundleName
+	 */
+	public function setBundleName($bundleName)
+	{
+		$this->bundleName = $bundleName;
 	}
 
 	/**
