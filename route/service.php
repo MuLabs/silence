@@ -66,13 +66,13 @@ class Service extends Kernel\Service\Core
 
 		$routesConfig = require($filepath);
 		foreach ($routesConfig as $name => $routeConfig) {
-			if (!isset($routeConfig['pattern']) || !isset($routeConfig['controller']['class']) || !count($name)) {
+			if (!isset($routeConfig['pattern']) || !isset($routeConfig['controller']) || !count($name)) {
 				continue;
 			}
 
 			$default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
 
-			$route = $this->getApp()->getFactory()->getRoute($routeConfig['controller']['class']);
+			$route = $this->getApp()->getFactory()->getRoute($routeConfig['controller']);
 			$route->setPattern($routeConfig['pattern']);
 			$route->setDefaultVars($default);
 			$route->setName($name);
