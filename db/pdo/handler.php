@@ -5,6 +5,9 @@ use Mu\Kernel;
 
 class Handler extends Kernel\Db\Handler
 {
+	// Query minimal time for log (in ms)
+	const QUERY_LOG_LIMIT = 10;
+
 	private $typeToSQL = array(
 		'tinyint' => 'TINYINT',
 		'smallint' => 'SMALLINT',
@@ -48,7 +51,7 @@ class Handler extends Kernel\Db\Handler
 			throw new Exception(print_r($statement->errorInfo(), true), Exception::QUERY_FAIL);
 		}
 		$time = (microtime(true) - $time_a) * 1000;
-		if ($time > 1) {
+		if ($time > self::QUERY_LOG_LIMIT) {
 			$this->log(
 				__CLASS__,
 				array(
@@ -104,7 +107,7 @@ class Handler extends Kernel\Db\Handler
 			$time_a = microtime(true);
 			$statement = $this->getLink()->query($query);
 			$time = (microtime(true) - $time_a) * 1000;
-			if ($time > 1) {
+			if ($time > self::QUERY_LOG_LIMIT) {
 				$this->log(
 					__CLASS__,
 					array(
