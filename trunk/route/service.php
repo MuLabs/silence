@@ -76,6 +76,10 @@ class Service extends Kernel\Service\Core
 			$route->setPattern($routeConfig['pattern']);
 			$route->setDefaultVars($default);
 			$route->setName($name);
+
+			if (isset($routeConfig['bundle'])) {
+				$route->setBundleName($routeConfig['bundle']);
+			}
 			$this->registerRoute($route);
 		}
 	}
