@@ -404,11 +404,17 @@ abstract class Application
 	/**
 	 * @param string $routeName
 	 * @param array $parameters
+	 * @param bool $forceRedirection
 	 * @param bool $sendData
 	 * @return string
 	 */
-	public function redirect($routeName, array $parameters = array(), $sendData = true)
+	public function redirect($routeName, array $parameters = array(), $forceRedirection = false, $sendData = true)
 	{
+		if ($forceRedirection) {
+			$url = $this->getRouteManager()->getUrl($routeName, $parameters);
+			$this->getHttp()->getResponse()->getHeader()->setLocation($url);
+			$this->getHttp()->getResponse()->send();
+		}
 		foreach ($parameters as $key => $value) {
 			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_POST, $value);
 			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
@@ -429,7 +435,7 @@ abstract class Application
 	{
 		$parameters[Kernel\Route\Service::FRAGMENT_PARAM] = $fragmentName;
 
-		return $this->redirect($controllerName, $parameters, false);
+		return $this->redirect($controllerName, $parameters, false, false);
 	}
 
 	/**
