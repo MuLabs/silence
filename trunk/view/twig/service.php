@@ -33,6 +33,7 @@ class Service extends Kernel\View\Service
 		$this->getApp()->getToolbox()->registerAutoload(array('\\Twig_Extensions_Autoloader', 'autoload'));
 
 		$loader = new \Twig_Loader_Filesystem($this->getDir());
+		$loader->addPath(KERNEL_PATH.'/template/twig', 'template');
 		$this->twig = new \Twig_Environment($loader, array(
 			'cache' => ($this->getCompileDir()) ? $this->getCompileDir() : false,
 		));
