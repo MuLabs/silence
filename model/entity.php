@@ -115,6 +115,22 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	}
 
 	/**
+	 * @return array
+	 */
+	protected function getInitialValues()
+	{
+		return $this->initialValues;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getUnsavedChanges()
+	{
+		return $this->unsavedChanges;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function save()
@@ -132,6 +148,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$query = new Kernel\Db\Query($sql, $updateValues, $manager);
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
+		$this->unsavedChanges = array();
 
 		return true;
 	}
