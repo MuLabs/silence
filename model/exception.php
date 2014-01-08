@@ -12,6 +12,7 @@ class Exception extends Kernel\Exception
 	const INVALID_ENTITY = 5;
 	const INVALID_CREATE_PARAMETERS = 6;
 	const INVALID_ENTITY_BUNDLE = 7;
+	const NO_DB_HANDLER = 8;
 
 	/**
 	 * @return string
@@ -39,6 +40,9 @@ class Exception extends Kernel\Exception
 				break;
 			case self::INVALID_CREATE_PARAMETERS:
 				return 'Invalid creation parameters : ' . $this->message;
+				break;
+			case self::NO_DB_HANDLER:
+				return 'No db handler found for model : ' . $this->message;
 				break;
 			default:
 				return parent::getFormatedMessage();

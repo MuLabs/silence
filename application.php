@@ -13,6 +13,7 @@ abstract class Application
 	private $updateFunctions = array();
 	private $installFunctions = array();
 	private $startMicrotime = 0;
+	private $defaultDbContext;
 	protected $production = true;
 	protected $enableEsi = true;
 	protected $defaultDatabase;
@@ -177,6 +178,22 @@ abstract class Application
 	public function setDefaultDatabase($db)
 	{
 		$this->defaultDatabase = $db;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultDbContext()
+	{
+		return $this->defaultDbContext;
+	}
+
+	/**
+	 * @param string $context
+	 */
+	public function setDefaultDbContext($context)
+	{
+		$this->defaultDbContext = $context;
 	}
 
 	/**
@@ -650,6 +667,9 @@ abstract class Application
 		call_user_func($stdOut, $count . ' updates to do...');
 
 		$i = 1;
+		// Used into update files
+		$handler = $this->getDatabase()->getHandler($this->getDefaultDbContext());
+		$handler->disableLogs();
 		foreach ($updateTodo as $filename) {
 			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : '.$filename );
 			require_once(APP_UPDATE_PATH . '/' . $filename);
@@ -671,8 +691,8 @@ abstract class Application
 		}
 
 		call_user_func($stdOut, 'Removing database...');
-		$handler = $dbManager->getHandler('sys');
-		$handler->query('CREATE DATABASE `sys_empty`');
+		$handler = $dbManager->getHandler($this->getDefaultDbContext());
+		$handler->query('CREATE DATABASE IF NOT EXISTS `sys_empty`');
 		$handler->query('USE `sys_empty`');
 		$handler->query('DROP DATABASE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('CREATE DATABASE `' . $this->getDefaultDatabase() . '`');

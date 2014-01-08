@@ -9,6 +9,7 @@ abstract class Manager extends Kernel\Core
 	private $entities = array();
 	protected $properties = array();
 	private $entityType;
+	private $dbHandler;
 
 	private $entityClassname;
 
@@ -134,7 +135,7 @@ abstract class Manager extends Kernel\Core
 	 */
 	public function createStructure($stdOut = '\print')
 	{
-		$handler = $this->getApp()->getDatabase()->getHandler('sys');
+		$handler = $this->getDbHandler();
 		$entityClassname = strtolower($this->getEntityClassname());
 		call_user_func($stdOut, 'Start creating structure for entity ' . $entityClassname);
 		foreach ($this->properties as $table => $oneTableInfos) {
@@ -167,9 +168,9 @@ abstract class Manager extends Kernel\Core
 			// Generate tables infos
 			$tableExtra = $handler->getStructureFromTableInfos($oneTableInfos);
 			$query = new Kernel\Db\Query('CREATE TABLE ' . $tableToken . ' (' . implode(
-				', ',
-				$properties
-			) . ') ' . $tableExtra, array(), $this);
+					', ',
+					$properties
+				) . ') ' . $tableExtra, array(), $this);
 			$query->setShortMode(true);
 			$handler->sendQuery($query);
 
@@ -316,6 +317,32 @@ abstract class Manager extends Kernel\Core
 	public function getSpecificWhere()
 	{
 		return ':' . $this->getMainProperty() . ' = ?';
+	}
+
+	/**
+	 * @return Kernel\Db\Handler
+	 * @throws Exception
+	 */
+	public function getDbHandler()
+	{
+		$app = $this->getApp();
+		if (!isset($this->dbHandler)) {
+			$this->setDbHandler($app->getDatabase()->getHandler($app->getDefaultDbContext()));
+		}
+
+		if (!$this->dbHandler) {
+			throw new Exception(__CLASS__, Exception::NO_DB_HANDLER);
+		}
+
+		return $this->dbHandler;
+	}
+
+	/**
+	 * @param Kernel\Db\Handler $handler
+	 */
+	public function setDbHandler(Kernel\Db\Handler $handler)
+	{
+		$this->dbHandler = $handler;
 	}
 
 	abstract protected function getMainProperty();
