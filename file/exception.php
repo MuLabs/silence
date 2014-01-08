@@ -2,9 +2,8 @@
 namespace Mu\Kernel\File;
 
 use Mu\Kernel;
-use Mu\Kernel\Service;
 
-class Exception extends Service\Exception
+class Exception extends Kernel\Service\Exception
 {
 	const FILE_NOT_EXISTS = 100;
 	const INCORRECT_FORMAT = 101;
