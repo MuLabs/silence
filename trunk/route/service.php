@@ -50,8 +50,10 @@ class Service extends Kernel\Service\Core
 					$parameters = $httpRequest->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
 					unset($parameters['rn']);
 					$url = $this->getUrl($route->getName(), $parameters);
+					$url = substr($url, 0, strpos($url, '?'));
+					$currentUrl = substr($httpRequest->getRequestUri(), 0, strpos($httpRequest->getRequestUri(), '?'));
 
-					if (str_replace($this->getApp()->getUrl(), '', $url) !== $httpRequest->getRequestUri()) {
+					if (str_replace($this->getApp()->getUrl(), '', $url) !== $currentUrl) {
 						$this->getApp()->redirect($route->getName(), $parameters, true);
 					}
 				}
