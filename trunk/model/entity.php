@@ -130,7 +130,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 
 		$sql = 'UPDATE @ SET ' . $updateDatas . ' WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, $updateValues, $manager);
-		$handler = $this->getApp()->getDatabase()->getHandler('sys');
+		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
 		return true;
@@ -148,7 +148,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 
 		$sql = 'UPDATE @ SET :deleted = ? WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, array(1, $this->getId()), $manager);
-		$handler = $this->getApp()->getDatabase()->getHandler('sys');
+		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
 		return true;
@@ -162,7 +162,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$manager = $this->getManager();
 		$sql = 'DELETE FROM @ WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, array($this->getId()), $manager);
-		$handler = $this->getApp()->getDatabase()->getHandler('sys');
+		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
 		return true;

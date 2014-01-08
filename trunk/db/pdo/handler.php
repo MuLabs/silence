@@ -46,19 +46,25 @@ class Handler extends Kernel\Db\Handler
 			$statement->bindValue($offset + 1, $value['value'], $type);
 		}
 
-		$time_a = microtime(true);
-		if (!$statement->execute()) {
-			throw new Exception(print_r($statement->errorInfo(), true), Exception::QUERY_FAIL);
+		if ($this->hasLogs()) {
+			$time_a = microtime(true);
+			$result = $statement->execute();
+			$time = (microtime(true) - $time_a) * 1000;
+			if ($time > self::QUERY_LOG_LIMIT) {
+				$this->log(
+					__CLASS__,
+					array(
+						'query' => $query->getQuery(),
+						'time' => $time . ' ms',
+					)
+				);
+			}
+		} else {
+			$result = $statement->execute();
 		}
-		$time = (microtime(true) - $time_a) * 1000;
-		if ($time > self::QUERY_LOG_LIMIT) {
-			$this->log(
-				__CLASS__,
-				array(
-					'query' => $query->getQuery(),
-					'time' => $time . ' ms',
-				)
-			);
+
+		if (!$result) {
+			throw new Exception(print_r($statement->errorInfo(), true), Exception::QUERY_FAIL);
 		}
 
 
@@ -104,17 +110,21 @@ class Handler extends Kernel\Db\Handler
 	public function query($query)
 	{
 		try {
-			$time_a = microtime(true);
-			$statement = $this->getLink()->query($query);
-			$time = (microtime(true) - $time_a) * 1000;
-			if ($time > self::QUERY_LOG_LIMIT) {
-				$this->log(
-					__CLASS__,
-					array(
-						'query' => $query->getQuery(),
-						'time' => $time . ' ms',
-					)
-				);
+			if ($this->hasLogs()) {
+				$time_a = microtime(true);
+				$statement = $this->getLink()->query($query);
+				$time = (microtime(true) - $time_a) * 1000;
+				if ($time > self::QUERY_LOG_LIMIT) {
+					$this->log(
+						__CLASS__,
+						array(
+							'query' => $query,
+							'time' => $time . ' ms',
+						)
+					);
+				}
+			} else {
+				$statement = $this->getLink()->query($query);
 			}
 
 			if (!$statement) {

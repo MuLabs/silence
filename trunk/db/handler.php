@@ -34,6 +34,26 @@ abstract class Handler extends Kernel\Core
 	);
 
 	private $link;
+	private $hasLog;
+
+
+	public function enableLogs()
+	{
+		$this->hasLog = true;
+	}
+
+	public function disableLogs()
+	{
+		$this->hasLog = false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasLogs()
+	{
+		return $this->hasLog;
+	}
 
 	/**
 	 * @return mixed
