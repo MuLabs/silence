@@ -49,7 +49,7 @@ abstract class Application
 			$this->registerBundles();
 			#endregion
 		} catch (Kernel\EndException $e) {
-
+			// Normal exception (end of execution)
 		} catch (Kernel\Exception $e) {
 			$this->getLogger()->log(__CLASS__, $e->getFormatedMessage());
 		} catch (\Exception $e) {
