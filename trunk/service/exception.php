@@ -12,6 +12,7 @@ class Exception extends Kernel\Exception
 	const HANDLER_CREATION_ERROR = 4;
 	const HANDLER_CLOSURE_ERROR = 5;
 	const CONTEXT_ALREADY_EXISTS = 6;
+	const PARAMETER_TYPE_ERROR = 7;
 
 	/**
 	 * @return string
@@ -39,6 +40,9 @@ class Exception extends Kernel\Exception
 				break;
 			case self::CONTEXT_ALREADY_EXISTS:
 				return 'Context name is already registered -- ' . $this->message;
+				break;
+			case self::PARAMETER_TYPE_ERROR:
+				return 'Service type is incorrect -- ' . $this->message;
 				break;
 		}
 		return parent::getFormatedMessage();

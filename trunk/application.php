@@ -87,6 +87,7 @@ abstract class Application
 		$servicer->register('factory', '\Mu\Kernel\Factory');
 		$servicer->register('route', '\Mu\Kernel\Route\Service');
 		$servicer->register('config', '\Mu\Kernel\Config\Service');
+		$servicer->register('error', '\Mu\Kernel\Error\Service', array('type'=>'\Mu\Kernel\Error\Service'));
 	}
 
 	abstract protected function initialize();
@@ -266,6 +267,14 @@ abstract class Application
 	protected function setBundler(Bundle\Bundler $bm)
 	{
 		$this->bundler = $bm;
+	}
+
+	/**
+	 * @return Error\Service
+	 */
+	public function getErrorService()
+	{
+		return $this->getServicer()->get('error');
 	}
 
 	/**
