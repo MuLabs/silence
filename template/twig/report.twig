@@ -1,0 +1,36 @@
+{% 	if errorReport is not empty
+	or warningReport is not empty
+	or infoReport is not empty
+	or successReport is not empty
+%}
+	{% set display = '' %}
+{% else %}
+	{% set display = 'display:none' %}
+{% endif %}
+
+<div id="mu-report" style="{{ display }}">
+	{# Include errors #}
+	<div class="error">
+		{% for error in errorReport %}
+			<p>{{ error }}</p>
+		{% endfor %}
+	</div>
+	{# Include warnings #}
+	<div class="warn">
+		{% for warn in warningReport %}
+			<p>{{ warn }}</p>
+		{% endfor %}
+	</div>
+	{# Include infos #}
+	<div class="info">
+		{% for info in infoReport %}
+			<p>{{ info }}</p>
+		{% endfor %}
+	</div>
+	{# Include success #}
+	<div class="success">
+		{% for success in successReport %}
+			<p>{{ success }}</p>
+		{% endfor %}
+	</div>
+</div>
