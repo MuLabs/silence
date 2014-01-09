@@ -11,10 +11,10 @@ abstract class Controller extends Kernel\Core
 	const MESSAGE_INFO	= 'info';
 	const MESSAGE_SUCCESS='success';
 
-	/** @var $view Kernel\View\View */
-	protected $view;
 	protected $hasCache = false;
 	protected $cacheTtl = 60;
+	/** @var $view Kernel\View\View */
+	private $view;
 	private $fragmentName = null;
 	private $isFragmentExtracted = false;
 	private $messageTypes = array(self::MESSAGE_ERROR, self::MESSAGE_INFO, self::MESSAGE_SUCCESS, self::MESSAGE_WARN);
