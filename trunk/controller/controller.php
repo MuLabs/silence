@@ -98,12 +98,17 @@ abstract class Controller extends Kernel\Core
 	/**
 	 * Send an error via error service
 	 * @param int $code
+	 * @param string message
 	 */
-	public function error($code = 404)
+	public function error($code = 404, $message = null)
 	{
 		$method = "error$code";
 		$service= $this->getApp()->getErrorService();
-		$service->$method();
+		if ($message!==null) {
+			$service->$method($message);
+		} else {
+			$service->$method();
+		}
 	}
 
 	/**
