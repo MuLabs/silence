@@ -5,10 +5,19 @@ use Mu\Kernel;
 
 abstract class Controller extends Kernel\Core
 {
+	const REPORT_KEY 	= 'Report';
+	const MESSAGE_ERROR	= 'error';
+	const MESSAGE_WARN	= 'warning';
+	const MESSAGE_INFO	= 'info';
+	const MESSAGE_SUCCESS='success';
+
+	/** @var $view Kernel\View\View */
+	protected $view;
 	protected $hasCache = false;
 	protected $cacheTtl = 60;
 	private $fragmentName = null;
 	private $isFragmentExtracted = false;
+	private $messageTypes = array(self::MESSAGE_ERROR, self::MESSAGE_INFO, self::MESSAGE_SUCCESS, self::MESSAGE_WARN);
 
 	/************************************************************************************
 	 **  GETTERS / SETTERS                                                             **
@@ -114,6 +123,44 @@ abstract class Controller extends Kernel\Core
 		$response->send();
 	}
 
+	/**
+	 * Add a message to the current view
+	 * @param $message
+	 * @param string $type
+	 */
+	public function report($message, $type = self::MESSAGE_ERROR)
+	{
+		// Get the current view:
+		$view = $this->getView();
+		$data = $view->getVar($type.self::REPORT_KEY, array());
+
+		// Append message to the current ones:
+		if (is_array($message)) {
+			$data = array_merge($data, $message);
+		} else {
+			$data[] = $message;
+		}
+
+		// Register all messages:
+		$view->setVar($type.self::REPORT_KEY, $data);
+	}
+	public function reportError($error)
+	{
+		$this->report($error, self::MESSAGE_ERROR);
+	}
+	public function reportInfo($info)
+	{
+		$this->report($info, self::MESSAGE_INFO);
+	}
+	public function reportSuccess($success)
+	{
+		$this->report($success, self::MESSAGE_SUCCESS);
+	}
+	public function reportWarning($warn)
+	{
+		$this->report($warn, self::MESSAGE_WARN);
+	}
+
 	/************************************************************************************
 	 **  SHORTCUTS                                                                     **
 	 ************************************************************************************/
@@ -121,9 +168,13 @@ abstract class Controller extends Kernel\Core
 	/**
 	 * @return \Mu\Kernel\View\View
 	 */
-	protected function getView()
+	protected function getView($bNew = false)
 	{
-		return $this->getApp()->getViewManager()->getView();
+		if (!isset($this->view) || $bNew) {
+			$this->view = $this->getApp()->getViewManager()->getView();
+		}
+
+		return $this->view;
 	}
 
 	/**
@@ -176,6 +227,42 @@ abstract class Controller extends Kernel\Core
 			Kernel\Http\Request::PARAM_TYPE_REQUEST,
 			$default
 		);
+	}
+
+	/**
+	 * Alias of application redirection
+	 * This method allow to transmit reports if they are integers
+	 * @param $routeName
+	 * @param array $parameters
+	 * @param bool $forceRedirection
+	 * @param bool $sendData
+	 * @return string
+	 */
+	public function redirect($routeName, array $parameters = array(), $forceRedirection = false, $sendData = true)
+	{
+		// Get view:
+		$view = $this->getView();
+
+		// Add reports codes to the parameters:
+		// !! Only transmit integers !!
+		foreach ($this->messageTypes as $type) {
+			if (isset($parameters[$type])) {
+				continue;
+			}
+
+			$messages = [];
+			foreach ($view->getVar($type.self::REPORT_KEY, []) as $report) {
+				if (is_int($report)) {
+					$messages[] = $report;
+				}
+			}
+			if (!empty($messages)) {
+				$parameters[$type] = implode(',', $messages);
+			}
+		}
+
+		// Return application redirection:
+		return $this->getApp()->redirect($routeName, $parameters, $forceRedirection, $sendData);
 	}
 
 	/**
