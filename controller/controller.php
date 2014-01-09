@@ -95,32 +95,15 @@ abstract class Controller extends Kernel\Core
 		return call_user_func(array($this, $fragmentName . 'Fragment'));
 	}
 
-	public function error302()
-	{
-		$response = $this->getApp()->getHttp()->getResponse();
-		$response->getHeader()->setCode(302);
-		$response->send();
-	}
-
-	public function error401()
-	{
-		$response = $this->getApp()->getHttp()->getResponse();
-		$response->getHeader()->setCode(401);
-		$response->send();
-	}
-
 	/**
-	 * @param string $message
+	 * Send an error via error service
+	 * @param int $code
 	 */
-	public function error404($message = '')
+	public function error($code = 404)
 	{
-		if (!$this->getApp()->isProduction()) {
-			echo 'ERROR 404 : ' . $message;
-			exit;
-		}
-		$response = $this->getApp()->getHttp()->getResponse();
-		$response->getHeader()->setCode(404);
-		$response->send();
+		$method = "error$code";
+		$service= $this->getApp()->getErrorService();
+		$service->$method();
 	}
 
 	/**
