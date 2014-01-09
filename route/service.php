@@ -158,6 +158,7 @@ class Service extends Kernel\Service\Core
 		$dumperName = '\\Mu\\Kernel\\Route\\Dumper\\' . $type;
 		/** @var Dumper $dumper */
 		$dumper = new $dumperName();
+		$dumper->setApp($this->getApp());
 		$dumper->dumpRoutes($this->getRoutes());
 	}
 }
