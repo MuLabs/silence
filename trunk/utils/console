@@ -77,7 +77,8 @@ try {
 			break;
 		case 'install':
 			display(
-				"Installing application...\n/!\\ WARNING : Installing application when your application is already install delete all your old datas /!\\"
+				"Installing application...\n/!\\ WARNING : Installing application when your application is already install delete all your old datas /!\\\nConcerned database : " . $app->getDefaultDatabase(
+				)
 			);
 			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
 				$app->install('\Mu\display');
