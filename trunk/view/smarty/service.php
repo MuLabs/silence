@@ -9,17 +9,34 @@ class Service extends Kernel\View\Service
 	protected $specificDir = 'smarty';
 
 	/**
+	 * @param $smarty
+	 */
+	public function setSmarty(\Smarty $smarty)
+	{
+		$this->smarty = $smarty;
+	}
+
+	/**
+	 * @return \Smarty
+	 */
+	public function getSmarty()
+	{
+		if (!$this->smarty) {
+			$this->initialize();
+		}
+
+		return $this->smarty;
+	}
+
+	/**
 	 * @return View
 	 * @throws Kernel\View\Exception
 	 */
 	public function getView()
 	{
-		if (!$this->smarty) {
-			$this->initialize();
-		}
 		/** @var View $view */
 		$view = parent::getView();
-		$view->setSmarty($this->smarty);
+		$view->setSmarty($this->getSmarty());
 
 		return $view;
 	}
