@@ -46,8 +46,8 @@ class Service extends Kernel\Service\Core
 					}
 				}
 
-				if ($httpRequest->getMethod() == Kernel\Http\Request::METHOD_GET) {
-					$parameters = $httpRequest->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+				$parameters = $httpRequest->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+				if ($httpRequest->getMethod() == Kernel\Http\Request::METHOD_GET && !isset($parameters[self::FRAGMENT_PARAM])) {
 					unset($parameters['rn']);
 					$url = $this->getUrl($route->getName(), $parameters);
 					$url = substr($url, 0, strpos($url, '?'));
