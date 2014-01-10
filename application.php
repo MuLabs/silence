@@ -703,7 +703,7 @@ abstract class Application
 		$handler = $dbManager->getHandler($this->getDefaultDbContext());
 		$handler->query('CREATE DATABASE IF NOT EXISTS `sys_empty`');
 		$handler->query('USE `sys_empty`');
-		$handler->query('DROP IF EXISTS DATABASE `' . $this->getDefaultDatabase() . '`');
+		$handler->query('DROP DATABASE IF EXISTS `' . $this->getDefaultDatabase() . '`');
 		$handler->query('CREATE DATABASE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('USE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('DROP DATABASE `sys_empty`');
