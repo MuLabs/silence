@@ -41,29 +41,35 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
-	 * @param string $widgetName
+	 * @param string $sectionName
 	 * @param Widget|string $widget
+	 * @throws Exception
 	 */
-	public function registerWidget($widgetName, $widget)
+	public function registerWidget($sectionName, $widget)
 	{
-		$widgetName = strtolower($widgetName);
+		$sectionName = strtolower($sectionName);
+		$section = $this->getSection($sectionName);
+
+		if (isset($section['hasWidget']) && $section['hasWidget'] === false) {
+			throw new Exception($sectionName, Exception::WIDGET_NOT_ALLOWED);
+		}
+
 		if ($widget instanceof Widget) {
-			$this->widgetsInstance[$widgetName] = $widget;
-			$this->widgets[$widgetName] = get_class($widget);
-		} else {
-			$this->widgets[$widgetName] = $widget;
+			$this->widgets[$sectionName][] = $widget;
 		}
 	}
 
 	/**
 	 * @return Widget[]
 	 */
-	public function getWidgets()
+	public function getAllWidgets()
 	{
-		if (count($this->widgetsInstance) != count($this->widgets)) {
-			foreach ($this->widgets as $oneWidget) {
-				if (!isset($this->widgetsInstance[$oneWidget])) {
-					$this->widgetsInstance[$oneWidget] = $this->getApp()->getFactory()->get($oneWidget);
+		if (count($this->widgetsInstance, COUNT_RECURSIVE) != count($this->widgets, COUNT_RECURSIVE)) {
+			foreach ($this->widgets as $sectionName => $oneSectionWidgets) {
+				foreach ($oneSectionWidgets as $key => $oneWidget) {
+					if (!isset($this->widgetsInstance[$sectionName][$key])) {
+						$this->widgetsInstance[$sectionName][$key] = $this->getApp()->getFactory()->get($oneWidget);
+					}
 				}
 			}
 		}
@@ -72,21 +78,31 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
-	 * @param $widgetName
-	 * @return string
+	 * @param $sectionName
+	 * @return Widget[]
 	 * @throws Exception
 	 */
-	public function getWidget($widgetName)
+	public function getSectionWidgets($sectionName)
 	{
-		if (!isset($this->widgets[$widgetName]) && !isset($this->widgetsInstance[$widgetName])) {
-			throw new Exception($widgetName, Exception::WIDGET_NOT_FOUND);
+		$section = $this->getSection($sectionName);
+
+		if (isset($section['hasWidget']) && $section['hasWidget'] === false) {
+			throw new Exception($sectionName, Exception::WIDGET_NOT_ALLOWED);
 		}
 
-		if (!$this->widgetsInstance[$widgetName]) {
-			$this->widgetsInstance[$widgetName] = $this->getApp()->getFactory()->get($widgetName);
+		if (!isset($this->widgets[$sectionName]) && !isset($this->widgetsInstance[$sectionName])) {
+			return array();
 		}
 
-		return $this->widgetsInstance[$widgetName];
+		if (count($this->widgetsInstance[$sectionName]) != count($this->widgets[$sectionName])) {
+			foreach ($this->widgets[$sectionName] as $key => $oneWidget) {
+				if (!isset($this->widgetsInstance[$sectionName][$key])) {
+					$this->widgetsInstance[$key] = $this->getApp()->getFactory()->get($oneWidget);
+				}
+			}
+		}
+
+		return $this->widgetsInstance[$sectionName];
 	}
 
 	/**
