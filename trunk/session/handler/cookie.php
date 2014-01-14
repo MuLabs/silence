@@ -84,7 +84,7 @@ class Cookie extends Kernel\Session\Handler
 		// Force the cookie to be cleaned if needed, but after rendering:
 		if (count($this->info) == 0) {
 			foreach ($this->__getCookie() as $key => $value) {
-				setcookie($this->getContext() . '[' . $key . ']', null, -1);
+				setcookie($this->getContext() . '[' . $key . ']', null, -1, '/');
 			}
 		} else {
 			// Set protected keys:
