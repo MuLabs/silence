@@ -54,8 +54,34 @@ class Service extends Kernel\Service\Core
 			throw new Exception($sectionName, Exception::WIDGET_NOT_ALLOWED);
 		}
 
-		if ($widget instanceof Widget) {
-			$this->widgets[$sectionName][] = $widget;
+		$this->widgets[$sectionName][] = $widget;
+	}
+
+	/**
+	 * @param string $widgetClassName
+	 * @return Widget
+	 * @throws Exception
+	 */
+	private function generateWidget($widgetClassName)
+	{
+		$widget = $this->getApp()->getFactory()->get($widgetClassName);
+
+		if (!$widget instanceof Widget) {
+			throw new Exception($widgetClassName, Exception::INVALID_WIDGET_OBJECT);
+		}
+
+		return $widget;
+	}
+
+	private function generateSectionWidgets($sectionName)
+	{
+		// Only if not done
+		if (isset($this->widgetsInstance[$sectionName])) {
+			return;
+		}
+		foreach ($this->widgets[$sectionName] as $oneWidget) {
+			$widget = $this->generateWidget($oneWidget);
+			$this->widgetsInstance[$sectionName][$widget->getName()] = $widget;
 		}
 	}
 
@@ -66,11 +92,7 @@ class Service extends Kernel\Service\Core
 	{
 		if (count($this->widgetsInstance, COUNT_RECURSIVE) != count($this->widgets, COUNT_RECURSIVE)) {
 			foreach ($this->widgets as $sectionName => $oneSectionWidgets) {
-				foreach ($oneSectionWidgets as $key => $oneWidget) {
-					if (!isset($this->widgetsInstance[$sectionName][$key])) {
-						$this->widgetsInstance[$sectionName][$key] = $this->getApp()->getFactory()->get($oneWidget);
-					}
-				}
+				$this->generateSectionWidgets($sectionName);
 			}
 		}
 
@@ -90,16 +112,15 @@ class Service extends Kernel\Service\Core
 			throw new Exception($sectionName, Exception::WIDGET_NOT_ALLOWED);
 		}
 
-		if (!isset($this->widgets[$sectionName]) && !isset($this->widgetsInstance[$sectionName])) {
+		if (!isset($this->widgets[$sectionName])) {
 			return array();
 		}
 
-		if (count($this->widgetsInstance[$sectionName]) != count($this->widgets[$sectionName])) {
-			foreach ($this->widgets[$sectionName] as $key => $oneWidget) {
-				if (!isset($this->widgetsInstance[$sectionName][$key])) {
-					$this->widgetsInstance[$key] = $this->getApp()->getFactory()->get($oneWidget);
-				}
-			}
+		if (!isset($this->widgetsInstance[$sectionName]) || count($this->widgetsInstance[$sectionName]) != count(
+				$this->widgets[$sectionName]
+			)
+		) {
+			$this->generateSectionWidgets($sectionName);
 		}
 
 		return $this->widgetsInstance[$sectionName];

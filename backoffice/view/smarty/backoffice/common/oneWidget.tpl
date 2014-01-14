@@ -3,9 +3,9 @@
 {assign var=title   value=$widget->getTitle()}
 
 <div class="widget">
-	<h3 class="handle">{$object->getTitle()}</h3>
+	<h3 class="handle">{$widget->getTitle()}</h3>
 
 	<div>
-		{$widgetContent}
+		{if isset($widgetContent)}{$widgetContent}{/if}
 	</div>
 </div>
