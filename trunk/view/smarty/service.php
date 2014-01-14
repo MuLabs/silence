@@ -47,8 +47,9 @@ class Service extends Kernel\View\Service
 		$this->smarty = new \Smarty();
 
 		$this->smarty->setTemplateDir($this->getDir());
+		$this->smarty->addTemplateDir(KERNEL_PATH . '/backoffice/view/smarty/');
 		$this->smarty->setCompileDir($this->getCompileDir());
-		//$this->smarty->registerFilter('pre', array($this, 'stripPrefilter'));
+		$this->smarty->registerFilter('pre', array($this, 'stripPrefilter'));
 		$this->caching = 0;
 
 		$this->getApp()->getToolbox()->registerAutoload('\\smartyAutoload');

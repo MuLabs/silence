@@ -87,12 +87,15 @@ abstract class Application
 		$servicer->register('factory', '\Mu\Kernel\Factory');
 		$servicer->register('route', '\Mu\Kernel\Route\Service');
 		$servicer->register('config', '\Mu\Kernel\Config\Service');
-		$servicer->register('error', '\Mu\Kernel\Error\Service', array('type'=>'\Mu\Kernel\Error\Service'));
+		$servicer->register('error', '\Mu\Kernel\Error\Service', array('type' => '\Mu\Kernel\Error\Service'));
 	}
 
 	abstract protected function initialize();
+
 	abstract protected function loadConfiguration();
+
 	abstract protected function registerCustomServices();
+
 	abstract protected function registerBundles();
 
 	protected function initializeUpdate()
@@ -146,7 +149,8 @@ abstract class Application
 	/**
 	 * @param string $siteUrl
 	 */
-	public function setSiteUrl($siteUrl) {
+	public function setSiteUrl($siteUrl)
+	{
 		$this->siteUrl = $siteUrl;
 	}
 
@@ -161,7 +165,8 @@ abstract class Application
 	/**
 	 * @param string $projectName
 	 */
-	public function setProjectName($projectName) {
+	public function setProjectName($projectName)
+	{
 		$this->projectName = $projectName;
 	}
 
@@ -398,12 +403,21 @@ abstract class Application
 	}
 
 	/**
+	 * @return Kernel\Backoffice\Service
+	 */
+	public function getBackofficeService()
+	{
+		return $this->getServicer()->get('backoffice');
+	}
+
+	/**
 	 * @return string
 	 */
 	private function getControllerClassname()
 	{
 		if ($this->getRoute()->getBundleName()) {
-			return '\\Mu\\Bundle\\'.$this->getRoute()->getBundleName().'\\Controller\\' . $this->getRoute()->getControllerName();
+			return '\\Mu\\Bundle\\' . $this->getRoute()->getBundleName() . '\\Controller\\' . $this->getRoute(
+			)->getControllerName();
 		} else {
 			return '\\Mu\\App\\Controller\\' . $this->getRoute()->getControllerName();
 		}
@@ -415,7 +429,9 @@ abstract class Application
 	private function getControllerFilename()
 	{
 		if ($this->getRoute()->getBundleName()) {
-			return BUNDLE_PATH . '/'.strtolower($this->getRoute()->getBundleName()). '/controller/' . strtolower($this->getRoute()->getControllerName()) . '.php';
+			return BUNDLE_PATH . '/' . strtolower($this->getRoute()->getBundleName()) . '/controller/' . strtolower(
+				$this->getRoute()->getControllerName()
+			) . '.php';
 		} else {
 			return APP_CONTROLLER_PATH . '/' . strtolower($this->getRoute()->getControllerName()) . '.php';
 		}
@@ -680,7 +696,7 @@ abstract class Application
 		$handler = $this->getDatabase()->getHandler($this->getDefaultDbContext());
 		$handler->disableLogs();
 		foreach ($updateTodo as $filename) {
-			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : '.$filename );
+			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
 			require_once(APP_UPDATE_PATH . '/' . $filename);
 			touch(APP_UPDATE_DONE_PATH . '/' . $filename);
 			call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
