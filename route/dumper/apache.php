@@ -10,7 +10,7 @@ class Apache extends Kernel\Route\Dumper
 	 */
 	public function dumpRoutes($routes)
 	{
-		$content = "RewriteEngine On\n\n";
+		$content = "RewriteEngine On\n\nRewriteRule ^favicon.ico$ - [L]\n\n";
 
 		foreach ($routes as $route) {
 			$infos = $this->prepareRuleVars($route);
