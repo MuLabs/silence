@@ -14,7 +14,7 @@ abstract class Widget extends Kernel\Core
 	 */
 	public function getName()
 	{
-		return substr(get_called_class(), strrpos(get_called_class(), '\\'));
+		return strtolower(substr(get_called_class(), strrpos(get_called_class(), '\\') + 1));
 	}
 
 	/**
