@@ -7,7 +7,7 @@
 			<ul>
 				<li>
 					{foreach from=$section['sub'] item=subSection}
-						{include 'oneSection.tpl' section=$subSection}
+						{include 'backoffice/common/oneSection.tpl' section=$subSection}
 					{/foreach}
 				</li>
 			</ul>
