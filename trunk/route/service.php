@@ -77,6 +77,21 @@ class Service extends Kernel\Service\Core
 
 		$routesConfig = require($filepath);
 		foreach ($routesConfig as $name => $routeConfig) {
+			// Replace route by its alias if needed:
+			if (isset($routeConfig['alias']) && isset($routesConfig[$routeConfig['alias']])) {
+				$aliasName   = $routeConfig['alias'];
+				$aliasConfig = $routesConfig[$aliasName];
+
+				// Test if a pattern has been set, else complete it:
+				if (!isset($routeConfig['pattern']) && isset($aliasConfig['pattern'])) {
+					$routeConfig['pattern'] = str_replace($aliasName, $name, $aliasConfig['pattern']);
+				}
+
+				// Merge both configurations:
+				$routeConfig = array_merge($aliasConfig, $routeConfig);
+			}
+
+			// Test if the route is correctly configurated:
 			if (!isset($routeConfig['pattern']) || !isset($routeConfig['controller']) || !count($name)) {
 				continue;
 			}
