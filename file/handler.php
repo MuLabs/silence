@@ -7,12 +7,10 @@ use Mu\Kernel\Http;
 abstract class Handler extends Kernel\Handler\Core
 {
 	const DEFAULT_SEPARATOR_LINE = "\n";
-	const DEFAULT_SEPARATOR_STRING = '"';
 	const DEFAULT_SEPARATOR_VALUE = ',';
 
 	protected $configPrefix = 'file_';
 	protected $sep_line = self::DEFAULT_SEPARATOR_LINE;
-	protected $sep_string = self::DEFAULT_SEPARATOR_STRING;
 	protected $sep_value = self::DEFAULT_SEPARATOR_VALUE;
 	protected $content = array();
 	protected $appendHandler = array();
@@ -169,7 +167,7 @@ abstract class Handler extends Kernel\Handler\Core
 		$http->setContent($content);
 		$http->send();
 
-		// Exite if needed:
+		// End with success exception:
 		throw new Kernel\EndException();
 	}
 

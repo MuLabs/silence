@@ -16,9 +16,10 @@ class Csv extends Kernel\File\Handler
 
 		foreach ($line as $key => $value) {
 			if (!preg_match('#^[0-9,]+$#', $value)) {
-				$line[$key] = $this->sep_string . html_entity_decode(
-						htmlspecialchars_decode(preg_replace("#\\n#", " - ", $value))
-					) . $this->sep_string;
+				$value = preg_replace("#\\n#", " - ", $value);	// Replace carriage returns
+				$value = htmlspecialchars_decode($value);
+				$value = html_entity_decode($value);
+				$line[$key] = $value;
 			}
 		}
 		return $line;
