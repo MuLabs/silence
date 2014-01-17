@@ -78,13 +78,14 @@ class Service extends Kernel\Service\Core
 		$routesConfig = require($filepath);
 		foreach ($routesConfig as $name => $routeConfig) {
 			// Replace route by its alias if needed:
+			$aliasName = null;
 			if (isset($routeConfig['alias']) && isset($routesConfig[$routeConfig['alias']])) {
 				$aliasName   = $routeConfig['alias'];
 				$aliasConfig = $routesConfig[$aliasName];
 
 				// Test if a pattern has been set, else complete it:
 				if (!isset($routeConfig['pattern']) && isset($aliasConfig['pattern'])) {
-					$routeConfig['pattern'] = str_replace($aliasName, $name, $aliasConfig['pattern']);
+					$routeConfig['pattern'] = preg_replace("#^$aliasName#", $name, $aliasConfig['pattern'], 1);
 				}
 
 				// Merge both configurations:
@@ -96,12 +97,13 @@ class Service extends Kernel\Service\Core
 				continue;
 			}
 
+			// Initialize route object:
 			$default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
-
 			$route = $this->getApp()->getFactory()->getRoute($routeConfig['controller']);
 			$route->setPattern($routeConfig['pattern']);
 			$route->setDefaultVars($default);
 			$route->setName($name);
+			$route->setAlias($aliasName);
 
 			if (isset($routeConfig['bundle'])) {
 				$route->setBundleName($routeConfig['bundle']);

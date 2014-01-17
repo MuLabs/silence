@@ -11,6 +11,7 @@ class Route extends Kernel\Core
 	private $defaultVars = array();
 	private $pattern;
 	private $name;
+	private $alias;
 
 	/**
 	 * @return string
@@ -193,5 +194,25 @@ class Route extends Kernel\Core
 		}
 
 		return $this->getApp()->getUrl() . str_replace('//', '/', $pattern . $paramString);
+	}
+
+	public function getAlias()
+	{
+		return $this->alias;
+	}
+	public function setAlias($alias)
+	{
+		if (is_string($alias)) {
+			$this->alias = $alias;
+		}
+	}
+
+	/**
+	 * Is this route is an alias
+	 * @return bool
+	 */
+	public function isAlias()
+	{
+		return (isset($this->alias));
 	}
 }
