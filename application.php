@@ -515,6 +515,11 @@ abstract class Application
 		$this->includeControllerFile();
 		$this->controller = $this->generateControllerObject();
 
+		// If the current route is an alias, set Response header code to 301:
+		if ($this->getRoute()->isAlias()) {
+			$this->getHttp()->getResponse()->setCode(301);
+		}
+
 		$response = $this->getHttp()->getResponse();
 		$content = $this->fetch();
 

@@ -38,6 +38,15 @@ class Response
 	}
 
 	/**
+	 * Set response code
+	 * @param $code
+	 */
+	public function setCode($code = 200)
+	{
+		$this->getHeader()->setCode($code);
+	}
+
+	/**
 	 * @return Header\Response
 	 */
 	public function getHeader()
