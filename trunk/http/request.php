@@ -133,7 +133,7 @@ class Request
 				break;
 
 			case self::PARAM_TYPE_REQUEST:
-				return (isset($_REQUEST[$label])) ? $_REQUEST[$label] : $default;
+				return (isset($_POST[$label])) ? $_POST[$label] : (isset($_GET[$label]) ? $_GET[$label] : $default);
 				break;
 
 			case self::PARAM_TYPE_SESSION:
