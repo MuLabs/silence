@@ -8,10 +8,12 @@ abstract class Handler extends Kernel\Handler\Core
 {
 	const DEFAULT_SEPARATOR_LINE = "\n";
 	const DEFAULT_SEPARATOR_VALUE = ',';
+	const DEFAULT_PROTECTOR_VALUE = '"';
 
 	protected $configPrefix = 'file_';
 	protected $sep_line = self::DEFAULT_SEPARATOR_LINE;
 	protected $sep_value = self::DEFAULT_SEPARATOR_VALUE;
+	protected $pro_value = self::DEFAULT_PROTECTOR_VALUE;
 	protected $content = array();
 	protected $appendHandler = array();
 	private $filename;
@@ -111,12 +113,12 @@ abstract class Handler extends Kernel\Handler\Core
 
 		// Output headers:
 		if (is_array($header)) {
-			$this->writeLine($handle, $this->toString($header));
+			$this->writeLine($handle, $header);
 		}
 
 		// Output content:
 		foreach ($this->content as $line) {
-			$this->writeLine($handle, $this->toString($line));
+			$this->writeLine($handle, $line);
 		}
 
 		// Close file handler:

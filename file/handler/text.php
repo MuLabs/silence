@@ -31,10 +31,6 @@ class Text extends Kernel\File\Handler
 	 */
 	protected function writeLine($handle, $line)
 	{
-		if (is_array($line)) {
-			$line = implode($this->sep_value, $line);
-		}
-
-		return fwrite($handle, $line . "\r\n");
+		return fwrite($handle, $this->toString($line) . "\r\n");
 	}
 }
