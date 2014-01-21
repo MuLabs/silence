@@ -664,6 +664,12 @@ class Toolbox extends Service\Core
 	public function getValidComparator($string)
 	{
 		switch ($string) {
+			case '>=':
+				$string = '>=';
+				break;
+			case '<=':
+				$string = '<=';
+				break;
 			case '>':
 				$string = '>';
 				break;
