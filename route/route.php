@@ -13,6 +13,10 @@ class Route extends Kernel\Core
 	private $name;
 	private $alias;
 
+	private $allowedFormats = array(self::FORMAT_HTML, self::FORMAT_JSON);
+	const FORMAT_HTML = 'html';
+	const FORMAT_JSON = 'json';
+
 	/**
 	 * @return string
 	 */
@@ -121,6 +125,34 @@ class Route extends Kernel\Core
 	{
 		$this->defaultVars = $defaultVars;
 		$this->setParameters($this->getParameters()); // Update current parameters list with default values
+	}
+
+	/**
+	 * @param string $format
+	 */
+	public function setDefaultFormat($format = self::FORMAT_HTML)
+	{
+		if (in_array($format, $this->allowedFormats)) {
+			$this->defaultFormat = $format;
+		} else {
+			$this->defaultFormat = self::FORMAT_HTML;
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultFormat()
+	{
+		return $this->defaultFormat;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAllowedFormats()
+	{
+		return $this->allowedFormats;
 	}
 
 	/**

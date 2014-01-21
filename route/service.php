@@ -99,9 +99,11 @@ class Service extends Kernel\Service\Core
 
 			// Initialize route object:
 			$default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
+			$format  = isset($routeConfig['format'])  ? $routeConfig['format']  : '';
 			$route = $this->getApp()->getFactory()->getRoute($routeConfig['controller']);
 			$route->setPattern($routeConfig['pattern']);
 			$route->setDefaultVars($default);
+			$route->setDefaultFormat($format);
 			$route->setName($name);
 			$route->setAlias($aliasName);
 

@@ -159,7 +159,14 @@ abstract class Controller extends Kernel\Core
 	protected function getView($bNew = false)
 	{
 		if (!isset($this->view) || $bNew) {
-			$this->view = $this->getApp()->getViewManager()->getView();
+			$route  = $this->getApp()->getRoute();
+			$format = $this->request('format', $route->getDefaultFormat());
+			if ($format == '') {
+				$format = $route->getDefaultFormat();
+			}
+			$this->view = ($format == $route::FORMAT_JSON)
+							? $this->getApp()->getJsonView()
+							: $this->getApp()->getViewManager()->getView();
 		}
 
 		// Initialize reports:
