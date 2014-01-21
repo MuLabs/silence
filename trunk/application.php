@@ -20,6 +20,8 @@ abstract class Application
 	protected $siteUrl;
 	protected $projectName;
 
+	const VIEW_JSON = 'json';
+
 
 	/************************************************************************************
 	 **  INITIALISATION                                                                **
@@ -782,4 +784,21 @@ abstract class Application
 		$this->statics[] = $url;
 	}
 
+	/**
+	 * Automatically load a JSON View
+	 * @return Kernel\View\Json\View
+	 */
+	public function getJsonView()
+	{
+		// Try to return json view or initialize it:
+		try {
+			$service = $this->getServicer()->get(self::VIEW_JSON);
+		} catch (\Mu\Kernel\Service\Exception $e) {
+			$service = new Kernel\View\Json\Service();
+			$this->getServicer()->register(self::VIEW_JSON, $service);
+		}
+
+		// Return view object:
+		return $service->getView();
+	}
 }
