@@ -53,10 +53,6 @@ abstract class Application
 			#endregion
 		} catch (Kernel\EndException $e) {
 			// Normal exception (end of execution)
-		} catch (Kernel\Exception $e) {
-			$this->getLogger()->log(__CLASS__, $e->getFormatedMessage());
-		} catch (\Exception $e) {
-			$this->getLogger()->log(__CLASS__, $e->getMessage());
 		}
 	}
 
@@ -462,11 +458,7 @@ abstract class Application
 			$this->route = $this->getRouteManager()->selectRoute();
 			$this->dispatch();
 		} catch (Kernel\EndException $e) {
-
-		} catch (Kernel\Exception $e) {
-			$this->getLogger()->log(__CLASS__, $e->getFormatedMessage());
-		} catch (\Exception $e) {
-			$this->getLogger()->log(__CLASS__, $e->getMessage());
+			// Normal exception (end of execution)
 		}
 	}
 
