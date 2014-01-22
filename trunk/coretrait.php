@@ -62,4 +62,13 @@ trait CoreTrait
 
 		$this->getLogger()->log($section, $log);
 	}
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getConstant($name)
+	{
+		return constant('static::' . $name);
+	}
 }

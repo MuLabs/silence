@@ -785,7 +785,7 @@ abstract class Application
 		// Try to return json view or initialize it:
 		try {
 			$service = $this->getServicer()->get(self::VIEW_JSON);
-		} catch (\Mu\Kernel\Service\Exception $e) {
+		} catch (Kernel\Service\Exception $e) {
 			$service = new Kernel\View\Json\Service();
 			$this->getServicer()->register(self::VIEW_JSON, $service);
 		}
