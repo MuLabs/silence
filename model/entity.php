@@ -144,10 +144,19 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$updateValues = array_values($this->unsavedChanges);
 		$updateValues[] = $this->getId();
 
+		$initialValues = $this->getInitialValues();
+		$keys = array_keys($this->unsavedChanges);
+		$oldValues = array();
+		foreach ($keys as $oneKey) {
+			$oldValues[$oneKey] = $initialValues[$oneKey];
+		}
+
 		$sql = 'UPDATE @ SET ' . $updateDatas . ' WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, $updateValues, $manager);
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
+
+		$this->logAction(Kernel\Backoffice\ActionLogger::ACTION_UPDATE, $oldValues, $this->unsavedChanges);
 		$this->unsavedChanges = array();
 
 		return true;
@@ -168,6 +177,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
+		$this->logAction(Kernel\Backoffice\ActionLogger::ACTION_UPDATE, array('deleted' => 0), array('deleted' => 1));
+
 		return true;
 	}
 
@@ -181,6 +192,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 		$query = new Kernel\Db\Query($sql, array($this->getId()), $manager);
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
+
+		$this->logAction(Kernel\Backoffice\ActionLogger::ACTION_DELETE, array(), array());
 
 		return true;
 	}
@@ -211,5 +224,44 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return (string)$this;
+	}
+
+	/**
+	 * @param int $action
+	 * @param array $oldValue
+	 * @param array $newValue
+	 * @return bool
+	 */
+	public function logAction($action, $oldValue, $newValue)
+	{
+		$bo = $this->getApp()->getBackofficeService();
+		if (!$bo) {
+			return false;
+		}
+
+		$actionLogger = $bo->getActionLogger();
+		if (!$actionLogger) {
+			return false;
+		}
+
+		return $actionLogger->create($this, $action, $oldValue, $newValue);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getLogsList()
+	{
+		$bo = $this->getApp()->getBackofficeService();
+		if (!$bo) {
+			return array();
+		}
+
+		$actionLogger = $bo->getActionLogger();
+		if (!$actionLogger) {
+			return array();
+		}
+
+		return $actionLogger->getLogsFromObject($this);
 	}
 }
