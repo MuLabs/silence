@@ -405,7 +405,12 @@ abstract class Application
 	 */
 	public function getBackofficeService()
 	{
-		return $this->getServicer()->get('backoffice');
+		try {
+			return $this->getServicer()->get('backoffice');
+		} catch (Service\Exception $e) {
+			return null;
+		}
+
 	}
 
 	/**
