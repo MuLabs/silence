@@ -36,6 +36,9 @@ class Service extends Kernel\Service\Core
 	 */
 	public function registerEntity($entityType, $classAlias, $bundleName = false)
 	{
+		// Check bundle existence
+		$this->getApp()->getBundler()->get($bundleName);
+
 		if ($bundleName === false) {
 			$className = '\\Mu\\App\\Model\\Manager\\' . $classAlias;
 		} else {

@@ -667,43 +667,60 @@ abstract class Application
 
 	/**
 	 * @param string $stdOut
+	 * @param bool $exec
 	 */
-	protected function defaultUpdate($stdOut)
+	protected function defaultUpdate($stdOut, $exec = true)
 	{
 		$this->getToolbox()->removeLimits();
 
-		if (!file_exists(APP_UPDATE_DONE_PATH)) {
-			mkdir(APP_UPDATE_DONE_PATH, 0777, true);
+		$updatePath = array('main' => APP_UPDATE_PATH);
+		$bundleList = $this->getBundler()->getAll();
+		foreach ($bundleList as $bundleName => $bundleObject) {
+			if (file_exists($bundleObject->getUpdatePath())) {
+				$updatePath[$bundleName] = $bundleObject->getUpdatePath();
+			}
 		}
 
 		$updateDone = array();
-		$dirh = opendir(APP_UPDATE_DONE_PATH);
-		while ($filename = readdir($dirh)) {
-			if (is_file(APP_UPDATE_DONE_PATH . '/' . $filename)) {
-				$updateDone[$filename] = 1;
-			}
+		$handler = $this->getDatabase()->getHandler($this->getDefaultDbContext());
+		$result = $handler->query('SELECT bundle, filename FROM site_db_version');
+
+		while (list($bundle, $filename) = $result->fetchRow()) {
+			$updateDone[$bundle][$filename] = 1;
 		}
 
 		$updateTodo = array();
-		$dirh = opendir(APP_UPDATE_PATH);
-		while ($filename = readdir($dirh)) {
-			if (is_file(APP_UPDATE_PATH . '/' . $filename) && empty($updateDone[$filename])) {
-				$updateTodo[] = $filename;
-			}
-		}
-		sort($updateTodo);
-		$count = count($updateTodo);
-		call_user_func($stdOut, $count . ' updates to do...');
 
-		$i = 1;
+		foreach ($updatePath as $bundleName => $oneUpdatePath) {
+			$updateTodo[$bundleName] = array();
+			$dirh = opendir($oneUpdatePath);
+			while ($filename = readdir($dirh)) {
+				if (is_file($oneUpdatePath . '/' . $filename) && empty($updateDone[$bundleName][$filename])) {
+					$updateTodo[$bundleName][] = $filename;
+				}
+			}
+			sort($updateTodo[$bundleName]);
+		}
+
 		// Used into update files
-		$handler = $this->getDatabase()->getHandler($this->getDefaultDbContext());
 		$handler->disableLogs();
-		foreach ($updateTodo as $filename) {
-			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
-			require_once(APP_UPDATE_PATH . '/' . $filename);
-			touch(APP_UPDATE_DONE_PATH . '/' . $filename);
-			call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
+		foreach ($updateTodo as $bundleName => $oneBundleUpdates) {
+			$count = count($oneBundleUpdates);
+			call_user_func($stdOut, $count . ' updates to do on ' . $bundleName . '...');
+
+			$i = 1;
+			foreach ($oneBundleUpdates as $filename) {
+				call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
+
+				if ($exec) {
+					require_once($updatePath[$bundleName] . '/' . $filename);
+				}
+
+				$handler->query(
+					'REPLACE INTO site_db_version (bundle, filename) VALUES ("' . $bundleName . '", "' . $filename . '")'
+				);
+				call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
+			}
 		}
 	}
 
@@ -727,6 +744,16 @@ abstract class Application
 		$handler->query('CREATE DATABASE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('USE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('DROP DATABASE `sys_empty`');
+		$handler->query(
+			"CREATE TABLE `site_db_version` (
+						`id_db_version` SMALLINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+						`bundle` VARCHAR(30),
+						  `filename` CHAR(20) NOT NULL,
+						  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+					) ENGINE=InnoDB"
+		);
+
+		$this->defaultUpdate($stdOut, false);
 
 		return true;
 	}

@@ -12,7 +12,7 @@ class Bundler extends Kernel\Core
 	 * @param $name
 	 * @param Core $bundle
 	 */
-	public function register($name, $bundle)
+	public function register($name, Core $bundle)
 	{
 		$bundle->setApp($this->getApp());
 		$bundle->initialize();
@@ -32,5 +32,13 @@ class Bundler extends Kernel\Core
 		}
 
 		return $this->bundlesInstance[$name];
+	}
+
+	/**
+	 * @return Core[]
+	 */
+	public function getAll()
+	{
+		return $this->bundlesInstance;
 	}
 }
