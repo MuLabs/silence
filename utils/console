@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 define('MU_CONSOLE', true);
 $absPath = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-require_once $absPath.'/setup.php';
+require_once $absPath . '/setup.php';
 
 try {
 	$app = new App\Application();
@@ -93,10 +93,6 @@ try {
 	#endregion
 } catch (Kernel\EndException $e) {
 	// Normal exception (end of execution)
-} catch (Kernel\Exception $e) {
-	$app->getLogger()->log(__CLASS__, $e->getFormatedMessage());
-} catch (\Exception $e) {
-	$app->getLogger()->log(__CLASS__, $e->getMessage());
 }
 
 function ask($message)
