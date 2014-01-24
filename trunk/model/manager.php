@@ -345,5 +345,18 @@ abstract class Manager extends Kernel\Core
 		$this->dbHandler = $handler;
 	}
 
+	/**
+	 * Get the title field of a property key
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function translateProperties($key)
+	{
+		if (isset($this->properties[$key]['title'])) {
+			return $this->properties[$key]['title'];
+		}
+		return $key;
+	}
+
 	abstract protected function getMainProperty();
 }

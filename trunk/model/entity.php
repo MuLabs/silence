@@ -264,4 +264,17 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 
 		return $actionLogger->getLogsFromObject($this);
 	}
+
+	/**
+	 * @param $key
+	 * @param $value
+	 * @return string
+	 */
+	public function toStringValue($key, $value)
+	{
+		if (is_array($value)) {
+			$value = print_r($value, true);
+		}
+		return '' . $value;
+	}
 }
