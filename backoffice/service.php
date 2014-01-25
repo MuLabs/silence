@@ -73,6 +73,9 @@ class Service extends Kernel\Service\Core
 		return $widget;
 	}
 
+	/**
+	 * @param string $sectionName
+	 */
 	private function generateSectionWidgets($sectionName)
 	{
 		// Only if not done
