@@ -95,6 +95,8 @@ abstract class Handler extends Kernel\Core
 		$valuesOffset = count($values) - 1;
 		$lastFound = strrpos($strQuery, '?');
 		$subQuery = $strQuery;
+		$defaultManager = $query->getDefaultManager();
+		$defaultGroup = $defaultManager->getDefaultGroup();
 		while ($lastFound !== false) {
 			$subQuery = substr($subQuery, 0, $lastFound);
 			$subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
@@ -133,12 +135,12 @@ abstract class Handler extends Kernel\Core
 				$property['manager'] = $this->getManager($property);
 
 			} elseif ($propertyCount === 2) {
-				$property['manager'] = $query->getDefaultManager();
+				$property['manager'] = $defaultManager;
 				$property['group'] = reset($property);
 				$property['property'] = next($property);
 			} elseif ($propertyCount === 1) {
-				$property['manager'] = $query->getDefaultManager();
-				$property['group'] = $query->getDefaultManager()->getDefaultGroup();
+				$property['manager'] = $defaultManager;
+				$property['group'] = $defaultGroup;
 				$property['property'] = reset($property);
 			} else {
 				throw new exception(array(
@@ -190,7 +192,7 @@ abstract class Handler extends Kernel\Core
 			$strQuery,
 			$property
 		)) {
-			$property['manager'] = $query->getDefaultManager();
+			$property['manager'] = $defaultManager;
 			$strQuery = preg_replace(
 				'#:' . $property['group'] . '\.' . $property['property'] . '([^\w\-]|$)#i',
 				$property['manager']->getPropertyForDb(
@@ -210,8 +212,8 @@ abstract class Handler extends Kernel\Core
 			$strQuery,
 			$property
 		)) {
-			$property['manager'] = $query->getDefaultManager();
-			$property['group'] = $query->getDefaultManager()->getDefaultGroup();
+			$property['manager'] = $defaultManager;
+			$property['group'] = $defaultGroup;
 			$strQuery = preg_replace(
 				'#:' . $property['property'] . '([^\w\-]|$)#i',
 				$property['manager']->getPropertyForDb(
@@ -239,7 +241,7 @@ abstract class Handler extends Kernel\Core
 
 		#region @group
 		while (preg_match('#@' . $groupPattern . '#i', $strQuery, $property)) {
-			$property['manager'] = $query->getDefaultManager();
+			$property['manager'] = $defaultManager;
 			$strQuery = preg_replace(
 				'#@' . $property['group'] . '([^\w\-]|$)#i',
 				$property['manager']->getGroupForDb($property['group']) . '$1',
@@ -251,8 +253,8 @@ abstract class Handler extends Kernel\Core
 
 		#region @
 		while (preg_match('#@#i', $strQuery, $property)) {
-			$property['manager'] = $query->getDefaultManager();
-			$property['group'] = $query->getDefaultManager()->getDefaultGroup();
+			$property['manager'] = $defaultManager;
+			$property['group'] = $defaultGroup;
 			$strQuery = preg_replace(
 				'#@([^\w\-]|$)#i',
 				$property['manager']->getGroupForDb($property['group'], $query->isShortMode()) . '$1',
