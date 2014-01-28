@@ -18,7 +18,7 @@ class Nginx extends Kernel\Route\Dumper
 			$content .= "\trewrite " . $infos['pattern'] . ' ' . $infos['dest'] . " break;\n";
 		}
 
-		$content .= "\tfastcgi_pass   127.0.0.1:9000;\n";
+		$content .= "\tfastcgi_pass   127.0.0.1:9001;\n";
 		$content .= "\tfastcgi_index  index.php;\n";
 		$content .= "\t" . 'fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;' . "\n";
 		$content .= "\tinclude        fastcgi_params;\n";
