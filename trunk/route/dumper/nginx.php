@@ -26,4 +26,38 @@ class Nginx extends Kernel\Route\Dumper
 
 		file_put_contents(PUBLIC_PATH . '/' . $this->getApp()->getName() . '.conf', $content);
 	}
+
+	/**
+	 * @param Kernel\Route\Route $route
+	 * @return array
+	 */
+	public function prepareRuleVars(Kernel\Route\Route $route)
+	{
+		$pattern = $route->getPattern();
+		$pattern = str_replace('/', '\/', '^' . $pattern . '\.?(' . implode('|', $route->getAllowedFormats()) . ')?$');
+		$vars = array(
+			'rn=' . $route->getName()
+		);
+
+		$defaultVars = $route->getDefaultVars();
+		while (preg_match('#\{([^\}\/]+)}#iu', $pattern, $matches)) {
+			$match = $matches[1];
+
+			if (isset($defaultVars[$match])) {
+				$pattern = str_replace('{' . $match . '}\/', '([^\/\.]+)?\/?', $pattern);
+			}
+			$pattern = str_replace('{' . $match . '}', '([^\/\.]+)', $pattern);
+			$vars[] = $match . '=$' . count($vars);
+		}
+
+		// Add format var:
+		$vars[] = 'format=$' . count($vars);
+
+		$dest = '/index.php?' . implode('&', $vars);
+
+		return array(
+			'dest' => $dest,
+			'pattern' => $pattern
+		);
+	}
 }
