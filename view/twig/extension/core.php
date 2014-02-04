@@ -15,6 +15,7 @@ class Core extends \Twig_Extension
 		return array(
 			'asset' 		=> new \Twig_Function_Method($this, 'asset', array('is_safe' => array('html'))),
 			'getUrl' 		=> new \Twig_Function_Method($this, 'getUrl'),
+			'getConstant'	=> new \Twig_Function_Method($this, 'getConstant'),
 			'getUrlStatic' 	=> new \Twig_Function_Method($this, 'getUrlStatic'),
 			'thisUrl' 		=> new \Twig_Function_Method($this, 'thisUrl'),
 			'addFragment' 	=> new \Twig_Function_Method($this, 'addFragment', array('is_safe' => array('html'))),
