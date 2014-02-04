@@ -98,7 +98,7 @@ abstract class Controller extends Kernel\Core
 	/**
 	 * Send an error via error service
 	 * @param int $code
-	 * @param string message
+	 * @param string $message
 	 */
 	public function error($code = 404, $message = null)
 	{
@@ -154,6 +154,7 @@ abstract class Controller extends Kernel\Core
 	 ************************************************************************************/
 
 	/**
+	 * @param bool $bNew
 	 * @return \Mu\Kernel\View\View
 	 */
 	protected function getView($bNew = false)
