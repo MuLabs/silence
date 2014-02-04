@@ -426,20 +426,6 @@ abstract class Application
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getControllerFilename()
-	{
-		if ($this->getRoute()->getBundleName()) {
-			return BUNDLE_PATH . '/' . strtolower($this->getRoute()->getBundleName()) . '/controller/' . strtolower(
-				$this->getRoute()->getControllerName()
-			) . '.php';
-		} else {
-			return APP_CONTROLLER_PATH . '/' . strtolower($this->getRoute()->getControllerName()) . '.php';
-		}
-	}
-
 	/************************************************************************************
 	 **  DISPLAY                                                                       **
 	 ************************************************************************************/
@@ -511,7 +497,6 @@ abstract class Application
 	 */
 	private function dispatch($sendData = true)
 	{
-		$this->includeControllerFile();
 		$this->controller = $this->generateControllerObject();
 
 		// If the current route is an alias, set Response header code to 301:
@@ -528,20 +513,6 @@ abstract class Application
 
 		$response->setContent($content);
 		$response->send();
-	}
-
-	/**
-	 * @throws Controller\Exception
-	 */
-	private function includeControllerFile()
-	{
-		$filename = $this->getControllerFilename();
-
-		if (!file_exists($filename)) {
-			throw new Controller\Exception($filename, Controller\Exception::FILE_NOT_FOUND);
-		}
-
-		require_once($filename);
 	}
 
 	/**
