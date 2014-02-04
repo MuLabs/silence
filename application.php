@@ -686,42 +686,54 @@ abstract class Application
 		$result = $handler->query('SELECT bundle, filename FROM site_db_version');
 
 		while (list($bundle, $filename) = $result->fetchRow()) {
-			$updateDone[$bundle][$filename] = 1;
+			$updateDone[$bundle . '/' . $filename] = 1;
 		}
 
 		$updateTodo = array();
 
 		foreach ($updatePath as $bundleName => $oneUpdatePath) {
-			$updateTodo[$bundleName] = array();
 			$dirh = opendir($oneUpdatePath);
 			while ($filename = readdir($dirh)) {
-				if (is_file($oneUpdatePath . '/' . $filename) && empty($updateDone[$bundleName][$filename])) {
-					$updateTodo[$bundleName][] = $filename;
+				if (is_file($oneUpdatePath . '/' . $filename) && empty($updateDone[$bundleName . '/' . $filename])) {
+					$updateTodo[] = $bundleName . '/' . $filename;
 				}
 			}
-			sort($updateTodo[$bundleName]);
 		}
+
+		uasort($updateTodo, array($this, 'sortUpdates'));
+
+		$count = count($updateTodo);
+		call_user_func($stdOut, $count . ' updates to do...');
+		$i = 1;
 
 		// Used into update files
 		$handler->disableLogs();
-		foreach ($updateTodo as $bundleName => $oneBundleUpdates) {
-			$count = count($oneBundleUpdates);
-			call_user_func($stdOut, $count . ' updates to do on ' . $bundleName . '...');
+		foreach ($updateTodo as $filename) {
+			list($bundleName, $filename) = explode('/', $filename);
+			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
 
-			$i = 1;
-			foreach ($oneBundleUpdates as $filename) {
-				call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
-
-				if ($exec) {
-					require_once($updatePath[$bundleName] . '/' . $filename);
-				}
-
-				$handler->query(
-					'REPLACE INTO site_db_version (bundle, filename) VALUES ("' . $bundleName . '", "' . $filename . '")'
-				);
-				call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
+			if ($exec) {
+				require_once($updatePath[$bundleName] . '/' . $filename);
 			}
+
+			$handler->query(
+				'REPLACE INTO site_db_version (bundle, filename) VALUES ("' . $bundleName . '", "' . $filename . '")'
+			);
+			call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
 		}
+	}
+
+	/**
+	 * @param string $a
+	 * @param string $b
+	 * @return int
+	 */
+	public function sortUpdates($a, $b)
+	{
+		list($unused, $a) = explode('/', $a);
+		list($unused, $b) = explode('/', $b);
+
+		return strcmp($a, $b);
 	}
 
 	/**
