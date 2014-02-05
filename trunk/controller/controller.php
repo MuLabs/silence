@@ -168,11 +168,11 @@ abstract class Controller extends Kernel\Core
 			$this->view = ($format == $route::FORMAT_JSON)
 							? $this->getApp()->getJsonView()
 							: $this->getApp()->getViewManager()->getView();
-		}
 
-		// Initialize reports:
-		foreach ($this->messageTypes as $type) {
-			$this->view->setVar($type.self::REPORT_KEY, []);
+			// Initialize reports:
+			foreach ($this->messageTypes as $type) {
+				$this->view->setVar($type.self::REPORT_KEY, []);
+			}
 		}
 
 		return $this->view;
