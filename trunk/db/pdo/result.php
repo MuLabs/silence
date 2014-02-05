@@ -58,6 +58,18 @@ class Result extends Kernel\Db\Result
 	}
 
 	/**
+	 * @return array
+	 */
+	public function fetchAll() {
+		$values = array();
+		while ($row = $this->fetchArray()) {
+			$values[] = $row;
+		}
+
+		return $values;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function numRows()

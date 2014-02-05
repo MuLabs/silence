@@ -86,6 +86,7 @@ abstract class Application
 		$servicer->register('route', '\Mu\Kernel\Route\Service');
 		$servicer->register('config', '\Mu\Kernel\Config\Service');
 		$servicer->register('error', '\Mu\Kernel\Error\Service', array('type' => '\Mu\Kernel\Error\Service'));
+		$servicer->register('localization', '\Mu\Kernel\Localization\Service');
 	}
 
 	abstract protected function initialize();
@@ -410,7 +411,13 @@ abstract class Application
 		} catch (Service\Exception $e) {
 			return null;
 		}
+	}
 
+	/**
+	 * @return Kernel\Localization\Service
+	 */
+	public function getLocalizationService() {
+		return $this->getServicer()->get('localization');
 	}
 
 	/**
@@ -644,7 +651,9 @@ abstract class Application
 	{
 		$this->getToolbox()->removeLimits();
 
-		$updatePath = array('main' => APP_UPDATE_PATH);
+		$updatePath = array(
+			'main' => APP_UPDATE_PATH
+		);
 		$bundleList = $this->getBundler()->getAll();
 		foreach ($bundleList as $bundleName => $bundleObject) {
 			if (file_exists($bundleObject->getUpdatePath())) {

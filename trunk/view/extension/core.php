@@ -9,6 +9,16 @@ trait Core
 	use Kernel\CoreTrait;
 
 	/**
+	 * @param Kernel\Model\Entity $entity
+	 * @param string $property
+	 * @param string $lang
+	 * @return mixed
+	 */
+	public function getLoc(Kernel\Model\Entity $entity, $property, $lang = null) {
+		return $this->getApp()->getLocalizationService()->getLocalization($entity, $property, $lang);
+	}
+
+	/**
 	 * @param string $controllerName
 	 * @param array $parameters
 	 * @return string

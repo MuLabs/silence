@@ -20,6 +20,7 @@ class Core extends \Twig_Extension
 			'thisUrl' 		=> new \Twig_Function_Method($this, 'thisUrl'),
 			'addFragment' 	=> new \Twig_Function_Method($this, 'addFragment', array('is_safe' => array('html'))),
 			'thisFragment' 	=> new \Twig_Function_Method($this, 'thisFragment', array('is_safe' => array('html'))),
+			'getLoc' 		=> new \Twig_Function_Method($this, 'getLoc'),
 			'strftime' 		=> new \Twig_Filter_Function('strftime'),
 		);
 	}

@@ -26,6 +26,11 @@ abstract class Result
 	abstract public function fetchValue();
 
 	/**
+	 * @return array
+	 */
+	abstract public function fetchAll();
+
+	/**
 	 * Get number of rows return by result
 	 *
 	 * @return int
