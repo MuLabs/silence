@@ -23,6 +23,7 @@ class Service extends Kernel\Service\Core
 			/** @var Manager $manager */
 			$manager = $this->getApp()->getFactory()->get($fullName);
 			$manager->setEntityType($entityType);
+			$manager->setName($classAlias);
 			$this->managers[$entityType] = $manager;
 		}
 

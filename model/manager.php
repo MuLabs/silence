@@ -10,6 +10,7 @@ abstract class Manager extends Kernel\Core
 	protected $properties = array();
 	private $entityType;
 	private $dbHandler;
+	private $name;
 
 	private $entityClassname;
 
@@ -19,6 +20,20 @@ abstract class Manager extends Kernel\Core
 	public function getProperties()
 	{
 		return $this->properties;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public function setName($name) {
+		$this->name = $name;
 	}
 
 	/**

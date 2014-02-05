@@ -267,6 +267,39 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 
 	/**
 	 * @param $key
+	 * @return mixed|string
+	 */
+	public function getPropertyValue($key)
+	{
+		$func = array($this, 'get' . ucfirst($key));
+		if (is_callable($func)) {
+			return call_user_func($func);
+		}
+
+		return '';
+	}
+
+	/**
+	 * @param string $property
+	 * @param string $lang
+	 * @return string
+	 */
+	public function getLocalizedValue($property, $lang = null) {
+		return $this->getApp()->getLocalizationService()->getLocalization($this, $property, $lang);
+	}
+
+	/**
+	 * @param string $property
+	 * @param string $lang
+	 * @param mixed $value
+	 * @return bool
+	 */
+	public function setLocalizedValue($property, $lang, $value) {
+		return $this->getApp()->getLocalizationService()->setLocalization($this, $lang, $property, $value);
+	}
+
+	/**
+	 * @param $key
 	 * @param $value
 	 * @return string
 	 */
