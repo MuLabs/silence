@@ -108,6 +108,10 @@ class Service extends Kernel\Service\Core
 		$httpRequestHeader = $this->getApp()->getHttp()->getRequest()->getRequestHeader();
 		$host = $httpRequestHeader->getHost();
 
+		if (empty($host)) {
+			return;
+		}
+
 		$urls = array_flip($this->sitesUrl);
 
 		foreach ($urls as $oneUrl => $oneId) {
