@@ -43,6 +43,15 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
+	 * @param int $siteId
+	 * @return string
+	 */
+	public function getSiteUrl($siteId)
+	{
+		return isset($this->sitesUrl[$siteId]) ? $this->sitesUrl[$siteId] : '';
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getCurrentSiteUrl()
