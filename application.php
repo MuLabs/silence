@@ -87,6 +87,7 @@ abstract class Application
 		$servicer->register('config', '\Mu\Kernel\Config\Service');
 		$servicer->register('error', '\Mu\Kernel\Error\Service', array('type' => '\Mu\Kernel\Error\Service'));
 		$servicer->register('localization', '\Mu\Kernel\Localization\Service');
+		$servicer->register('site', '\Mu\Kernel\Site\Service');
 	}
 
 	abstract protected function initialize();
@@ -142,15 +143,7 @@ abstract class Application
 	 */
 	public function getUrl()
 	{
-		return $this->siteUrl;
-	}
-
-	/**
-	 * @param string $siteUrl
-	 */
-	public function setSiteUrl($siteUrl)
-	{
-		$this->siteUrl = $siteUrl;
+		return $this->getSiteService()->getCurrentSiteUrl();
 	}
 
 	/**
@@ -418,6 +411,14 @@ abstract class Application
 	 */
 	public function getLocalizationService() {
 		return $this->getServicer()->get('localization');
+	}
+
+	/**
+	 * @return Kernel\Site\Service
+	 */
+	public function getSiteService()
+	{
+		return $this->getServicer()->get('site');
 	}
 
 	/**

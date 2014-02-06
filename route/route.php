@@ -9,6 +9,7 @@ class Route extends Kernel\Core
 	private $controllerName;
 	private $bundleName;
 	private $defaultVars = array();
+	private $defaultFormat;
 	private $pattern;
 	private $name;
 	private $alias;
@@ -228,10 +229,17 @@ class Route extends Kernel\Core
 		return $this->getApp()->getUrl() . str_replace('//', '/', $pattern . $paramString);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getAlias()
 	{
 		return $this->alias;
 	}
+
+	/**
+	 * @param string $alias
+	 */
 	public function setAlias($alias)
 	{
 		if (is_string($alias)) {

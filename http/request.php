@@ -140,10 +140,6 @@ class Request
 				return (isset($_SESSION[$label])) ? $_SESSION[$label] : $default;
 				break;
 
-			case self::PARAM_TYPE_SERVER:
-				return (isset($_SERVER[$label])) ? $_SERVER[$label] : $default;
-				break;
-
 			default:
 				return $default;
 				break;
