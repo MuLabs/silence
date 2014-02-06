@@ -50,8 +50,15 @@ class Service extends Kernel\Service\Core
 				if ($httpRequest->getMethod() == Kernel\Http\Request::METHOD_GET && !isset($parameters[self::FRAGMENT_PARAM])) {
 					unset($parameters['rn']);
 					$url = $this->getUrl($route->getName(), $parameters);
-					$url = substr($url, 0, strpos($url, '?'));
-					$currentUrl = substr($httpRequest->getRequestUri(), 0, strpos($httpRequest->getRequestUri(), '?'));
+					$endUri = strpos($url, '?');
+					$url = substr($url, 0, $endUri ? $endUri : strlen($url));
+
+					$endUri = strpos($httpRequest->getRequestUri(), '?');
+					$currentUrl = substr(
+						$httpRequest->getRequestUri(),
+						0,
+						$endUri ? $endUri : strlen($httpRequest->getRequestUri())
+					);
 
 					if (str_replace($this->getApp()->getUrl(), '', $url) !== $currentUrl) {
 						$this->getApp()->redirect($route->getName(), $parameters, true);
@@ -75,6 +82,8 @@ class Service extends Kernel\Service\Core
 			throw new Exception($filepath, Exception::FILE_NOT_FOUND);
 		}
 
+		$siteService = $this->getApp()->getSiteService();
+
 		$routesConfig = require($filepath);
 		foreach ($routesConfig as $name => $routeConfig) {
 			// Replace route by its alias if needed:
@@ -94,6 +103,18 @@ class Service extends Kernel\Service\Core
 
 			// Test if the route is correctly configurated:
 			if (!isset($routeConfig['pattern']) || !isset($routeConfig['controller']) || !count($name)) {
+				continue;
+			}
+
+			// Throw an exception if siteService is not activated and siteIn/siteOut is used
+			if ((isset($routeConfig['siteIn']) || isset($routeConfig['siteOut'])) && !$siteService) {
+				throw new Exception('', Exception::MISSING_SITE_SERVICE);
+			}
+
+			$currentSite = $siteService->getCurrentSiteName();
+			if (!in_array($currentSite, explode(',', $routeConfig['siteIn']))
+				|| !in_array($currentSite, explode(',', $routeConfig['siteIn']))
+			) {
 				continue;
 			}
 

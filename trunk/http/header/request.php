@@ -5,30 +5,12 @@ use Mu\Kernel;
 
 class Request
 {
-	private $accept;
-	private $acceptCharset;
-	private $acceptEncoding;
-	private $acceptLanguage;
-	private $connection;
-	private $host;
-	private $referer;
-	private $userAgent;
-	private $https;
-
 	/**
 	 * @return string
 	 */
 	public function getAccept()
 	{
-		return $this->accept;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getAcceptCharset()
-	{
-		return $this->acceptCharset;
+		return isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '*/*';
 	}
 
 	/**
@@ -36,7 +18,7 @@ class Request
 	 */
 	public function getAcceptEncoding()
 	{
-		return $this->acceptEncoding;
+		return isset($_SERVER['HTTP_ACCEPT_ENCODING']) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : '';
 	}
 
 	/**
@@ -44,7 +26,7 @@ class Request
 	 */
 	public function getAcceptLanguage()
 	{
-		return $this->acceptLanguage;
+		return isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
 	}
 
 	/**
@@ -52,7 +34,7 @@ class Request
 	 */
 	public function getConnection()
 	{
-		return $this->connection;
+		return isset($_SERVER['HTTP_CONNECTION']) ? $_SERVER['HTTP_CONNECTION'] : '';
 	}
 
 	/**
@@ -60,7 +42,7 @@ class Request
 	 */
 	public function getHost()
 	{
-		return $this->host;
+		return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 	}
 
 	/**
@@ -68,7 +50,7 @@ class Request
 	 */
 	public function getReferer()
 	{
-		return $this->referer;
+		return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 	}
 
 	/**
@@ -76,7 +58,7 @@ class Request
 	 */
 	public function getUserAgent()
 	{
-		return $this->userAgent;
+		return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 	}
 
 	/**
@@ -84,6 +66,6 @@ class Request
 	 */
 	public function getHttps()
 	{
-		return $this->https;
+		return isset($_SERVER['HTTP_HTTPS']) ? $_SERVER['HTTP_HTTPS'] : false;
 	}
 }
