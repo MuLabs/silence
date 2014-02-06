@@ -112,8 +112,8 @@ class Service extends Kernel\Service\Core
 			}
 
 			$currentSite = $siteService->getCurrentSiteName();
-			if (!in_array($currentSite, explode(',', $routeConfig['siteIn']))
-				|| !in_array($currentSite, explode(',', $routeConfig['siteIn']))
+			if ((isset($routeConfig['siteIn']) && !in_array($currentSite, explode(',', $routeConfig['siteIn'])))
+				|| (isset($routeConfig['siteOut']) && in_array($currentSite, explode(',', $routeConfig['siteOut'])))
 			) {
 				continue;
 			}
