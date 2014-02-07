@@ -64,8 +64,13 @@ class Service extends Kernel\Service\Core
 	 */
 	public function getCurrentSiteName()
 	{
-		$sites = array_flip($this->sites);
-		return $sites[$this->currentSite];
+		$currentSite = $this->getCurrentSite();
+		if (!isset($currentSite)) {
+			return null;
+		} else {
+			$sites = array_flip($this->sites);
+			return $sites[$currentSite];
+		}
 	}
 
 	/**
