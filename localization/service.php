@@ -115,7 +115,7 @@ class Service extends Kernel\Service\Core
 		$handler->query($sql);
 
 		$cacheKey = $entity->getCacheKey();
-		if (isset($this->localizationValuesCache[$$cacheKey])) {
+		if (isset($this->localizationValuesCache[$cacheKey])) {
 			unset($this->localizationValuesCache[$cacheKey]);
 		}
 
