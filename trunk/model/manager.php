@@ -15,6 +15,15 @@ abstract class Manager extends Kernel\Core
 	private $entityClassname;
 
 	/**
+	 * @return bool
+	 */
+	public function initialize()
+	{
+		// Allow to do an initialisation if needed (after Application registration)
+		return true;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getProperties()
@@ -25,14 +34,16 @@ abstract class Manager extends Kernel\Core
 	/**
 	 * @return string
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->name;
 	}
 
 	/**
 	 * @param string $name
 	 */
-	public function setName($name) {
+	public function setName($name)
+	{
 		$this->name = $name;
 	}
 
