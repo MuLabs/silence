@@ -197,11 +197,18 @@ class Route extends Kernel\Core
 			if ($value == '') {
 				continue;
 			}
-			$count = 0;
-			$pattern = str_replace('{' . $key . '}', $value, $pattern, $count);
 
-			if (!$count) {
-				$paramString[] .= $key . '=' . $value;
+			if (!is_array($value)) {
+				$count = 0;
+				$pattern = str_replace('{' . $key . '}', $value, $pattern, $count);
+
+				if (!$count) {
+					$paramString[] .= $key . '=' . $value;
+				}
+			} else {
+				foreach ($value as $valueKey => $oneValue) {
+					$paramString[] .= $key . '[' . $valueKey . ']=' . $oneValue;
+				}
 			}
 		}
 
