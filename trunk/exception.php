@@ -10,6 +10,12 @@ class Exception extends \Exception
 	const NO_STATIC_REGISTRED = 3;
 	const NO_LOGGER = 4;
 
+	public function __construct($message = '', $code = 0, Exception $previous = null)
+	{
+		parent::__construct($message, $code, $previous);
+		$this->message = $this->getFormatedMessage();
+	}
+
 	/**
 	 * @return string
 	 */
