@@ -11,6 +11,9 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	protected $id;
 	protected $isInitialized = false;
 
+	// Variable for functions internal cache
+	protected $_cache = array();
+
 #region Initialization
 	/**
 	 * @param Manager $manager
@@ -284,7 +287,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	 * @param string $lang
 	 * @return string
 	 */
-	public function getLocalizedValue($property, $lang = null) {
+	public function getLocalizedValue($property, $lang = null)
+	{
 		return $this->getApp()->getLocalizationService()->getLocalization($this, $property, $lang);
 	}
 
@@ -294,7 +298,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 	 * @param mixed $value
 	 * @return bool
 	 */
-	public function setLocalizedValue($property, $lang, $value) {
+	public function setLocalizedValue($property, $lang, $value)
+	{
 		return $this->getApp()->getLocalizationService()->setLocalization($this, $lang, $property, $value);
 	}
 
