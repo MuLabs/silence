@@ -24,6 +24,7 @@ class Service extends Kernel\Service\Core
 			$manager = $this->getApp()->getFactory()->get($fullName);
 			$manager->setEntityType($entityType);
 			$manager->setName($classAlias);
+			$manager->initialize();
 			$this->managers[$entityType] = $manager;
 		}
 
@@ -81,7 +82,8 @@ class Service extends Kernel\Service\Core
 	 * @param $entityType
 	 * @return Manager
 	 */
-	public function getManagerFromType($entityType) {
+	public function getManagerFromType($entityType)
+	{
 		return $this->getOneManager($this->getEntityAliasFromType($entityType));
 	}
 
