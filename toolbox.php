@@ -641,6 +641,52 @@ class Toolbox extends Service\Core
 	}
 
 	/**
+	 * @return array|bool
+	 */
+	public function multiSort()
+	{
+		//get args of the function
+		$args = func_get_args();
+
+		//return false if column and order not given in function
+		$c = count($args);
+		if ($c < 2) {
+			return false;
+		}
+
+		//get the array to sort
+		$array 	= array_splice($args, 0, 1);
+		$array 	= $array[0];
+
+		//get the type of sort : DESC or NOT
+		$desc 	= array_splice($args, -1);
+		$desc 	= $desc[0];
+
+		//sort with an function giving in args
+		usort($array, function($a, $b) use($args) {
+			$i = 0;
+			$c = count($args);
+			$cmp = 0;
+			while($cmp == 0 && $i < $c)
+			{
+				if(!empty($args[ $i ])) {
+					$func = 'get'.ucfirst($args[ $i ]);
+					$cmp = strcmp($a->$func(), $b->$func());
+				}
+				$i++;
+			}
+
+			return $cmp;
+		});
+
+		if($desc) {
+			return array_reverse($array);
+		} else {
+			return $array;
+		}
+	}
+
+	/**
 	 * @return array
 	 */
 	public function getBannedKeywords()
