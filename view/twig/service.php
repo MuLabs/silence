@@ -9,17 +9,26 @@ class Service extends Kernel\View\Service
 	protected $specificDir = 'twig';
 
 	/**
+	 * @return \Twig_Environment
+	 */
+	public function getTwig()
+	{
+		if (!$this->twig) {
+			$this->initialize();
+		}
+
+		return $this->twig;
+	}
+
+	/**
 	 * @return View
 	 * @throws Kernel\View\Exception
 	 */
 	public function getView()
 	{
-		if (!$this->twig) {
-			$this->initialize();
-		}
 		/** @var View $view */
 		$view = parent::getView();
-		$view->setTwig($this->twig);
+		$view->setTwig($this->getTwig());
 
 		return $view;
 	}
