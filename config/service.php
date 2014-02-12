@@ -59,7 +59,7 @@ class Service extends Kernel\Service\Core
 	{
 		if (!file_exists($file)) {
 			$dir = dirname($file);
-			mkdir($dir, 0755, true);
+			@mkdir($dir, 0755, true);
 			touch($file);
 
 			return;
