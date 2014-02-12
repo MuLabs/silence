@@ -49,11 +49,7 @@ trait CoreTrait
 	public function log($section, $log)
 	{
 		if (!$this->getLogger()) {
-			if ($this->getApp()->getLogger()) {
-				$this->setLogger($this->getApp()->getLogger());
-			} else {
-				throw new Exception(get_called_class(), Exception::NO_LOGGER);
-			}
+			throw new Exception(get_called_class(), Exception::NO_LOGGER);
 		}
 
 		if (is_array($log)) {

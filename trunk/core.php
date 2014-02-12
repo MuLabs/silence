@@ -10,6 +10,8 @@ class Core
 
 	private $classname;
 
+	const TEST = 1;
+
 	/**
 	 * Get class name without namespace
 	 * @return string
