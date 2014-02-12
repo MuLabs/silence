@@ -11,10 +11,12 @@ class Service extends Kernel\Service\Core
 	private $localizedProperties = array();
 
 	private $localizationValuesCache = array();
+
 	/**
 	 * @param string|array $lang
 	 */
-	public function registerLanguage($lang) {
+	public function registerLanguage($lang)
+	{
 		if (is_array($lang)) {
 			$this->supportedLanguages = array_flip($lang);
 		} else {
@@ -25,7 +27,8 @@ class Service extends Kernel\Service\Core
 	/**
 	 * @return array
 	 */
-	public function getSupportedLanguages() {
+	public function getSupportedLanguages()
+	{
 		return $this->supportedLanguages;
 	}
 
@@ -33,7 +36,8 @@ class Service extends Kernel\Service\Core
 	 * @param string $lang
 	 * @return bool
 	 */
-	public function isSupportedLanguage($lang) {
+	public function isSupportedLanguage($lang)
+	{
 		return isset($this->supportedLanguages[$lang]);
 	}
 
@@ -41,7 +45,8 @@ class Service extends Kernel\Service\Core
 	 * @param string $lang
 	 * @throws Exception
 	 */
-	public function setCurrentLanguage($lang) {
+	public function setCurrentLanguage($lang)
+	{
 		if (!$this->isSupportedLanguage($lang)) {
 			throw new Exception($lang, Exception::LANG_NOT_SUPPORTED);
 		}
@@ -53,7 +58,8 @@ class Service extends Kernel\Service\Core
 	 * @return string
 	 * @throws Exception
 	 */
-	public function getCurrentLanguage() {
+	public function getCurrentLanguage()
+	{
 		if (!isset($this->currentLanguage)) {
 			if (empty($this->supportedLanguages)) {
 				throw new Exception('', Exception::NO_SUPPORTED_LANGUAGES);
@@ -69,7 +75,8 @@ class Service extends Kernel\Service\Core
 	 * @param string $manager
 	 * @param string|array $property
 	 */
-	public function registerLocalizedProperty($manager, $property) {
+	public function registerLocalizedProperty($manager, $property)
+	{
 		if (is_array($property)) {
 			$this->localizedProperties[$manager] = $property;
 		} else {
@@ -83,7 +90,8 @@ class Service extends Kernel\Service\Core
 	 * @param string $lang
 	 * @return string
 	 */
-	public function getLocalization(Kernel\Model\Entity $entity, $property, $lang = null) {
+	public function getLocalization(Kernel\Model\Entity $entity, $property, $lang = null)
+	{
 		$manager = $entity->getManager();
 		$managerName = $manager->getName();
 
@@ -101,7 +109,8 @@ class Service extends Kernel\Service\Core
 	 * @param mixed $value
 	 * @return bool
 	 */
-	public function setLocalization(Kernel\Model\Entity $entity, $lang, $property, $value) {
+	public function setLocalization(Kernel\Model\Entity $entity, $lang, $property, $value)
+	{
 		$manager = $entity->getManager();
 		$managerName = $manager->getName();
 
@@ -109,9 +118,10 @@ class Service extends Kernel\Service\Core
 			return false;
 		}
 
-		$value = '('.$entity->getId().', '.$entity->getEntityType().', "'.$lang.'", "'.$property.'", "'.$value.'")';
+		$value = '(' . $entity->getId() . ', ' . $entity->getEntityType(
+			) . ', "' . $lang . '", "' . $property . '", "' . $value . '")';
 		$handler = $this->getApp()->getDatabase()->getHandler($this->getApp()->getDefaultDbContext());
-		$sql = 'REPLACE INTO localization (idObject, objectType, lang, property, value) VALUES '.$value;
+		$sql = 'REPLACE INTO localization (idObject, objectType, lang, property, value) VALUES ' . $value;
 		$handler->query($sql);
 
 		$cacheKey = $entity->getCacheKey();
@@ -128,7 +138,8 @@ class Service extends Kernel\Service\Core
 	 * @param string $lang
 	 * @return mixed
 	 */
-	private function getLocalizationValue(Kernel\Model\Entity $entity, $property, $lang = null) {
+	private function getLocalizationValue(Kernel\Model\Entity $entity, $property, $lang = null)
+	{
 		$cacheKey = $entity->getCacheKey();
 
 		if (!$this->isSupportedLanguage($lang)) {
@@ -136,14 +147,15 @@ class Service extends Kernel\Service\Core
 		}
 		if (!isset($this->localizationValuesCache[$cacheKey][$lang])) {
 			$handler = $this->getApp()->getDatabase()->getHandler($this->getApp()->getDefaultDbContext());
-			$sql = 'SELECT property, value FROM localization WHERE idObject = '.$entity->getId().' AND objectType = '.$entity->getEntityType().' AND lang = "'.$lang.'"';
+			$sql = 'SELECT property, value FROM localization WHERE idObject = ' . $entity->getId(
+				) . ' AND objectType = ' . $entity->getEntityType() . ' AND lang = "' . $lang . '"';
 			$result = $handler->query($sql);
 
-			while(list($oneProperty, $value) = $result->fetchRow()) {
+			while (list($oneProperty, $value) = $result->fetchRow()) {
 				$this->localizationValuesCache[$cacheKey][$lang][$oneProperty] = $value;
 			}
 		}
 
-		return $this->localizationValuesCache[$cacheKey][$lang][$property];
+		return isset($this->localizationValuesCache[$cacheKey][$lang][$property]) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : '';
 	}
 }
