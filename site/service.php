@@ -56,7 +56,7 @@ class Service extends Kernel\Service\Core
 	 */
 	public function getCurrentSiteUrl()
 	{
-		return $this->sitesUrl[$this->currentSite];
+		return isset($this->sitesUrl[$this->currentSite]) ? $this->sitesUrl[$this->currentSite] : '';
 	}
 
 	/**
