@@ -31,7 +31,7 @@ class Csv extends Kernel\File\Handler
 	 */
 	protected function getMimeType()
 	{
-		return \Mu\Kernel\Http\Header\Response::MIME_TYPE_CSV;
+		return Kernel\Http\Header\Response::MIME_TYPE_CSV;
 	}
 
 	/**
@@ -46,5 +46,34 @@ class Csv extends Kernel\File\Handler
 		if (is_array($line) && count($line) > 0) {
 			fputcsv($handle, $line);
 		}
+	}
+
+	/**
+	 * @param string $name
+	 * @param array $header
+	 * @throws \Mu\Kernel\File\Exception
+	 */
+	public function save($name, $header = array())
+	{
+		$bom = chr(239) . chr(187) . chr(191);
+
+		$handle = @fopen($name, 'w');
+		if (!$handle) {
+			throw new Kernel\File\Exception($name, Kernel\File\Exception::FILE_NOT_WRITABE);
+		}
+		fwrite($handle, $bom);
+
+		// Output headers:
+		if (is_array($header)) {
+			$this->writeLine($handle, $header);
+		}
+
+		// Output content:
+		foreach ($this->content as $line) {
+			$this->writeLine($handle, $line);
+		}
+
+		// Close file handler:
+		fclose($handle);
 	}
 }
