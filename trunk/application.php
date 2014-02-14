@@ -794,6 +794,16 @@ abstract class Application
 	}
 
 	/**
+	 * Get a site url by site name
+	 * @param $siteName
+	 * @return string
+	 */
+	public function getUrlSite($siteName)
+	{
+		return $this->getSiteService()->getSiteUrl($this->getSiteService()->getSiteId($siteName));
+	}
+
+	/**
 	 * @param string $url
 	 */
 	public function registerStatic($url)

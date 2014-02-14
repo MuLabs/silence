@@ -19,13 +19,13 @@ trait Core
 	}
 
 	/**
-	 * @param string $controllerName
+	 * @param string $routeName
 	 * @param array $parameters
 	 * @return string
 	 */
-	public function getUrl($controllerName, array $parameters = array())
+	public function getUrl($routeName, array $parameters = array())
 	{
-		return $this->getApp()->getRouteManager()->getUrl($controllerName, $parameters);
+		return $this->getApp()->getRouteManager()->getUrl($routeName, $parameters);
 	}
 
 	/**
@@ -35,6 +35,16 @@ trait Core
 	public function thisUrl(array $parameters = array())
 	{
 		return $this->getApp()->getRouteManager()->getCurrentRouteUrl($parameters);
+	}
+
+	/**
+	 * Get root url of a given site
+	 * @param $siteName
+	 * @return string
+	 */
+	public function getUrlSite($siteName)
+	{
+		return $this->getApp()->getUrlSite($siteName);
 	}
 
 	/**

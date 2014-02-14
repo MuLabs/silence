@@ -52,6 +52,15 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
+	 * @param string $siteName
+	 * @return int|false
+	 */
+	public function getSiteId($siteName)
+	{
+		return array_search($siteName, array_flip($this->getSites()));
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getCurrentSiteUrl()

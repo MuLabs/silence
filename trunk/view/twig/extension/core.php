@@ -17,6 +17,7 @@ class Core extends \Twig_Extension
 			'getUrl' 		=> new \Twig_Function_Method($this, 'getUrl'),
 			'getConstant'	=> new \Twig_Function_Method($this, 'getConstant'),
 			'getUrlStatic' 	=> new \Twig_Function_Method($this, 'getUrlStatic'),
+			'getUrlSite' 	=> new \Twig_Function_Method($this, 'getUrlSite'),
 			'thisUrl' 		=> new \Twig_Function_Method($this, 'thisUrl'),
 			'addFragment' 	=> new \Twig_Function_Method($this, 'addFragment', array('is_safe' => array('html'))),
 			'thisFragment' 	=> new \Twig_Function_Method($this, 'thisFragment', array('is_safe' => array('html'))),
