@@ -41,4 +41,11 @@ abstract class Generator extends Kernel\Core
 	abstract public function generateAsset();
 
 	abstract public function getHtml();
+
+	/**
+	 * @return string
+	 */
+	public function getOutExt() {
+		return $this->getAsset()->getExt();
+	}
 }

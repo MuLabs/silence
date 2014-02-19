@@ -59,7 +59,7 @@ class Asset extends Kernel\Core
 	 */
 	public function getPath()
 	{
-		return APP_STATIC_PATH . '/' . Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getExt();
+		return APP_STATIC_PATH . '/' . Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager()->getGenerator($this)->getOutExt();
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Asset extends Kernel\Core
 	 */
 	public function getUrl()
 	{
-		return $this->getApp()->getUrlStatic(Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getExt());
+		return $this->getApp()->getUrlStatic(Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager()->getGenerator($this)->getOutExt());
 	}
 
 	/**
