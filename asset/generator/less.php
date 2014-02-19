@@ -42,4 +42,11 @@ class Less extends Kernel\Asset\Generator\Css
 
 		return $content;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getOutExt() {
+		return 'css';
+	}
 }
