@@ -10,27 +10,35 @@
 
 <div id="mu-report" style="{{ display }}">
 	{# Include errors #}
-	<div class="error">
+	<div class="{% if errorClass is not empty %}{{ errorClass }}{% else %}error{% endif %}">
+		{% if beforeErrors is not empty %}{{ beforeErrors | raw }}{% endif %}
 		{% for error in errorReport %}
 			<p>{{ error }}</p>
 		{% endfor %}
+		{% if afterErrors is not empty %}{{ afterErrors | raw }}{% endif %}
 	</div>
 	{# Include warnings #}
-	<div class="warn">
+	<div class="{% if warnClass is not empty %}{{ warnClass }}{% else %}warn{% endif %}">
+		{% if beforeWarns is not empty %}{{ beforeWarns | raw }}{% endif %}
 		{% for warn in warningReport %}
 			<p>{{ warn }}</p>
 		{% endfor %}
+		{% if afterWarns is not empty %}{{ afterWarns | raw }}{% endif %}
 	</div>
 	{# Include infos #}
-	<div class="info">
+	<div class="{% if infoClass is not empty %}{{ infoClass }}{% else %}info{% endif %}">
+		{% if beforeInfos is not empty %}{{ beforeInfos | raw }}{% endif %}
 		{% for info in infoReport %}
 			<p>{{ info }}</p>
 		{% endfor %}
+		{% if afterInfos is not empty %}{{ afterInfos | raw }}{% endif %}
 	</div>
 	{# Include success #}
-	<div class="success">
+	<div class="{% if successClass is not empty %}{{ successClass }}{% else %}success{% endif %}">
+		{% if beforeSuccess is not empty %}{{ beforeSuccess | raw }}{% endif %}
 		{% for success in successReport %}
 			<p>{{ success }}</p>
 		{% endfor %}
+		{% if afterSuccess is not empty %}{{ afterSuccess | raw }}{% endif %}
 	</div>
 </div>
