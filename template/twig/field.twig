@@ -59,9 +59,8 @@
 			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			{% if field.required %}required="required" {% endif %}
 			{% if field.length is not empty %}maxlength="{{ field.length }}" {% endif %}
-			{% if field.default is not empty %}placeholder="{{ field.default }}" {% endif %}>
-		{{ value }}
-	</textarea>
+			{% if field.default is not empty %}placeholder="{{ field.default }}" {% endif %}
+		>{{ value }}</textarea>
 	{# Render other inputs #}
 {% else %}
 	<input
