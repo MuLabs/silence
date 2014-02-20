@@ -384,5 +384,11 @@ abstract class Manager extends Kernel\Core
 		return $key;
 	}
 
-	abstract protected function getMainProperty();
+	/**
+	 * @return string
+	 */
+	public function getMainProperty()
+	{
+		return 'id';
+	}
 }
