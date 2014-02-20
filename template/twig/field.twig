@@ -1,6 +1,10 @@
 {# Render label if needed #}
 {% if field.type!='hidden' and field.label is not empty %}
-	<label for="{{ field.name }}">{{ field.label }}{% if field.required %}*{% endif %}</label>
+	<label
+			{% if field.id is not empty %}for="{{ field.id }}"{% endif %}
+			{% if labelClass is not empty %}class="{{ labelClass }}"{% endif %}>
+		{{ field.label }}{% if field.required %}*{% endif %}
+	</label>
 {% endif %}
 
 {# Set empty value: #}
@@ -12,8 +16,10 @@
 
 {# Render select #}
 {% if field.type == 'select' %}
-	<select name="{{ field.name }}"
-			class="{{ field.class }}"
+	<select
+			{% if field.id is not empty %}id="{{ field.id }}"{% endif %}
+			name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			{% if field.required %} required="required"{% endif %}
 			{% if field.multiple %} multiple{% endif %}
 			>
@@ -28,26 +34,43 @@
 	{# Render radio #}
 {% elseif field.type == 'radio' %}
 	{% for option,label in field.values %}
-		<input type="{{ field.type }}" name="{{ field.name }}" value="{{ option }}" class="{{ field.class }}" {% if option==value %}checked{% endif %} />
+		<input
+				type="radio"
+				name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+				value="{{ option }}"
+				{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
+				{% if option==value %}checked{% endif %} />
 		{{ label }}
 	{% endfor %}
 	{# Render checkbox #}
 {% elseif field.type == 'checkbox' %}
 	{% set option = (field.values is defined) ? field.values : field.default %}
-	<input type="{{ field.type }}" name="{{ field.name }}" value="{{ option }}" class="{{ field.class }}" title="{{ label }}" {% if value == field.values %}checked{% endif %} />
+	<input
+			type="checkbox"
+			name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+			value="{{ option }}"
+			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
+			title="{{ label }}"
+			{% if value == field.values %}checked{% endif %} />
 	{# Render textarea #}
 {% elseif field.type == 'textarea' %}
-	<textarea name="{{ field.name }}"
-			  class="{{ field.class }}"
-			  {% if field.required %}required="required" {% endif %}
+	<textarea
+			name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
+			{% if field.required %}required="required" {% endif %}
 			{% if field.length is not empty %}maxlength="{{ field.length }}" {% endif %}
-			{% if field.default is not empty %}placeholder="{{ field.default }}" {% endif %}
-			>{{ value }}</textarea>
+			{% if field.default is not empty %}placeholder="{{ field.default }}" {% endif %}>
+		{{ value }}
+	</textarea>
 	{# Render other inputs #}
 {% else %}
-	<input type="{{ field.type }}" name="{{ field.name }}" value="{{ value }}" class="{{ field.class }}"
-		   {% if field.required %}required="required" {% endif %}
-			{% if field.length is not empty %}maxlength="{{ field.length }}" {% endif %}
-			{% if field.default is not empty %}placeholder="{{ field.default }}" {% endif %}
-			/>
+	<input
+		type="{{ field.type }}"
+		name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+		value="{{ value }}"
+		{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
+		{% if field.required %}required="required" {% endif %}
+		{% if field.length is not empty %}maxlength="{{ field.length }}" {% endif %}
+		{% if field.default is not empty %}placeholder="{{ field.default }}" {% endif %}
+	/>
 {% endif %}
