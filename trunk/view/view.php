@@ -8,6 +8,7 @@ abstract class View extends Kernel\Core
 	private $service;
 	private $compileDir;
 	private $vars = array();
+	protected $extension;
 
 	public function __construct()
 	{
@@ -149,8 +150,8 @@ abstract class View extends Kernel\Core
 			throw new Exception($this->getCompileDir(), Exception::COMPILE_DIR_NOT_FOUND);
 		}
 
-		if (!file_exists($this->getTargetFilepath($target))) {
-			throw new Exception($this->getTargetFilepath($target), Exception::TARGET_NOT_FOUND);
+		if (!file_exists($this->getTemplateFilepath($target))) {
+			throw new Exception($this->getTemplateFilepath($target), Exception::TARGET_NOT_FOUND);
 		}
 	}
 
@@ -159,12 +160,21 @@ abstract class View extends Kernel\Core
 	 * @param null|string $fragment
 	 * @return string
 	 */
-	protected function getTargetFilepath($target, $fragment = null)
+	public function getTemplateFilepath($target, $fragment = null)
 	{
 		if ($fragment === null) {
-			return $this->getDir() . '/' . $target . '.php';
+			return $this->getDir() . '/' . $target . '.'.$this->extension;
 		}
-		return $this->getDir() . '/fragment/' . $target . '/' . $fragment . '.php';
+		return $this->getDir() . '/fragment/' . $target . '/' . $fragment . '.'.$this->extension;
+	}
+
+	/**
+	 * @param string $target
+	 * @param null $fragment
+	 * @return string
+	 */
+	public function getCacheFilepath($target, $fragment = null) {
+		return '';
 	}
 
 	/**

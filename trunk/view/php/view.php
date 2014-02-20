@@ -5,6 +5,7 @@ use Mu\Kernel;
 
 class View extends Kernel\View\View
 {
+	protected $extension = 'php';
 	/**
 	 * @param string $target
 	 * @param null|string $fragment
@@ -18,7 +19,7 @@ class View extends Kernel\View\View
 			$$var = $value;
 		}
 
-		require_once $this->getTargetFilepath($target, $fragment);
+		require_once $this->getTemplateFilepath($target, $fragment);
 		$content = ob_get_contents();
 		ob_clean();
 		return $content;

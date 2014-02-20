@@ -6,6 +6,7 @@ use Mu\Kernel;
 class View extends Kernel\View\View
 {
 	private $twig;
+	protected $extension = 'twig';
 
 	/**
 	 * @param $twig
@@ -21,6 +22,18 @@ class View extends Kernel\View\View
 	public function getTwig()
 	{
 		return $this->twig;
+	}
+
+	/**
+	 * @param string $target
+	 * @param null $fragment
+	 * @return string
+	 */
+	public function getCacheFilepath($target, $fragment = null) {
+		if ($fragment === null) {
+			return $this->getTwig()->getCacheFilename($target . '.twig', $this->getVars());
+		}
+		return $this->getTwig()->getCacheFilename('fragment/' . $target . '/' . $fragment . '.twig', $this->getVars());
 	}
 
 	/**
