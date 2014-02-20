@@ -44,7 +44,7 @@ class Form extends Kernel\Service\Core
 	);
 
 	/**
-	 * @param $route
+	 * @param mixed $submit
 	 * @param string $class
 	 * @return array
 	 */
@@ -63,7 +63,7 @@ class Form extends Kernel\Service\Core
 
 	/**
 	 * Generate the formated array containing data for the form rendering
-	 * @param Entity/Manager $object
+	 * @param \Mu\Kernel\Model\Entity|\Mu\Kernel\Model\Manager $object
 	 * @param array $properties
 	 * @param null $group
 	 * @return array
@@ -145,7 +145,7 @@ class Form extends Kernel\Service\Core
 	}
 
 	/**
-	 * @param Manager/Entity $object
+	 * @param \Mu\Kernel\Model\Entity|\Mu\Kernel\Model\Manager $object
 	 * @param $field
 	 * @param null $group
 	 * @return array|null
@@ -157,7 +157,7 @@ class Form extends Kernel\Service\Core
 
 	/**
 	 * Test if all requeried fields are set
-	 * @param Manager/Entity $object
+	 * @param \Mu\Kernel\Model\Entity|\Mu\Kernel\Model\Manager $object
 	 * @param array $properties
 	 * @return bool
 	 */
