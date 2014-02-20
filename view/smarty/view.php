@@ -6,6 +6,7 @@ use Mu\Kernel;
 class View extends Kernel\View\View
 {
 	private $smarty;
+	protected $extension = 'tpl';
 
 	/**
 	 * @param $smarty
