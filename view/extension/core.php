@@ -110,4 +110,24 @@ trait Core
 		$files = func_get_args();
 		return $this->getApp()->getAssetManager()->getAsset($files);
 	}
+
+	/**
+	 * @param string|int $date
+	 * @param string $format
+	 * @return string
+	 */
+	public function getConvertedDate($date = null, $format = '%m/%d/%Y')
+	{
+		// Get current timestamp:
+		if (empty($date)) {
+			$date = time();
+		}
+
+		// Convert date to time:
+		if (!is_int($date)) {
+			$date = strtotime($date);
+		}
+
+		return strftime($format, $date);
+	}
 }
