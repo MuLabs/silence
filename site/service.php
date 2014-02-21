@@ -97,6 +97,7 @@ class Service extends Kernel\Service\Core
 	{
 		$urlList = $this->getApp()->getConfigManager()->get('url');
 
+		$header = $this->getApp()->getHttp()->getResponse()->getHeader();
 		foreach ($urlList as $key => $oneUrl) {
 			if (!is_string($oneUrl)) {
 				continue;
@@ -107,6 +108,10 @@ class Service extends Kernel\Service\Core
 			}
 
 			$this->sitesUrl[$this->sites[$key]] = $oneUrl;
+
+			if ($key == self::BO_ID) {
+				$header->setAccessControlAllowOrigin(str_replace(array('http://', 'www.', 'https://'), '', $oneUrl));
+			}
 		}
 
 		if (count($this->sitesUrl) != count($this->sites)) {

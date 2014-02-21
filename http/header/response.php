@@ -23,6 +23,7 @@ class Response
 	private $contentLength;
 	private $contentFilename;
 	private $location;
+	private $accessControlAllowOrigin = '';
 	private $code = 200;
 
 	public function send()
@@ -46,6 +47,10 @@ class Response
 		header('Cache-Control: no-cache');
 		header('Pragma: no-cache');
 		header('Expires: 0');
+
+		if (!empty($this->accessControlAllowOrigin)) {
+			header('Access-Control-Allow-Origin: ' . $this->accessControlAllowOrigin);
+		}
 	}
 
 	private function sendCode()
@@ -139,5 +144,13 @@ class Response
 	public function setLocation($location)
 	{
 		$this->location = $location;
+	}
+
+	/**
+	 * @param string $origin
+	 */
+	public function setAccessControlAllowOrigin($origin)
+	{
+		$this->accessControlAllowOrigin = $origin;
 	}
 }
