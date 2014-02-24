@@ -25,7 +25,6 @@ class Cookie extends Kernel\Session\Handler
 	private $keyVerify = 'mu_verify';
 	private $keyTime = 'mu_time';
 	private $salt;
-	private $expire; // In hours
 	private $secure; // Bool
 	private $httponly; // Bool
 	private $info = array();
@@ -37,7 +36,7 @@ class Cookie extends Kernel\Session\Handler
 	{
 		// Initialize configuration:
 		$this->salt = $this->getConfig('salt', self::DEFAULT_SALT);
-		$this->expire = $this->getConfig('expire', self::DEFAULT_EXPIRE);
+		$this->setExpire($this->getConfig('expire', self::DEFAULT_EXPIRE));
 		$this->secure = $this->getConfig('secure', self::DEFAULT_SECURE);
 		$this->httponly = $this->getConfig('httponly', self::DEFAULT_HTTPONLY);
 
@@ -54,7 +53,7 @@ class Cookie extends Kernel\Session\Handler
 				return;
 			}
 			// Test timestamp:
-			if (!isset($cookie[$this->keyTime]) || time() - $cookie[$this->keyTime] > $this->expire * 3600) {
+			if (!isset($cookie[$this->keyTime]) || time() - $cookie[$this->keyTime] > $this->getExpire() * 3600) {
 				return;
 			}
 
@@ -92,7 +91,7 @@ class Cookie extends Kernel\Session\Handler
 			$this->info[$this->keyTime] = time();
 
 			// Save values:
-			$expire = time() + $this->expire * 3600;
+			$expire = time() + $this->getExpire();
 			foreach ($this->info as $key => $value) {
 				setcookie(
 					$this->getContext() . '[' . $key . ']',
