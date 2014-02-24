@@ -745,6 +745,17 @@ abstract class Application
 						  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 					) ENGINE=InnoDB"
 		);
+		$handler->query(
+			'CREATE TABLE localization (
+			`idObject` INT UNSIGNED NOT NULL,
+			`objectType` TINYINT UNSIGNED NOT NULL,
+			`lang` CHAR(2) NOT NULL,
+			`property` VARCHAR(50) NOT NULL,
+			`value` TEXT,
+			PRIMARY KEY (idObject, objectType, lang, property)
+		) ENGINE=InnoDB'
+		);
+
 
 		$this->defaultUpdate($stdOut, false);
 
