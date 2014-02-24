@@ -6,6 +6,7 @@ use Mu\Kernel;
 abstract class Handler extends Kernel\Handler\Core
 {
 	protected $configPrefix = 'ses_';
+	protected $expire; // In hours
 
 	/**
 	 * Delete the current session
@@ -51,6 +52,22 @@ abstract class Handler extends Kernel\Handler\Core
 	 * @return void
 	 */
 	abstract public function save();
+
+	/**
+	 * @param int $expire
+	 */
+	public function setExpire($expire)
+	{
+		$this->expire = (int)$expire;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getExpire()
+	{
+		return $this->expire * 3600;
+	}
 
 	/**
 	 * Set a value in handler and return it
