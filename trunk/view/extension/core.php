@@ -113,11 +113,12 @@ trait Core
 
 	/**
 	 * @param string|int $date
-	 * @param string $format
 	 * @return string
 	 */
-	public function getConvertedDate($date = null, $format = '%m/%d/%Y')
+	public function getConvertedDate($date = null)
 	{
+		$format = $this->getApp()->getLocalizationService()->getCurrentLanguage();
+
 		// Get current timestamp:
 		if (empty($date)) {
 			$date = time();
@@ -126,6 +127,14 @@ trait Core
 		// Convert date to time:
 		if (!is_int($date)) {
 			$date = strtotime($date);
+		}
+
+		if($format == 'fr') {
+			$format = '%e %B %Y';
+		} elseif($format == 'en') {
+			$format = '%B %e %Y';
+		} else {
+			$format = '%B %e %Y';
 		}
 
 		return strftime($format, $date);
