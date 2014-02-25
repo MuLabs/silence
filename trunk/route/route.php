@@ -233,6 +233,11 @@ class Route extends Kernel\Core
 			$paramString = '';
 		}
 
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization) {
+			$pattern = '/' . $localization->getCurrentLanguage() . $pattern;
+		}
+
 		return $this->getApp()->getUrl() . str_replace('//', '/', $pattern . $paramString);
 	}
 

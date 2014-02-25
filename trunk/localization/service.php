@@ -11,6 +11,7 @@ class Service extends Kernel\Service\Core
 	private $localizedProperties = array();
 
 	private $localizationValuesCache = array();
+	private $localeFromUrl = false;
 
 	public function initialize()
 	{
@@ -22,6 +23,22 @@ class Service extends Kernel\Service\Core
 		}
 		foreach ($languages as $oneLang => $oneLocale) {
 			$this->registerLanguage($oneLang, $oneLocale);
+		}
+
+		$httpRequest = $this->getApp()->getHttp()->getRequest();
+		$uri = $httpRequest->getRequestUri();
+		if ($uri[0] == '/') {
+			$uri = substr($uri, 1);
+		}
+
+		$posFirstSlash = strpos($uri, '/');
+		$firstParam = substr($uri, 0, $posFirstSlash);
+
+		if ($this->isSupportedLanguage($firstParam)) {
+			$this->setCurrentLanguage($firstParam);
+			$uri = substr($uri, $posFirstSlash);
+			$httpRequest->setRequestUri($uri);
+			$this->setLocaleFromUrl(true);
 		}
 
 		return true;
@@ -86,10 +103,40 @@ class Service extends Kernel\Service\Core
 				throw new Exception('', Exception::NO_SUPPORTED_LANGUAGES);
 			}
 
-			$this->setCurrentLanguage(reset(array_flip($this->supportedLanguages)));
+			$defaultLanguage = $this->detectDefaultLanguage();
+			$this->setCurrentLanguage($defaultLanguage);
 		}
 
 		return $this->currentLanguage;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function detectDefaultLanguage()
+	{
+		$acceptLang = $this->getApp()->getHttp()->getRequest()->getRequestHeader()->getAcceptLanguage();
+		$langList = array();
+		foreach ($acceptLang as $oneLang => $quality) {
+			preg_match('#^[a-z]+#', $oneLang, $normalizedLang);
+
+
+			if (count($normalizedLang) && $this->isSupportedLanguage(reset($normalizedLang))) {
+				$normalizedLang = reset($normalizedLang);
+
+				if (!isset($langList[$normalizedLang]) || $langList[$normalizedLang] < $quality) {
+					$langList[$normalizedLang] = $quality;
+				}
+			}
+		}
+
+		if (count($langList)) {
+			arsort($langList);
+			return reset(array_keys($langList));
+		} else {
+			return reset(array_flip($this->getSupportedLanguages()));
+		}
+
 	}
 
 	/**
@@ -178,5 +225,21 @@ class Service extends Kernel\Service\Core
 		}
 
 		return isset($this->localizationValuesCache[$cacheKey][$lang][$property]) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : '';
+	}
+
+	/**
+	 * @param bool $bool
+	 */
+	public function setLocaleFromUrl($bool)
+	{
+		$this->localeFromUrl = (bool)$bool;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isLocaleFromUrl()
+	{
+		return $this->localeFromUrl;
 	}
 }
