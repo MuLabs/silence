@@ -133,9 +133,11 @@ class Service extends Kernel\Service\Core
 
 		if (count($langList)) {
 			arsort($langList);
-			return reset(array_keys($langList));
+			$langList = array_keys($langList);
+			return reset($langList);
 		} else {
-			return reset(array_flip($this->getSupportedLanguages()));
+			$supportedLanguages = array_flip($this->getSupportedLanguages());
+			return reset($supportedLanguages);
 		}
 
 	}
