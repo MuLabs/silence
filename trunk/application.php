@@ -739,11 +739,11 @@ abstract class Application
 		$handler->query('DROP DATABASE `sys_empty`');
 		$handler->query(
 			"CREATE TABLE `site_db_version` (
-						`id_db_version` SMALLINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-						`bundle` VARCHAR(30),
-						  `filename` CHAR(20) NOT NULL,
-						  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-					) ENGINE=InnoDB"
+				`id_db_version` SMALLINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+				`bundle` VARCHAR(30),
+				  `filename` CHAR(20) NOT NULL,
+				  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+			) ENGINE=InnoDB"
 		);
 		$handler->query(
 			'CREATE TABLE localization (
@@ -753,7 +753,7 @@ abstract class Application
 			`property` VARCHAR(50) NOT NULL,
 			`value` TEXT,
 			PRIMARY KEY (idObject, objectType, lang, property)
-		) ENGINE=InnoDB'
+			) ENGINE=InnoDB'
 		);
 
 

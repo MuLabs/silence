@@ -154,6 +154,6 @@ class Service extends Kernel\Service\Core
 	 */
 	public function isCurrentSiteBo()
 	{
-		return $this->currentSite == self::BO_ID;
+		return isset($this->currentSite) && $this->currentSite == self::BO_ID;
 	}
 }

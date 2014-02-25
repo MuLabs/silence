@@ -88,6 +88,12 @@ abstract class Service extends Kernel\Service\Core
 		$view->setApp($this->getApp());
 		$view->setService($this);
 
+		// Initialize language if supported
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization) {
+			$localization->getCurrentLanguage();
+		}
+
 		return $view;
 	}
 

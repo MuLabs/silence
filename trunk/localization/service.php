@@ -12,16 +12,28 @@ class Service extends Kernel\Service\Core
 
 	private $localizationValuesCache = array();
 
-	/**
-	 * @param string|array $lang
-	 */
-	public function registerLanguage($lang)
+	public function initialize()
 	{
-		if (is_array($lang)) {
-			$this->supportedLanguages = array_flip($lang);
-		} else {
-			$this->supportedLanguages[$lang] = true;
+		// Extract contexts from configuration
+		$languages = $this->getApp()->getConfigManager()->get('localization');
+
+		if (!is_array($languages)) {
+			return false;
 		}
+		foreach ($languages as $oneLang => $oneLocale) {
+			$this->registerLanguage($oneLang, $oneLocale);
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $lang
+	 * @param string $locale
+	 */
+	private function registerLanguage($lang, $locale)
+	{
+		$this->supportedLanguages[$lang] = $locale;
 	}
 
 	/**
@@ -52,6 +64,15 @@ class Service extends Kernel\Service\Core
 		}
 
 		$this->currentLanguage = $lang;
+
+		$locale = $this->supportedLanguages[$lang];
+		$domain = 'messages';
+
+		putenv("LC_ALL=$locale");
+		setlocale(LC_ALL, $locale);
+		bindtextdomain($domain, APP_LOCALE_PATH);
+		bind_textdomain_codeset($domain, "UTF-8");
+		textdomain($domain);
 	}
 
 	/**
