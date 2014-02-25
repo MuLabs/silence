@@ -47,7 +47,9 @@ class Service extends Kernel\Service\Core
 				}
 
 				$parameters = $httpRequest->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
-				if ($httpRequest->getMethod() == Kernel\Http\Request::METHOD_GET && !isset($parameters[self::FRAGMENT_PARAM])) {
+				if ($httpRequest->getMethod(
+					) == Kernel\Http\Request::METHOD_GET && !isset($parameters[self::FRAGMENT_PARAM])
+				) {
 					unset($parameters['rn']);
 					$url = $this->getUrl($route->getName(), $parameters);
 					$endUri = strpos($url, '?');
@@ -59,6 +61,13 @@ class Service extends Kernel\Service\Core
 						0,
 						$endUri ? $endUri : strlen($httpRequest->getRequestUri())
 					);
+
+					$localization = $this->getApp()->getLocalizationService();
+					if ($localization) {
+						if ($localization->isLocaleFromUrl()) {
+							$currentUrl = '/' . $localization->getCurrentLanguage() . $currentUrl;
+						}
+					}
 
 					if (str_replace($this->getApp()->getUrl(), '', $url) !== $currentUrl) {
 						$this->getApp()->redirect($route->getName(), $parameters, true);
@@ -89,7 +98,7 @@ class Service extends Kernel\Service\Core
 			// Replace route by its alias if needed:
 			$aliasName = null;
 			if (isset($routeConfig['alias']) && isset($routesConfig[$routeConfig['alias']])) {
-				$aliasName   = $routeConfig['alias'];
+				$aliasName = $routeConfig['alias'];
 				$aliasConfig = $routesConfig[$aliasName];
 
 				// Test if a pattern has been set, else complete it:
@@ -112,7 +121,10 @@ class Service extends Kernel\Service\Core
 			}
 
 			$currentSite = $siteService->getCurrentSiteName();
-			if (isset($currentSite) && (isset($routeConfig['siteIn']) && !in_array($currentSite, explode(',', $routeConfig['siteIn'])))
+			if (isset($currentSite) && (isset($routeConfig['siteIn']) && !in_array(
+						$currentSite,
+						explode(',', $routeConfig['siteIn'])
+					))
 				|| (isset($routeConfig['siteOut']) && in_array($currentSite, explode(',', $routeConfig['siteOut'])))
 			) {
 				continue;
@@ -120,7 +132,7 @@ class Service extends Kernel\Service\Core
 
 			// Initialize route object:
 			$default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
-			$format  = isset($routeConfig['format'])  ? $routeConfig['format']  : '';
+			$format = isset($routeConfig['format']) ? $routeConfig['format'] : '';
 			$route = $this->getApp()->getFactory()->getRoute($routeConfig['controller']);
 			$route->setPattern($routeConfig['pattern']);
 			$route->setDefaultVars($default);

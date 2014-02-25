@@ -329,14 +329,6 @@ class Request
 	/**
 	 * @return string
 	 */
-	public function getRequestScheme()
-	{
-		return $this->requestScheme;
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getPathInfo()
 	{
 		return $this->pathInfo;

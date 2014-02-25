@@ -22,11 +22,35 @@ class Request
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
 	public function getAcceptLanguage()
 	{
-		return isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
+		$acceptedLanguage = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '';
+		if (!strlen($acceptedLanguage)) {
+			return array();
+		}
+
+		$acceptedLanguage = explode(',', $acceptedLanguage);
+		$finalAcceptedLanguage = array();
+		foreach ($acceptedLanguage as $oneLang) {
+			$oneLang = explode(';', $oneLang);
+			$arrayLen = count($oneLang);
+
+			if ($arrayLen == 1) {
+				$strLang = reset($oneLang);
+				$quality = 1;
+			} elseif ($arrayLen == 2) {
+				$strLang = reset($oneLang);
+				$quality = (float)str_replace('q=', '', next($oneLang));
+			} else {
+				continue;
+			}
+
+			$finalAcceptedLanguage[$strLang] = $quality * 100;
+		}
+
+		return $finalAcceptedLanguage;
 	}
 
 	/**
