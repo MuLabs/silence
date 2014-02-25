@@ -12,7 +12,7 @@ class Service extends Kernel\Service\Core
 
 	private $localizationValuesCache = array();
 	private $localeFromUrl = false;
-	private $enabled = true;
+	private $urlLocaleEnabled = true;
 
 	public function initialize()
 	{
@@ -244,16 +244,16 @@ class Service extends Kernel\Service\Core
 		return $this->localeFromUrl;
 	}
 
-	public function disable()
+	public function disableUrlLocale()
 	{
-		$this->enabled = false;
+		$this->urlLocaleEnabled = false;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isEnabled()
+	public function isUrlLocaleEnabled()
 	{
-		return $this->enabled;
+		return $this->urlLocaleEnabled;
 	}
 }

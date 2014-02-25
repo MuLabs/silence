@@ -14,7 +14,7 @@ trait i18n
 	public function getCurrentLang()
 	{
 		$localization = $this->getApp()->getLocalizationService();
-		if (!$localization || !$localization->isEnabled()) {
+		if (!$localization || !$localization->isUrlLocaleEnabled()) {
 			return '';
 		}
 		return $localization->getCurrentLanguage();
@@ -25,7 +25,7 @@ trait i18n
 		$localization = $this->getApp()->getLocalizationService();
 		$parameters = $this->getApp()->getHttp()->getRequest()->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
 		unset($parameters['rn']);
-		if (!$localization || !$localization->isEnabled() || !$localization->isSupportedLanguage($lang)) {
+		if (!$localization || !$localization->isUrlLocaleEnabled() || !$localization->isSupportedLanguage($lang)) {
 			return $this->getApp()->getRouteManager()->getCurrentRouteUrl($parameters);
 		}
 

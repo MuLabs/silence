@@ -63,7 +63,7 @@ class Service extends Kernel\Service\Core
 					);
 
 					$localization = $this->getApp()->getLocalizationService();
-					if ($localization && $localization->isEnabled()) {
+					if ($localization && $localization->isUrlLocaleEnabled()) {
 						if ($localization->isLocaleFromUrl()) {
 							$currentUrl = '/' . $localization->getCurrentLanguage() . $currentUrl;
 						}

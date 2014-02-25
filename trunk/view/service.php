@@ -90,7 +90,7 @@ abstract class Service extends Kernel\Service\Core
 
 		// Initialize language if supported
 		$localization = $this->getApp()->getLocalizationService();
-		if ($localization && $localization->isEnabled()) {
+		if ($localization && $localization->isUrlLocaleEnabled()) {
 			$localization->getCurrentLanguage();
 		}
 
