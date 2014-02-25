@@ -22,7 +22,7 @@ class Service extends Kernel\View\Service
 	public function getSmarty()
 	{
 		if (!$this->smarty) {
-			$this->initialize();
+			$this->initializeSmarty();
 		}
 
 		return $this->smarty;
@@ -41,7 +41,7 @@ class Service extends Kernel\View\Service
 		return $view;
 	}
 
-	private function initialize()
+	private function initializeSmarty()
 	{
 		require_once(VENDOR_PATH . '/smarty/smarty/distribution/libs/Smarty.class.php');
 		$this->smarty = new \Smarty();

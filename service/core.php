@@ -5,5 +5,8 @@ use Mu\Kernel;
 
 abstract class Core extends Kernel\Core
 {
+	public function initialize()
+	{
 
+	}
 }

@@ -14,7 +14,7 @@ class Service extends Kernel\View\Service
 	public function getTwig()
 	{
 		if (!$this->twig) {
-			$this->initialize();
+			$this->initializeTwig();
 		}
 
 		return $this->twig;
@@ -33,7 +33,7 @@ class Service extends Kernel\View\Service
 		return $view;
 	}
 
-	private function initialize()
+	private function initializeTwig()
 	{
 		require_once VENDOR_PATH . '/twig/twig/lib/Twig/Autoloader.php';
 		require_once VENDOR_PATH . '/twig/extensions/lib/Twig/Extensions/Autoloader.php';

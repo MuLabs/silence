@@ -8,8 +8,8 @@ class Servicer extends Kernel\Core
 	private $services = array();
 	/** @var Core[] */
 	private $servicesInstance = array();
-	private $servicesParameter= array();
-	private $defaultParameters= array();
+	private $servicesParameter = array();
+	private $defaultParameters = array();
 
 	/**
 	 * @param $name
@@ -21,6 +21,10 @@ class Servicer extends Kernel\Core
 		// Manage parameters:
 		if (!isset($this->servicesParameter[$name])) {
 			$this->servicesParameter[$name] = array_merge($parameters, $this->defaultParameters);
+		}
+
+		if (isset($this->servicesInstance[$name])) {
+			unset($this->servicesInstance[$name]);
 		}
 
 		if ($service instanceof Core) {
@@ -69,6 +73,7 @@ class Servicer extends Kernel\Core
 
 		// Set application and register it:
 		$service->setApp($this->getApp());
+		$service->initialize();
 		$this->servicesInstance[$name] = $service;
 	}
 }
