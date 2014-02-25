@@ -234,7 +234,7 @@ class Route extends Kernel\Core
 		}
 
 		$localization = $this->getApp()->getLocalizationService();
-		if ($localization && $localization->isEnabled()) {
+		if ($localization && $localization->isUrlLocaleEnabled()) {
 			$pattern = '/' . $localization->getCurrentLanguage() . $pattern;
 		}
 
