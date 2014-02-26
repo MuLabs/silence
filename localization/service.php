@@ -91,6 +91,10 @@ class Service extends Kernel\Service\Core
 		bindtextdomain($domain, APP_LOCALE_PATH);
 		bind_textdomain_codeset($domain, "UTF-8");
 		textdomain($domain);
+
+		$langCookie = $this->getLangCookie();
+		$langCookie->set('currentLang', $lang);
+		$langCookie->save();
 	}
 
 	/**
@@ -116,6 +120,13 @@ class Service extends Kernel\Service\Core
 	 */
 	private function detectDefaultLanguage()
 	{
+		$langCookie = $this->getLangCookie();
+		$savedLang = $langCookie->get('currentLang');
+
+		if ($this->isSupportedLanguage($savedLang)) {
+			return $savedLang;
+		}
+
 		$acceptLang = $this->getApp()->getHttp()->getRequest()->getRequestHeader()->getAcceptLanguage();
 		$langList = array();
 		foreach ($acceptLang as $oneLang => $quality) {
@@ -228,6 +239,14 @@ class Service extends Kernel\Service\Core
 		}
 
 		return isset($this->localizationValuesCache[$cacheKey][$lang][$property]) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : '';
+	}
+
+	/**
+	 * @return Kernel\Session\Handler\Cookie
+	 */
+	private function getLangCookie()
+	{
+		return $this->getApp()->getSession()->getHandler('cookie', 'lang');
 	}
 
 	/**
