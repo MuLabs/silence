@@ -306,107 +306,6 @@ class Toolbox extends Service\Core
 
 		return $array;
 	}
-
-	/**
-	 * @param int $total
-	 * @param int $nb_per_page
-	 * @param int $current
-	 * @param int $part_size
-	 * @return array
-	 */
-	public function preparePagination($total, $nb_per_page, $current, $part_size = 3)
-	{
-		$before = floor(($part_size - 1) / 2);
-		$after = $part_size - 1 - $before;
-		if ($nb_per_page <= 0) {
-			return array();
-		}
-
-		$nb_page = ceil($total / $nb_per_page);
-		$return = array();
-		if ($current > 1) {
-			$return[] = array(
-				'text' => '<<',
-				'number' => 1,
-			);
-
-			$return[] = array(
-				'text' => '<',
-				'number' => $current - 1,
-			);
-		}
-
-		$start_1 = 1;
-		$end_1 = $part_size;
-		$start_2 = $nb_page - $part_size + 1;
-		$end_2 = $nb_page;
-		$middle = true;
-		$end = true;
-		if ($current - $before - 1 <= $end_1) {
-			$end_1 = max($current + $after, $end_1);
-			$middle = false;
-
-			if ($current + $after + 1 >= $start_2) {
-				$end_1 = $nb_page;
-				$end = false;
-			}
-		}
-
-		if ($current + $after + 1 >= $start_2) {
-			$start_2 = min($current - $before, $start_2);
-			$middle = false;
-		}
-
-		for ($i = $start_1; $i <= $end_1; ++$i) {
-			$return[] = array(
-				'text' => $i,
-				'number' => $i,
-			);
-		}
-
-		if ($middle) {
-			$return[] = array(
-				'text' => '...',
-				'number' => 0,
-			);
-
-			for ($i = $current - $before; $i <= $current + $after; ++$i) {
-				$return[] = array(
-					'text' => $i,
-					'number' => $i,
-				);
-			}
-		}
-
-		if ($end) {
-			$return[] = array(
-				'text' => '...',
-				'number' => 0,
-			);
-
-			for ($i = $start_2; $i <= $end_2; ++$i) {
-				$return[] = array(
-					'text' => $i,
-					'number' => $i,
-				);
-			}
-		}
-
-		if ($current < $nb_page) {
-			$return[] = array(
-				'text' => '>',
-				'number' => $current + 1,
-			);
-
-			$return[] = array(
-				'text' => '>>',
-				'number' => $nb_page,
-			);
-		}
-
-		return $return;
-	}
-
 	#endregion
 
 	/************************************************************************************
@@ -455,6 +354,7 @@ class Toolbox extends Service\Core
 	/**
 	 * Generate a random string using sha1Encode
 	 * Replace generate_activation_key and generate_random_string
+	 * @param int $length
 	 * @return string
 	 */
 	public function generateRandomKey($length = 10)
@@ -992,6 +892,108 @@ class Toolbox extends Service\Core
 				spl_autoload_register($oneAutoload);
 			}
 		}
+	}
+
+	/**
+	 * Prepare pagination
+	 *
+	 * @param int $total
+	 * @param int $nbPerPage
+	 * @param int $current
+	 * @param int $partSize
+	 * @return array
+	 */
+	public function preparePagination($total, $nbPerPage, $current, $partSize = 3)
+	{
+		$before = floor(($partSize - 1) / 2);
+		$after = $partSize - 1 - $before;
+		if ($nbPerPage <= 0) {
+			return array();
+		}
+
+		$nbPage = ceil($total / $nbPerPage);
+		$return = array();
+		if ($current > 1) {
+			$return[] = array(
+				'text' => '__first__',
+				'number' => 1,
+			);
+
+			$return[] = array(
+				'text' => '__prev__',
+				'number' => $current - 1,
+			);
+		}
+
+		$start1 = 1;
+		$end1 = $partSize;
+		$start2 = $nbPage - $partSize + 1;
+		$end2 = $nbPage;
+		$middle = true;
+		$end = true;
+		if ($current - $before - 1 <= $end1) {
+			$end1 = max($current + $after, $end1);
+			$middle = false;
+
+			if ($current + $after + 1 >= $start2) {
+				$end1 = $nbPage;
+				$end = false;
+			}
+		}
+
+		if ($current + $after + 1 >= $start2) {
+			$start2 = min($current - $before, $start2);
+			$middle = false;
+		}
+
+		for ($i = $start1; $i <= $end1; ++$i) {
+			$return[] = array(
+				'text' => $i,
+				'number' => $i,
+			);
+		}
+
+		if ($middle) {
+			$return[] = array(
+				'text' => '__sep__',
+				'number' => 0,
+			);
+
+			for ($i = $current - $before; $i <= $current + $after; ++$i) {
+				$return[] = array(
+					'text' => $i,
+					'number' => $i,
+				);
+			}
+		}
+
+		if ($end) {
+			$return[] = array(
+				'text' => '__sep__',
+				'number' => 0,
+			);
+
+			for ($i = $start2; $i <= $end2; ++$i) {
+				$return[] = array(
+					'text' => $i,
+					'number' => $i,
+				);
+			}
+		}
+
+		if ($current < $nbPage) {
+			$return[] = array(
+				'text' => '__next__',
+				'number' => $current + 1,
+			);
+
+			$return[] = array(
+				'text' => '__last__',
+				'number' => $nbPage,
+			);
+		}
+
+		return $return;
 	}
 	#endregion
 }
