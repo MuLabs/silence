@@ -40,8 +40,17 @@ class Service extends Kernel\Service\Core
 				$this->setCurrentRoute($route);
 				$params = $route->getParameters();
 
+				$defaultParam = $route->getDefaultVars();
 				foreach ($params as $key => $value) {
 					if (!is_int($key)) {
+						// Ignore if default parameter and a get value is given
+						if (isset($defaultParam[$key]) && $httpRequest->getParameters(
+								$key,
+								Kernel\Http\Request::PARAM_TYPE_GET
+							)
+						) {
+							continue;
+						}
 						$httpRequest->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 					}
 				}
