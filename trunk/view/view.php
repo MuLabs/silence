@@ -162,7 +162,11 @@ abstract class View extends Kernel\Core
 	 */
 	public function getTemplateFilepath($target, $fragment = null)
 	{
-		$language = $this->getApp()->getLocalizationService()->getCurrentLanguage();
+		$language = '';
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization && $localization->isUrlLocaleEnabled()) {
+			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
+		}
 
 		if ($fragment === null) {
 			return $this->getDir() . '/' . $target . '.'.$this->extension;

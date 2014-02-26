@@ -37,6 +37,13 @@ class View extends Kernel\View\View
 		if ($fragment === null) {
 			return $this->getSmarty()->fetch($target . '.tpl');
 		}
-		return $this->getSmarty()->fetch('fragment/' . $target . '/' . $fragment . '.tpl');
+
+		$language = '';
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization && $localization->isUrlLocaleEnabled()) {
+			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
+		}
+
+		return $this->getSmarty()->fetch('fragment/' . $target . '/' . $language . $fragment . '.tpl');
 	}
 }
