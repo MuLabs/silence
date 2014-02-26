@@ -88,9 +88,10 @@ class Route extends Kernel\Core
 	private function getRegexPattern()
 	{
 		$pattern = str_replace('/', '\/', '^' . $this->getPattern() . '(?:\?|$)(?:.*$)?');
-		$pattern = preg_replace('#\{([^\}\/]+)}#iu', '(?<$1>[^\/]+)', $pattern);
+		$pattern = preg_replace('#\{([^\}\/]*)}#iu', '(?<$1>[^\/\?]*)', $pattern);
 		foreach ($this->getDefaultVars() as $key => $value) {
-			$pattern = preg_replace('#(\(\?\<' . $key . '\>\[\^\\\/\]\+\))(\\\/)#iu', '$1?$2?', $pattern);
+            $pattern = str_replace('(?<'.$key.'>[^\/\?]*)\/', '(?<'.$key.'>[^\/\?]*)?\/?', $pattern);
+//			$pattern = preg_replace('#(\(\?\<' . $key . '\>\[\^\\\/\\\?\]\+\))(\\\/)#iu', '$1?$2?', $pattern);
 		}
 		return $pattern;
 	}
