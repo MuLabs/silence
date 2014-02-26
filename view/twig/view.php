@@ -31,12 +31,20 @@ class View extends Kernel\View\View
 	 */
 	public function getCacheFilepath($target, $fragment = null)
 	{
-		$language = $this->getApp()->getLocalizationService()->getCurrentLanguage();
+
+		$language = '';
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization && $localization->isUrlLocaleEnabled()) {
+			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
+		}
 
 		if ($fragment === null) {
 			return $this->getTwig()->getCacheFilename($target . '.twig', $this->getVars());
 		}
-		return $this->getTwig()->getCacheFilename('fragment/' . $target . '/' . $language . '/' . $fragment . '.twig', $this->getVars());
+		return $this->getTwig()->getCacheFilename(
+			'fragment/' . $target . '/' . $language . $fragment . '.twig',
+			$this->getVars()
+		);
 	}
 
 	/**
@@ -46,11 +54,18 @@ class View extends Kernel\View\View
 	 */
 	public function fetch($target, $fragment = null)
 	{
-		$language = $this->getApp()->getLocalizationService()->getCurrentLanguage();
+		$language = '';
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization && $localization->isUrlLocaleEnabled()) {
+			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
+		}
 
 		if ($fragment === null) {
 			return $this->getTwig()->render($target . '.twig', $this->getVars());
 		}
-		return $this->getTwig()->render('fragment/' . $target . '/' . $language . '/' . $fragment . '.twig', $this->getVars());
+		return $this->getTwig()->render(
+			'fragment/' . $target . '/' . $language . $fragment . '.twig',
+			$this->getVars()
+		);
 	}
 }
