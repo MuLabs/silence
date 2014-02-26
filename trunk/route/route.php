@@ -90,7 +90,7 @@ class Route extends Kernel\Core
 		$pattern = str_replace('/', '\/', '^' . $this->getPattern() . '(?:\?|$)(?:.*$)?');
 		$pattern = preg_replace('#\{([^\}\/]*)}#iu', '(?<$1>[^\/\?]*)', $pattern);
 		foreach ($this->getDefaultVars() as $key => $value) {
-            $pattern = str_replace('(?<'.$key.'>[^\/\?]*)\/', '(?<'.$key.'>[^\/\?]*)?\/?', $pattern);
+			$pattern = str_replace('(?<' . $key . '>[^\/\?]+)\/', '(?<' . $key . '>[^\/\?]+)?\/?', $pattern);
 //			$pattern = preg_replace('#(\(\?\<' . $key . '\>\[\^\\\/\\\?\]\+\))(\\\/)#iu', '$1?$2?', $pattern);
 		}
 		return $pattern;
@@ -239,7 +239,10 @@ class Route extends Kernel\Core
 			$pattern = '/' . $localization->getCurrentLanguage() . $pattern;
 		}
 
-		return $this->getApp()->getUrl() . str_replace('//', '/', $pattern . $paramString);
+		while (strpos($pattern, '//') !== false) {
+			$pattern = str_replace('//', '/', $pattern);
+		}
+		return $this->getApp()->getUrl() . $pattern . $paramString;
 	}
 
 	/**
