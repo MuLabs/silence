@@ -18,7 +18,7 @@
 {% if field.type == 'select' %}
 	<select
 			{% if field.id is not empty %}id="{{ field.id }}"{% endif %}
-			name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+			name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
 			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			{% if field.required %} required="required"{% endif %}
 			{% if field.multiple %} multiple{% endif %}
@@ -36,7 +36,7 @@
 	{% for option,label in field.values %}
 		<input
 				type="radio"
-				name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+				name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
 				value="{{ option }}"
 				{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 				{% if option==value %}checked{% endif %} />
@@ -47,7 +47,7 @@
 	{% set option = (field.values is defined) ? field.values : field.default %}
 	<input
 			type="checkbox"
-			name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+			name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
 			value="{{ option }}"
 			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			title="{{ label }}"
@@ -55,7 +55,7 @@
 	{# Render textarea #}
 {% elseif field.type == 'textarea' %}
 	<textarea
-			name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+			name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
 			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			{% if field.required %}required="required" {% endif %}
 			{% if field.length is not empty %}maxlength="{{ field.length }}" {% endif %}
@@ -65,7 +65,7 @@
 {% else %}
 	<input
 		type="{{ field.type }}"
-		name="{% if fieldName is not empty %}{{ fieldName }}{% else %}{{ name }}{% endif %}"
+		name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
 		value="{{ value }}"
 		{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 		{% if field.required %}required="required" {% endif %}
