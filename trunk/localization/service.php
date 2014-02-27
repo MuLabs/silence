@@ -229,16 +229,25 @@ class Service extends Kernel\Service\Core
 		}
 		if (!isset($this->localizationValuesCache[$cacheKey][$lang])) {
 			$handler = $this->getApp()->getDatabase()->getHandler($this->getApp()->getDefaultDbContext());
-			$sql = 'SELECT property, value FROM localization WHERE idObject = ' . $entity->getId(
-				) . ' AND objectType = ' . $entity->getEntityType() . ' AND lang = "' . $lang . '"';
+			$sql = 'SELECT lang, property, value
+			FROM localization
+			WHERE idObject = ' . $entity->getId() . '
+			AND objectType = ' . $entity->getEntityType();
+
 			$result = $handler->query($sql);
 
-			while (list($oneProperty, $value) = $result->fetchRow()) {
-				$this->localizationValuesCache[$cacheKey][$lang][$oneProperty] = $value;
+			while (list($language, $oneProperty, $value) = $result->fetchRow()) {
+				$this->localizationValuesCache[$cacheKey][$language][$oneProperty] = $value;
 			}
 		}
+		$supportedLanguages = $this->getSupportedLanguages();
 
-		return isset($this->localizationValuesCache[$cacheKey][$lang][$property]) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : '';
+		while(!isset($this->localizationValuesCache[$cacheKey][$lang][$property]) && count($supportedLanguages)>0) {
+			unset($supportedLanguages[$lang]);
+			$lang = key($supportedLanguages);
+		}
+
+		return (isset($this->localizationValuesCache[$cacheKey][$lang][$property])) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : $property . ' is not translated.';
 	}
 
 	/**
