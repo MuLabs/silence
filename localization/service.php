@@ -155,15 +155,12 @@ class Service extends Kernel\Service\Core
 
 	/**
 	 * @param string $manager
-	 * @param string|array $property
+	 * @param string $property
+	 * @param bool $getDefaultIfNotFound
 	 */
-	public function registerLocalizedProperty($manager, $property)
+	public function registerLocalizedProperty($manager, $property, $getDefaultIfNotFound = false)
 	{
-		if (is_array($property)) {
-			$this->localizedProperties[$manager] = $property;
-		} else {
-			$this->localizedProperties[$manager][$property] = true;
-		}
+		$this->localizedProperties[$manager][$property] = $getDefaultIfNotFound;
 	}
 
 	/**
@@ -222,6 +219,13 @@ class Service extends Kernel\Service\Core
 	 */
 	private function getLocalizationValue(Kernel\Model\Entity $entity, $property, $lang = null)
 	{
+		$manager = $entity->getManager();
+		$managerName = $manager->getName();
+
+		if (!isset($this->localizedProperties[$managerName][$property])) {
+			return false;
+		}
+
 		$cacheKey = $entity->getCacheKey();
 
 		if (!$this->isSupportedLanguage($lang)) {
@@ -240,11 +244,16 @@ class Service extends Kernel\Service\Core
 				$this->localizationValuesCache[$cacheKey][$language][$oneProperty] = $value;
 			}
 		}
-		$supportedLanguages = $this->getSupportedLanguages();
 
-		while(!isset($this->localizationValuesCache[$cacheKey][$lang][$property]) && count($supportedLanguages)>0) {
-			unset($supportedLanguages[$lang]);
-			$lang = key($supportedLanguages);
+		// If property allow to get default value, then get it
+		if ($this->localizedProperties[$managerName][$property] === true) {
+			$supportedLanguages = $this->getSupportedLanguages();
+			while (!isset($this->localizationValuesCache[$cacheKey][$lang][$property]) && count(
+					$supportedLanguages
+				) > 0) {
+				unset($supportedLanguages[$lang]);
+				$lang = key($supportedLanguages);
+			}
 		}
 
 		return (isset($this->localizationValuesCache[$cacheKey][$lang][$property])) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : '';
