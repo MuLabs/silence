@@ -247,7 +247,7 @@ class Service extends Kernel\Service\Core
 			$lang = key($supportedLanguages);
 		}
 
-		return (isset($this->localizationValuesCache[$cacheKey][$lang][$property])) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : $property . ' is not translated.';
+		return (isset($this->localizationValuesCache[$cacheKey][$lang][$property])) ? $this->localizationValuesCache[$cacheKey][$lang][$property] : '';
 	}
 
 	/**
