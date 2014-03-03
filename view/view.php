@@ -171,7 +171,7 @@ abstract class View extends Kernel\Core
 		if ($fragment === null) {
 			return $this->getDir() . '/' . $target . '.'.$this->extension;
 		}
-		return $this->getDir() . '/fragment/' . $target . '/' . $language . '/'. $fragment . '.'.$this->extension;
+		return $this->getDir() . '/fragment/' . $target . '/' . $language . $fragment . '.'.$this->extension;
 	}
 
 	/**
