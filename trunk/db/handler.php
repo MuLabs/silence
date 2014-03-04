@@ -97,6 +97,7 @@ abstract class Handler extends Kernel\Core
 		$subQuery = $strQuery;
 		$defaultManager = $query->getDefaultManager();
 		$defaultGroup = $defaultManager->getDefaultGroup();
+		$isShortMode = $query->isShortMode();
 		while ($lastFound !== false) {
 			$subQuery = substr($subQuery, 0, $lastFound);
 			$subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
@@ -178,7 +179,7 @@ abstract class Handler extends Kernel\Core
 				$this->getManager($property)->getPropertyForDb(
 					$property['group'],
 					$property['property'],
-					$query->isShortMode()
+					$isShortMode
 				) . '$1',
 				$strQuery,
 				1
@@ -198,7 +199,7 @@ abstract class Handler extends Kernel\Core
 				$property['manager']->getPropertyForDb(
 					$property['group'],
 					$property['property'],
-					$query->isShortMode()
+					$isShortMode
 				) . '$1',
 				$strQuery,
 				1
@@ -219,7 +220,7 @@ abstract class Handler extends Kernel\Core
 				$property['manager']->getPropertyForDb(
 					$property['group'],
 					$property['property'],
-					$query->isShortMode()
+					$isShortMode
 				) . '$1',
 				$strQuery,
 				1
@@ -257,7 +258,7 @@ abstract class Handler extends Kernel\Core
 			$property['group'] = $defaultGroup;
 			$strQuery = preg_replace(
 				'#@([^\w\-]|$)#i',
-				$property['manager']->getGroupForDb($property['group'], $query->isShortMode()) . '$1',
+				$property['manager']->getGroupForDb($property['group'], $isShortMode) . '$1',
 				$strQuery,
 				1
 			);
