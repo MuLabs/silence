@@ -397,8 +397,8 @@ abstract class Manager extends Kernel\Core
 		}
 
 
-		if (isset($this->properties[$this->getDefaultGroup()][$key]['title'])) {
-			return $this->properties[$this->getDefaultGroup()][$key]['title'];
+		if (isset($this->properties[$this->getDefaultGroup()]['properties'][$key]['title'])) {
+			return $this->properties[$this->getDefaultGroup()]['properties'][$key]['title'];
 		}
 		return $key;
 	}
