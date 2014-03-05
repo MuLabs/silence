@@ -378,6 +378,23 @@ abstract class Manager extends Kernel\Core
 	 */
 	public function translateProperties($key)
 	{
+		// Replace _ by camelcase
+		if (strpos('_', $key) !== false) {
+			$finalKey = '';
+			$keyLen = strlen($key);
+			$_last = false;
+			for ($i = 0; $i < $keyLen; ++$i) {
+				if ($key[$i] == '_') {
+					$_last = true;
+				} elseif ($_last) {
+					$_last = false;
+					$finalKey .= strtoupper($key[$i]);
+				} else {
+					$finalKey .= $key[$i];
+				}
+			}
+		}
+
 		if (isset($this->properties[$key]['title'])) {
 			return $this->properties[$key]['title'];
 		}
