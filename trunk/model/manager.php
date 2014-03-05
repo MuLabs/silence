@@ -379,7 +379,7 @@ abstract class Manager extends Kernel\Core
 	public function translateProperties($key)
 	{
 		// Replace _ by camelcase
-		if (strpos('_', $key) !== false) {
+		if (strpos($key, '_') !== false) {
 			$finalKey = '';
 			$keyLen = strlen($key);
 			$_last = false;
@@ -393,10 +393,12 @@ abstract class Manager extends Kernel\Core
 					$finalKey .= $key[$i];
 				}
 			}
+			$key = $finalKey;
 		}
 
-		if (isset($this->properties[$key]['title'])) {
-			return $this->properties[$key]['title'];
+
+		if (isset($this->properties[$this->getDefaultGroup()][$key]['title'])) {
+			return $this->properties[$this->getDefaultGroup()][$key]['title'];
 		}
 		return $key;
 	}
