@@ -67,4 +67,16 @@ trait CoreTrait
 	{
 		return constant('static::' . $name);
 	}
+
+	/**
+	 * @param string $trait
+	 * @return bool
+	 */
+	public function hasTrait($trait)
+	{
+		if (!is_string($trait)) {
+			return false;
+		}
+		return property_exists($this, '__' . $trait);
+	}
 }
