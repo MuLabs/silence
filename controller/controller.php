@@ -118,6 +118,10 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function report($message, $type = self::MESSAGE_ERROR)
 	{
+        if (empty($message)) {
+            return;
+        }
+
 		// Get the current view:
 		$view = $this->getView();
 		$data = $view->getVar($type.self::REPORT_KEY, array());
