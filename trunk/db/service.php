@@ -8,6 +8,48 @@ abstract class Service extends Kernel\Service\Core
 	private $logs = array();
 	private $handlers = array();
 	private $contexts = array();
+	protected $properties = array(
+		'version' => array(
+			'infos' => array(
+				'db' => 'site_db_version',
+			),
+			'keys' => array(
+				'pk_id' => array(
+					'type' => 'primary',
+					'properties' => array(
+						'id',
+					),
+				),
+			),
+			'properties' => array(
+				'id' => array(
+					'title' => 'ID',
+					'db' => 'id_db_version',
+					'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
+					'type' => 'mediumint',
+				),
+				'bundle' => array(
+					'title' => 'Bundle name',
+					'db' => 'bundle',
+					'type' => 'varchar',
+					'length' => 30,
+				),
+				'filename' => array(
+					'title' => 'Update name',
+					'db' => 'filename',
+					'type' => 'char',
+					'length' => 20,
+					'pdo_extra' => 'NOT NULL',
+				),
+				'date' => array(
+					'title' => 'Execution date',
+					'db' => 'date',
+					'type' => 'timestamp',
+					'pdo_extra' => 'NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+				),
+			)
+		),
+	);
 
 	/**
 	 * @param string $name
@@ -74,4 +116,79 @@ abstract class Service extends Kernel\Service\Core
 	 * @return Handler
 	 */
 	abstract protected function generateHandler($contextName);
+
+	/**
+	 * @param string $stdOut
+	 * @param bool $exec
+	 */
+	public function defaultUpdate($stdOut, $exec = true)
+	{
+		$this->getApp()->getToolbox()->removeLimits();
+
+		$updatePath = array(
+			'main' => APP_UPDATE_PATH
+		);
+		$bundleList = $this->getApp()->getBundler()->getAll();
+		foreach ($bundleList as $bundleName => $bundleObject) {
+			if (file_exists($bundleObject->getUpdatePath())) {
+				$updatePath[$bundleName] = $bundleObject->getUpdatePath();
+			}
+		}
+
+		$updateDone = array();
+		$handler = $this->getHandler($this->getApp()->getDefaultDbContext());
+		$sql = 'SELECT :bundle, :filename FROM @';
+		$query = new Query($sql, array(), $this);
+		$result = $handler->sendQuery($query);
+
+		while (list($bundle, $filename) = $result->fetchRow()) {
+			$updateDone[$bundle . '/' . $filename] = 1;
+		}
+
+		$updateTodo = array();
+
+		foreach ($updatePath as $bundleName => $oneUpdatePath) {
+			$dirh = opendir($oneUpdatePath);
+			while ($filename = readdir($dirh)) {
+				if (is_file($oneUpdatePath . '/' . $filename) && empty($updateDone[$bundleName . '/' . $filename])) {
+					$updateTodo[] = $bundleName . '/' . $filename;
+				}
+			}
+		}
+
+		uasort($updateTodo, array($this, 'sortUpdates'));
+
+		$count = count($updateTodo);
+		call_user_func($stdOut, $count . ' updates to do...');
+		$i = 1;
+
+		// Used into update files
+		$handler->disableLogs();
+		foreach ($updateTodo as $filename) {
+			list($bundleName, $filename) = explode('/', $filename);
+			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
+
+			if ($exec) {
+				require_once($updatePath[$bundleName] . '/' . $filename);
+			}
+
+			$sql = 'REPLACE INTO @ (:bundle, :filename) VALUES (?, ?)';
+			$query = new Query($sql, array($bundleName, $filename), $this);
+			$handler->sendQuery($query);
+			call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
+		}
+	}
+
+	/**
+	 * @param string $a
+	 * @param string $b
+	 * @return int
+	 */
+	private function sortUpdates($a, $b)
+	{
+		list($unused, $a) = explode('/', $a);
+		list($unused, $b) = explode('/', $b);
+
+		return strcmp($a, $b);
+	}
 }

@@ -100,14 +100,22 @@ abstract class Application
 
 	protected function initializeUpdate()
 	{
-		$this->registerUpdateFunction('file update', array($this, 'defaultUpdate'));
+		$dbS = $this->getDatabase();
+
+		if ($dbS) {
+			$this->registerUpdateFunction('db update', array($dbS, 'defaultUpdate'));
+		}
 	}
 
 	protected function initializeInstall()
 	{
-		$this->registerInstallFunction('reset', array($this, 'resetApp'));
-		$this->registerInstallFunction('createStructure', array($this, 'createStructure'));
-		$this->registerInstallFunction('createDefaultDataSet', array($this, 'createDefaultDataSet'));
+		$dbS = $this->getDatabase();
+
+		if ($dbS) {
+			$this->registerInstallFunction('reset', array($this, 'resetApp'));
+			$this->registerInstallFunction('createStructure', array($this, 'createStructure'));
+			$this->registerInstallFunction('createDefaultDataSet', array($this, 'createDefaultDataSet'));
+		}
 	}
 
 	/**
@@ -409,7 +417,8 @@ abstract class Application
 	/**
 	 * @return Kernel\Localization\Service
 	 */
-	public function getLocalizationService() {
+	public function getLocalizationService()
+	{
 		return $this->getServicer()->get('localization');
 	}
 
@@ -632,6 +641,7 @@ abstract class Application
 	 */
 	public function install($stdOut = '\print')
 	{
+		define('INSTALLING', true);
 		if (!defined('MU_CONSOLE')) {
 			throw new Exception('', Exception::CONSOLE_EXPECTED);
 		}
@@ -642,79 +652,6 @@ abstract class Application
 			call_user_func($function, $stdOut);
 			call_user_func($stdOut, 'Done');
 		}
-	}
-
-	/**
-	 * @param string $stdOut
-	 * @param bool $exec
-	 */
-	protected function defaultUpdate($stdOut, $exec = true)
-	{
-		$this->getToolbox()->removeLimits();
-
-		$updatePath = array(
-			'main' => APP_UPDATE_PATH
-		);
-		$bundleList = $this->getBundler()->getAll();
-		foreach ($bundleList as $bundleName => $bundleObject) {
-			if (file_exists($bundleObject->getUpdatePath())) {
-				$updatePath[$bundleName] = $bundleObject->getUpdatePath();
-			}
-		}
-
-		$updateDone = array();
-		$handler = $this->getDatabase()->getHandler($this->getDefaultDbContext());
-		$result = $handler->query('SELECT bundle, filename FROM site_db_version');
-
-		while (list($bundle, $filename) = $result->fetchRow()) {
-			$updateDone[$bundle . '/' . $filename] = 1;
-		}
-
-		$updateTodo = array();
-
-		foreach ($updatePath as $bundleName => $oneUpdatePath) {
-			$dirh = opendir($oneUpdatePath);
-			while ($filename = readdir($dirh)) {
-				if (is_file($oneUpdatePath . '/' . $filename) && empty($updateDone[$bundleName . '/' . $filename])) {
-					$updateTodo[] = $bundleName . '/' . $filename;
-				}
-			}
-		}
-
-		uasort($updateTodo, array($this, 'sortUpdates'));
-
-		$count = count($updateTodo);
-		call_user_func($stdOut, $count . ' updates to do...');
-		$i = 1;
-
-		// Used into update files
-		$handler->disableLogs();
-		foreach ($updateTodo as $filename) {
-			list($bundleName, $filename) = explode('/', $filename);
-			call_user_func($stdOut, 'Start update ' . $i . '/' . $count . ' : ' . $filename);
-
-			if ($exec) {
-				require_once($updatePath[$bundleName] . '/' . $filename);
-			}
-
-			$handler->query(
-				'REPLACE INTO site_db_version (bundle, filename) VALUES ("' . $bundleName . '", "' . $filename . '")'
-			);
-			call_user_func($stdOut, 'End update ' . $i++ . '/' . $count);
-		}
-	}
-
-	/**
-	 * @param string $a
-	 * @param string $b
-	 * @return int
-	 */
-	public function sortUpdates($a, $b)
-	{
-		list($unused, $a) = explode('/', $a);
-		list($unused, $b) = explode('/', $b);
-
-		return strcmp($a, $b);
 	}
 
 	/**
@@ -737,27 +674,6 @@ abstract class Application
 		$handler->query('CREATE DATABASE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('USE `' . $this->getDefaultDatabase() . '`');
 		$handler->query('DROP DATABASE `sys_empty`');
-		$handler->query(
-			"CREATE TABLE `site_db_version` (
-				`id_db_version` SMALLINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-				`bundle` VARCHAR(30),
-				  `filename` CHAR(20) NOT NULL,
-				  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-			) ENGINE=InnoDB"
-		);
-		$handler->query(
-			'CREATE TABLE localization (
-			`idObject` INT UNSIGNED NOT NULL,
-			`objectType` TINYINT UNSIGNED NOT NULL,
-			`lang` CHAR(2) NOT NULL,
-			`property` VARCHAR(50) NOT NULL,
-			`value` TEXT,
-			PRIMARY KEY (idObject, objectType, lang, property)
-			) ENGINE=InnoDB'
-		);
-
-
-		$this->defaultUpdate($stdOut, false);
 
 		return true;
 	}
@@ -768,12 +684,17 @@ abstract class Application
 	 */
 	protected function createStructure($stdOut = '\print')
 	{
-		return $this->getModelManager()->createStructure($stdOut);
+		$return = $this->getServicer()->createStructure($stdOut);
+
+		return $return;
 	}
 
 	protected function createDefaultDataSet($stdOut = '\print')
 	{
-		return $this->getModelManager()->createDefaultDataSet($stdOut);
+		$this->getDatabase()->defaultUpdate($stdOut, false);
+		$return = $this->getServicer()->createDefaultDataSet($stdOut);
+
+		return $return;
 	}
 
 	/**

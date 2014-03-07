@@ -95,7 +95,7 @@ abstract class Handler extends Kernel\Core
 		$valuesOffset = count($values) - 1;
 		$lastFound = strrpos($strQuery, '?');
 		$subQuery = $strQuery;
-		$defaultManager = $query->getDefaultManager();
+		$defaultManager = $query->getDefaultRequestable();
 		$defaultGroup = $defaultManager->getDefaultGroup();
 		$isShortMode = $query->isShortMode();
 		while ($lastFound !== false) {
@@ -296,7 +296,7 @@ abstract class Handler extends Kernel\Core
 
 	/**
 	 * @param array $property
-	 * @return Kernel\Model\Manager
+	 * @return Kernel\Db\Traits\Requestable
 	 * @throws Exception
 	 */
 	private function getManager(array $property)
