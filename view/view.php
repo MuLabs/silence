@@ -168,10 +168,16 @@ abstract class View extends Kernel\Core
 			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
 		}
 
+		$siteName = '';
+		$site = $this->getApp()->getSiteService();
+		if($site && $site->getCurrentSiteName()) {
+			$siteName = $site->getCurrentSiteName() . '/';
+		}
+
 		if ($fragment === null) {
 			return $this->getDir() . '/' . $target . '.'.$this->extension;
 		}
-		return $this->getDir() . '/fragment/' . $target . '/' . $language . $fragment . '.'.$this->extension;
+		return $this->getDir() . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.'.$this->extension;
 	}
 
 	/**

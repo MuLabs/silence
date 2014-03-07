@@ -38,12 +38,18 @@ class View extends Kernel\View\View
 			return $this->getSmarty()->fetch($target . '.tpl');
 		}
 
+		$siteName = '';
+		$site = $this->getApp()->getSiteService();
+		if($site && $site->getCurrentSiteName()) {
+			$siteName = $site->getCurrentSiteName() . '/';
+		}
+
 		$language = '';
 		$localization = $this->getApp()->getLocalizationService();
 		if ($localization && $localization->isUrlLocaleEnabled()) {
 			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
 		}
 
-		return $this->getSmarty()->fetch('fragment/' . $target . '/' . $language . $fragment . '.tpl');
+		return $this->getSmarty()->fetch('fragment/' . $target . '/' . $siteName . $language . $fragment . '.tpl');
 	}
 }
