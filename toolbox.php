@@ -996,4 +996,11 @@ class Toolbox extends Service\Core
 		return $return;
 	}
 	#endregion
+
+	public function getAttributeFromHtml($html, $attribute = 'src')
+	{
+		preg_match('/'.$attribute.'="([^"]+)"/', $html, $match);
+		$matchSrc = str_ireplace( 'src="', '',  $match[1]);
+		return $matchSrc;
+	}
 }
