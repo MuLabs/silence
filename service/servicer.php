@@ -27,9 +27,7 @@ class Servicer extends Kernel\Core
 			unset($this->servicesInstance[$name]);
 		}
 
-		if ($service instanceof Core) {
-			$this->set($name, $service);
-		} elseif (is_string($service)) {
+		if (is_string($service)) {
 			$this->services[$name] = $service;
 		}
 	}
@@ -75,5 +73,47 @@ class Servicer extends Kernel\Core
 		$service->setApp($this->getApp());
 		$service->initialize();
 		$this->servicesInstance[$name] = $service;
+	}
+
+	/**
+	 * @param string $stdOut
+	 * @throws \Exception
+	 * @throws Exception
+	 * @return bool
+	 */
+	public function createStructure($stdOut = '\print')
+	{
+		foreach ($this->services as $serviceName => $class) {
+			try {
+				$service = $this->get($serviceName);
+				$service->createStructure($stdOut);
+			} catch (Exception $e) {
+				if ($e->getCode() == Exception::NOT_FOUND) {
+					continue;
+				}
+				throw $e;
+			}
+		}
+	}
+
+	/**
+	 * @param string $stdOut
+	 * @throws \Exception
+	 * @throws Exception
+	 * @return bool
+	 */
+	public function createDefaultDataSet($stdOut = '\print')
+	{
+		foreach ($this->services as $serviceName => $class) {
+			try {
+				$service = $this->get($serviceName);
+				$service->createDefaultDataSet($stdOut);
+			} catch (Exception $e) {
+				if ($e->getCode() == Exception::NOT_FOUND) {
+					continue;
+				}
+				throw $e;
+			}
+		}
 	}
 }

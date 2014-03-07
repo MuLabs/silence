@@ -11,7 +11,7 @@ class Query extends Kernel\Core
 
 	private $values = array();
 	private $query = array();
-	private $defaultManager;
+	private $defaultRequestable;
 	private $isShortMode = false;
 	private $comment;
 	private $type;
@@ -24,14 +24,17 @@ class Query extends Kernel\Core
 	/**
 	 * @param string $query
 	 * @param array $values
-	 * @param Kernel\Model\Manager $defaultManager
+	 * @param Kernel\Db\Interfaces\Requestable $defaultRequestable
 	 * @return Query
 	 */
-	public function __construct($query, array $values = array(), Kernel\Model\Manager $defaultManager = null)
-	{
+	public function __construct(
+		$query,
+		array $values = array(),
+		Kernel\Db\Interfaces\Requestable $defaultRequestable = null
+	) {
 		$this->setValues($values);
 		$this->setQuery($query);
-		$this->setDefaultManager($defaultManager);
+		$this->setDefaultRequestable($defaultRequestable);
 
 		return $this;
 	}
@@ -61,11 +64,11 @@ class Query extends Kernel\Core
 	}
 
 	/**
-	 * @return Kernel\Model\Manager
+	 * @return Kernel\Db\Interfaces\Requestable
 	 */
-	public function getDefaultManager()
+	public function getDefaultRequestable()
 	{
-		return $this->defaultManager;
+		return $this->defaultRequestable;
 	}
 
 	/**
@@ -138,10 +141,10 @@ class Query extends Kernel\Core
 	}
 
 	/**
-	 * @param Kernel\Model\Manager $manager
+	 * @param Kernel\Db\Interfaces\Requestable $requestable
 	 */
-	public function setDefaultManager(Kernel\Model\Manager $manager = null)
+	public function setDefaultRequestable(Kernel\Db\Interfaces\Requestable $requestable = null)
 	{
-		$this->defaultManager = $manager;
+		$this->defaultRequestable = $requestable;
 	}
 }

@@ -10,6 +10,9 @@ class Exception extends Kernel\Exception
 	const INVALID_PARAMETER = 3;
 	const INVALID_PROPERTY_COUNT = 4;
 	const INVALID_SUB_PROP_QUERY = 5;
+	const INVALID_PROPERTY = 6;
+	const INVALID_PROPERTY_GROUP = 7;
+	const NO_DB_HANDLER = 8;
 
 	/**
 	 * @return string
@@ -34,6 +37,15 @@ class Exception extends Kernel\Exception
 				break;
 			case self::INVALID_SUB_PROP_QUERY:
 				return 'Invalid sub property query : ' . $this->message;
+				break;
+			case self::INVALID_PROPERTY:
+				return 'Invalid property : ' . $this->message;
+				break;
+			case self::INVALID_PROPERTY_GROUP:
+				return 'Invalid property group : ' . $this->message;
+				break;
+			case self::NO_DB_HANDLER:
+				return 'No db handler found for model : ' . $this->message;
 				break;
 		}
 		return parent::getFormatedMessage();

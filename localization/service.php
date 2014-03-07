@@ -14,6 +14,58 @@ class Service extends Kernel\Service\Core
 	private $localeFromUrl = false;
 	private $urlLocaleEnabled = true;
 
+	protected $properties = array(
+		'localization' => array(
+			'infos' => array(
+				'db' => 'localization',
+			),
+			'keys' => array(
+				'pk_id' => array(
+					'type' => 'primary',
+					'properties' => array(
+						'idObject',
+						'objectType',
+						'lang',
+						'property',
+					),
+				),
+			),
+			'properties' => array(
+				'idObject' => array(
+					'title' => 'ID Object',
+					'db' => 'idObject',
+					'pdo_extra' => 'UNSIGNED NOT NULL',
+					'type' => 'int',
+				),
+				'objectType' => array(
+					'title' => 'Object Type',
+					'db' => 'objectType',
+					'type' => 'tinyint',
+					'pdo_extra' => 'UNSIGNED NOT NULL',
+				),
+				'lang' => array(
+					'title' => 'Language',
+					'db' => 'lang',
+					'type' => 'char',
+					'length' => 2,
+					'pdo_extra' => 'NOT NULL',
+				),
+				'property' => array(
+					'title' => 'Property name',
+					'db' => 'property',
+					'type' => 'varchar',
+					'pdo_extra' => 'NOT NULL',
+					'length' => 50,
+				),
+				'value' => array(
+					'title' => 'Value',
+					'db' => 'value',
+					'type' => 'text',
+				),
+			)
+		),
+	);
+
 	public function initialize()
 	{
 		// Extract contexts from configuration
@@ -197,11 +249,17 @@ class Service extends Kernel\Service\Core
 			return false;
 		}
 
-		$value = '(' . $entity->getId() . ', ' . $entity->getEntityType(
-			) . ', "' . $lang . '", "' . $property . '", "' . $value . '")';
 		$handler = $this->getApp()->getDatabase()->getHandler($this->getApp()->getDefaultDbContext());
-		$sql = 'REPLACE INTO localization (idObject, objectType, lang, property, value) VALUES ' . $value;
-		$handler->query($sql);
+		$sql = 'REPLACE INTO @ (:idObject, :objectType, :lang, :property, :value) VALUES (?, ?, ?, ?, ?)';
+
+		$query = new Kernel\Db\Query($sql, array(
+			$entity->getId(),
+			$entity->getEntityType(),
+			$lang,
+			$property,
+			$value
+		), $this);
+		$handler->sendQuery($query);
 
 		$cacheKey = $entity->getCacheKey();
 		if (isset($this->localizationValuesCache[$cacheKey])) {
@@ -233,12 +291,13 @@ class Service extends Kernel\Service\Core
 		}
 		if (!isset($this->localizationValuesCache[$cacheKey][$lang])) {
 			$handler = $this->getApp()->getDatabase()->getHandler($this->getApp()->getDefaultDbContext());
-			$sql = 'SELECT lang, property, value
-			FROM localization
-			WHERE idObject = ' . $entity->getId() . '
-			AND objectType = ' . $entity->getEntityType();
+			$sql = 'SELECT :lang, :property, :value
+			FROM @
+			WHERE :idObject = ?
+			AND :objectType = ?';
 
-			$result = $handler->query($sql);
+			$query = new Kernel\Db\Query($sql, array($entity->getId(), $entity->getEntityType()), $this);
+			$result = $handler->sendQuery($query);
 
 			while (list($language, $oneProperty, $value) = $result->fetchRow()) {
 				$this->localizationValuesCache[$cacheKey][$language][$oneProperty] = $value;

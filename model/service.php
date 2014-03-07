@@ -24,7 +24,10 @@ class Service extends Kernel\Service\Core
 			$manager = $this->getApp()->getFactory()->get($fullName);
 			$manager->setEntityType($entityType);
 			$manager->setName($classAlias);
-			$manager->initialize();
+
+			if (!defined('INSTALLING')) {
+				$manager->initialize();
+			}
 			$this->managers[$entityType] = $manager;
 		}
 
@@ -74,6 +77,7 @@ class Service extends Kernel\Service\Core
 	{
 		foreach ($this->allowedEntities as $classAlias) {
 			$entityManager = $this->getOneManager($classAlias);
+			$entityManager->initialize();
 			$entityManager->createDefaultDataSet($stdOut);
 		}
 	}

@@ -3,13 +3,13 @@ namespace Mu\Kernel\Model;
 
 use Mu\Kernel;
 
-abstract class Manager extends Kernel\Core
+abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Requestable
 {
+	use Kernel\Db\Traits\Requestable;
+
 	private $defaultScope = Kernel\Cache\Handler\Core::SCOPE_ALL;
 	private $entities = array();
-	protected $properties = array();
 	private $entityType;
-	private $dbHandler;
 	private $name;
 
 	private $entityClassname;
@@ -21,14 +21,6 @@ abstract class Manager extends Kernel\Core
 	{
 		// Allow to do an initialisation if needed (after Application registration)
 		return true;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getProperties()
-	{
-		return $this->properties;
 	}
 
 	/**
@@ -156,70 +148,6 @@ abstract class Manager extends Kernel\Core
 	}
 
 	/**
-	 * @param string $stdOut
-	 * @return bool
-	 */
-	public function createStructure($stdOut = '\print')
-	{
-		$handler = $this->getDbHandler();
-		$entityClassname = strtolower($this->getEntityClassname());
-		call_user_func($stdOut, 'Start creating structure for entity ' . $entityClassname);
-		foreach ($this->properties as $table => $oneTableInfos) {
-			$properties = array();
-			$tableToken = '@' . $table;
-			call_user_func($stdOut, 'Start creating structure for table ' . $tableToken);
-
-			// Generate properties
-			foreach ($oneTableInfos['properties'] as $label => $oneProperty) {
-				if (!isset($oneProperty['db'])) {
-					continue;
-				}
-
-				$propToken = str_replace('@', ':', $tableToken) . '.' . $label;
-				call_user_func($stdOut, 'Generating property ' . $propToken);
-
-				$propDatas = $handler->getStructureFromProperty($oneProperty);
-				$properties[] = $propToken . ' ' . $propDatas;
-				call_user_func($stdOut, $propToken . ' => Done');
-			}
-
-			// Generate keys
-			foreach ($oneTableInfos['keys'] as $keyName => $oneKey) {
-				call_user_func($stdOut, 'Generating key ' . $keyName);
-
-				$properties[] = $handler->getStructureFromKey(str_replace('@', ':', $tableToken), $keyName, $oneKey);
-				call_user_func($stdOut, $keyName . ' => Done');
-			}
-
-			// Generate tables infos
-			$tableExtra = $handler->getStructureFromTableInfos($oneTableInfos);
-			$query = new Kernel\Db\Query('CREATE TABLE ' . $tableToken . ' (' . implode(
-					', ',
-					$properties
-				) . ') ' . $tableExtra, array(), $this);
-			$query->setShortMode(true);
-			$handler->sendQuery($query);
-
-			call_user_func($stdOut, $tableToken . ' => Done');
-		}
-
-		call_user_func($stdOut, $entityClassname . ' => Done');
-		return true;
-	}
-
-	/**
-	 * @param string $stdOut
-	 * @return bool
-	 */
-	public function createDefaultDataSet($stdOut = '\print')
-	{
-		$entityClassname = strtolower($this->getEntityClassname());
-		call_user_func($stdOut, $entityClassname . ' => No DataSet Found');
-
-		return true;
-	}
-
-	/**
 	 * @return int
 	 */
 	public function getDefaultScope()
@@ -233,18 +161,6 @@ abstract class Manager extends Kernel\Core
 	public function setDefaultScope($scope)
 	{
 		$this->defaultScope = (int)$scope;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getDefaultGroup()
-	{
-		foreach ($this->properties as $key => $value) {
-			return $key;
-		}
-
-		return '';
 	}
 
 	/**
@@ -284,91 +200,11 @@ abstract class Manager extends Kernel\Core
 	}
 
 	/**
-	 * @param string $group
-	 * @param string $name
-	 * @throws Exception
-	 * @return array
-	 */
-	public function getProperty($group, $name)
-	{
-		if (!isset($this->properties[$group]['properties'][$name])) {
-			throw new Exception($group . ' - ' . $name, Exception::INVALID_PROPERTY);
-		}
-		return $this->properties[$group]['properties'][$name];
-	}
-
-	/**
-	 * @param string $group
-	 * @return array
-	 * @throws Exception
-	 */
-	public function getGroupPropertyInfos($group)
-	{
-		if (!isset($this->properties[$group])) {
-			throw new Exception($group, Exception::INVALID_PROPERTY_GROUP);
-		}
-		return $this->properties[$group]['infos'];
-	}
-
-	/**
-	 * @param string $group
-	 * @param string $name
-	 * @param bool $isShortMode
-	 * @return string
-	 */
-	public function getPropertyForDb($group, $name, $isShortMode = false)
-	{
-		$propertyInfos = $this->getProperty($group, $name);
-		if ($isShortMode) {
-			return '`' . $propertyInfos['db'] . '`';
-		} else {
-			$groupInfos = $this->getGroupPropertyInfos($group);
-			return '`' . $groupInfos['db'] . '`.`' . $propertyInfos['db'] . '`';
-		}
-	}
-
-	/**
-	 * @param string $group
-	 * @return string
-	 */
-	public function getGroupForDb($group)
-	{
-		$groupInfos = $this->getGroupPropertyInfos($group);
-		return '`' . $groupInfos['db'] . '`';
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getSpecificWhere()
 	{
 		return ':' . $this->getMainProperty() . ' = ?';
-	}
-
-	/**
-	 * @return Kernel\Db\Handler
-	 * @throws Exception
-	 */
-	public function getDbHandler()
-	{
-		$app = $this->getApp();
-		if (!isset($this->dbHandler)) {
-			$this->setDbHandler($app->getDatabase()->getHandler($app->getDefaultDbContext()));
-		}
-
-		if (!$this->dbHandler) {
-			throw new Exception(__CLASS__, Exception::NO_DB_HANDLER);
-		}
-
-		return $this->dbHandler;
-	}
-
-	/**
-	 * @param Kernel\Db\Handler $handler
-	 */
-	public function setDbHandler(Kernel\Db\Handler $handler)
-	{
-		$this->dbHandler = $handler;
 	}
 
 	/**
