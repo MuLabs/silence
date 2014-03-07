@@ -136,6 +136,11 @@ class Form extends Kernel\Service\Core
 				$field['name'] = $id;
 			}
 
+            // Add default field ID:
+            if (!isset($field['id'])) {
+                $field['id'] = $id;
+            }
+
 			// Add field into the form array:
 			$form[$id] = $field;
 		}
