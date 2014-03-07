@@ -753,8 +753,8 @@ abstract class Application
 		try {
 			$service = $this->getServicer()->get(self::VIEW_JSON);
 		} catch (Kernel\Service\Exception $e) {
-			$service = new Kernel\View\Json\Service();
-			$this->getServicer()->register(self::VIEW_JSON, $service);
+			$this->getServicer()->register(self::VIEW_JSON, '\\Mu\\Kernel\\View\\Json\\Service');
+			$service = $this->getServicer()->get(self::VIEW_JSON);
 		}
 
 		// Return view object:
