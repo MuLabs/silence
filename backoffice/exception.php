@@ -5,9 +5,10 @@ use Mu\Kernel;
 
 class Exception extends Kernel\Exception
 {
-	const SECTION_NOT_FOUND = 1;
-	const WIDGET_NOT_FOUND = 2;
-	const WIDGET_NOT_ALLOWED = 2;
+	const SECTION_NOT_FOUND 	= 1;
+	const WIDGET_NOT_FOUND 		= 2;
+	const WIDGET_NOT_ALLOWED 	= 3;
+	const INVALID_WIDGET_OBJECT = 4;
 
 	/**
 	 * @return string
@@ -23,6 +24,9 @@ class Exception extends Kernel\Exception
 				break;
 			case self::WIDGET_NOT_ALLOWED:
 				return 'Widget are not allowed on this section : ' . $this->message;
+				break;
+			case self::INVALID_WIDGET_OBJECT:
+				return 'Object widget Invalid : ' . $this->message;
 				break;
 			default:
 				return parent::getFormatedMessage();
