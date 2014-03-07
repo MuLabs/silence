@@ -38,11 +38,17 @@ class View extends Kernel\View\View
 			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
 		}
 
+		$siteName = '';
+		$site = $this->getApp()->getSiteService();
+		if($site && $site->getCurrentSiteName()) {
+			$siteName = $site->getCurrentSiteName() . '/';
+		}
+
 		if ($fragment === null) {
 			return $this->getTwig()->getCacheFilename($target . '.twig', $this->getVars());
 		}
 		return $this->getTwig()->getCacheFilename(
-			'fragment/' . $target . '/' . $language . $fragment . '.twig',
+			'fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
 			$this->getVars()
 		);
 	}
@@ -60,11 +66,17 @@ class View extends Kernel\View\View
 			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
 		}
 
+		$siteName = '';
+		$site = $this->getApp()->getSiteService();
+		if($site && $site->getCurrentSiteName()) {
+			$siteName = $site->getCurrentSiteName() . '/';
+		}
+
 		if ($fragment === null) {
 			return $this->getTwig()->render($target . '.twig', $this->getVars());
 		}
 		return $this->getTwig()->render(
-			'fragment/' . $target . '/' . $language . $fragment . '.twig',
+			'fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
 			$this->getVars()
 		);
 	}
