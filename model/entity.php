@@ -3,7 +3,7 @@ namespace Mu\Kernel\Model;
 
 use Mu\Kernel;
 
-abstract class Entity extends Kernel\Core implements \JsonSerializable
+abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\Model\Interfaces\Entity
 {
 	protected $manager;
 	protected $unsavedChanges = array();
@@ -85,9 +85,9 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable
 
 #region Setters
 	/**
-	 * @param Manager $manager
+	 * @param Kernel\Model\Interfaces\Manager $manager
 	 */
-	public function setManager(Manager $manager)
+	public function setManager(Kernel\Model\Interfaces\Manager $manager)
 	{
 		$this->manager = $manager;
 	}

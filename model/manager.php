@@ -3,7 +3,7 @@ namespace Mu\Kernel\Model;
 
 use Mu\Kernel;
 
-abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Requestable
+abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Requestable, Kernel\Model\Interfaces\Manager
 {
 	use Kernel\Db\Traits\Requestable;
 
