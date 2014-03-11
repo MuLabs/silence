@@ -52,6 +52,17 @@
 			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			title="{{ label }}"
 			{% if value == field.values %}checked{% endif %} />
+	{# Render checkbox list #}
+{% elseif field.type == 'checkboxlist' %}
+	{% for option,label in field.values %}
+		<input
+				type="checkbox"
+				name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}[]"
+				value="{{ option }}"
+				{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
+				title="{{ label }}"
+				{% if value b-and option %}checked{% endif %} /> {{ label }}
+	{% endfor %}
 	{# Render textarea #}
 {% elseif field.type == 'textarea' %}
 	<textarea
