@@ -25,12 +25,13 @@ class Form extends Kernel\Service\Core
 	const TYPE_CHECK	= 'checkbox';
 	const TYPE_RADIO	= 'radio';
 	const TYPE_SELECT	= 'select';
+	const TYPE_CBLIST	= 'checkboxlist';
 
 	private $action = '';
 	private $enctype= 'multipart/form-data';
 	private $method = self::METHOD_POST;
 	private $allowedMethod= array(self::METHOD_GET, self::METHOD_POST);
-	private $allowedTypes = array(self::TYPE_DEFAULT, self::TYPE_HIDDEN, self::TYPE_PASSWORD, self::TYPE_TEXTAREA, self::TYPE_CHECK, self::TYPE_RADIO, self::TYPE_SELECT);
+	private $allowedTypes = array(self::TYPE_DEFAULT, self::TYPE_HIDDEN, self::TYPE_PASSWORD, self::TYPE_TEXTAREA, self::TYPE_CHECK, self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST);
 	private	$defaultField = array(
 		'type'		=> self::TYPE_DEFAULT,
 		'value'		=> null,
@@ -114,7 +115,7 @@ class Form extends Kernel\Service\Core
 			}
 
 			// Set default values for radio and select:
-			if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT]) && !is_array($field['values'])) {
+			if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['values'])) {
 				if (method_exists($manager, $field['values'])) {
 					$field['values'] = $manager->$field['values']();
 				} else {
