@@ -28,6 +28,11 @@ abstract class Result
 	/**
 	 * @return array
 	 */
+	abstract public function fetchAllValue();
+
+	/**
+	 * @return array
+	 */
 	abstract public function fetchAll();
 
 	/**
