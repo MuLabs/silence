@@ -40,24 +40,33 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	}
 
 	/**
-	 * @param array $idList
-	 * @param bool $keep_null
+	 * @param Entity[] $entities
 	 * @return Entity[]
 	 */
-	public function multiGet(array $idList, $keep_null = false)
+	abstract protected function initEntities(array $entities);
+
+	/**
+	 * @param array $idList
+	 * @param bool $keepNull
+	 * @return Entity[]
+	 */
+	public function multiGet(array $idList, $keepNull = false)
 	{
 		$cacheKeys = array();
 		$entities = array();
-		foreach ($idList as $key => $id) {
-			$cacheKey = $this->getCacheKey($idList[$key]);
+		// Generate cache key list and check local cache elements
+		foreach ($idList as $id) {
+			$cacheKey = $this->getCacheKey($id);
 
-			if (isset($this->entities[$cacheKey])) {
-				$entities[$key] = $this->entities[$cacheKey];
+			if (isset($this->entities[$id])) {
+				$entities[$id] = $this->entities[$id];
 				continue;
 			}
-			$cacheKeys[$key] = $cacheKey;
+			$cacheKeys[$id] = $cacheKey;
 		}
+		unset($idList);
 
+		// Check object in entities cache system
 		$entityCache = $this->getApp()->getEntityCache();
 		/** @var Entity[] $cacheEntities */
 		$cacheEntities = array();
@@ -69,24 +78,47 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			}
 		}
 
-		foreach ($cacheKeys as $key => $cacheKey) {
+		// Create missing items list
+		$toRetrieve = array();
+		foreach ($cacheKeys as $id => $cacheKey) {
 			if (!isset($cacheEntities[$cacheKey]) || !$cacheEntities[$cacheKey]) {
-				$cacheEntities[$cacheKey] = $this->generateEntity($idList[$key]);
+				$toRetrieve[] = $id;
+				continue;
 			}
 
 			if ($entityCache) {
 				$entityCache->set($cacheEntities[$cacheKey], $this->getDefaultScope());
 			}
-			$this->entities[$cacheKey] = $entities[$key] = $cacheEntities[$cacheKey];
+			$this->entities[$id] = $entities[$id] = $cacheEntities[$cacheKey];
 		}
 
+		// Get missing items
+		if (is_array($toRetrieve) && count($toRetrieve)) {
+			$toRetrieve = $this->initEntities($toRetrieve);
+			foreach ($toRetrieve as $id => $entity) {
+				if (!$entity->isValid()) {
+					$entity = null;
+				}
+
+				if ($entityCache) {
+					$entityCache->set($entity, $this->getDefaultScope());
+				}
+				$this->entities[$id] = $entities[$id] = $entity;
+			}
+			unset($toRetrieve);
+		}
+
+
 		// Purge nulls if not allowed
-		if (!$keep_null) {
-			foreach ($entities as $key => $value) {
-				if ($value === null) {
-					unset($entities[$key]);
+		if (!$keepNull) {
+			$tempList = $entities;
+			$entities = array();
+			foreach ($tempList as $id => $value) {
+				if ($value !== null) {
+					$entities[$id] = $value;
 				}
 			}
+			unset($tempList);
 		}
 
 		return $entities;
@@ -119,7 +151,16 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 		}
 
 		if (!$entity) {
-			$entity = $this->generateEntity($id);
+			/** @var Entity $entity */
+			$result = $this->initEntities(array($id));
+			if (!count($result)) {
+				$entity = null;
+			} else {
+				list($entity) = $result;
+				if (!$entity->isValid()) {
+					$entity = null;
+				}
+			}
 		}
 
 		if ($entityCache) {
@@ -131,20 +172,14 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	}
 
 	/**
-	 * @param array $id
-	 * @return Kernel\Model\Entity
+	 * @param int $id
+	 * @return Entity
 	 */
-	private function generateEntity($id)
+	protected function generateEntity($id)
 	{
 		/** @var Entity $entity */
 		$classname = $this->getEntityClassname();
-		$entity = new $classname($this, $id);
-
-		if (!$entity->isValid()) {
-			$entity = null;
-		}
-
-		return $entity;
+		return new $classname($this, $id);
 	}
 
 	/**

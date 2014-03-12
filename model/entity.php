@@ -24,13 +24,12 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	{
 		$this->setApp($manager->getApp());
 		$this->setManager($manager);
-		$this->setId($id);
-
-		$this->initialize();
-		$this->isInitialized = true;
 	}
 
-	abstract protected function initialize();
+	public function initialize()
+	{
+		$this->setInitialized();
+	}
 
 #endregion Initialization
 	/**
@@ -39,6 +38,11 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	public function isInitialized()
 	{
 		return $this->isInitialized;
+	}
+
+	protected function setInitialized()
+	{
+		$this->isInitialized = true;
 	}
 
 

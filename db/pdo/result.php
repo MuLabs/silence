@@ -60,7 +60,21 @@ class Result extends Kernel\Db\Result
 	/**
 	 * @return array
 	 */
-	public function fetchAll() {
+	public function fetchAllValue()
+	{
+		$values = array();
+		while ($row = $this->fetchValue()) {
+			$values[] = $row;
+		}
+
+		return $values;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function fetchAll()
+	{
 		$values = array();
 		while ($row = $this->fetchArray()) {
 			$values[] = $row;
