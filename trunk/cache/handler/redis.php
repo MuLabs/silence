@@ -6,7 +6,7 @@ use Mu\Kernel;
 class Redis extends Kernel\Cache\Handler\Core
 {
 	/** @var  \Redis */
-	private $handler;
+	protected $handler;
 
 	public function __construct()
 	{

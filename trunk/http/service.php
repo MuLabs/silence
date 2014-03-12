@@ -5,8 +5,8 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
-	private $httpRequest;
-	private $httpResponse;
+	protected $httpRequest;
+	protected $httpResponse;
 
 	public function __construct()
 	{

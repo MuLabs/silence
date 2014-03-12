@@ -8,7 +8,7 @@ trait Requestable
 	use Kernel\CoreTrait;
 
 	protected $properties = array();
-	private $dbHandler;
+	protected $dbHandler;
 
 	/**
 	 * @return array

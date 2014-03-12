@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 abstract class Generator extends Kernel\Core
 {
-	private $asset;
+	protected $asset;
 
 	public function __construct(Asset $asset)
 	{
@@ -45,7 +45,8 @@ abstract class Generator extends Kernel\Core
 	/**
 	 * @return string
 	 */
-	public function getOutExt() {
+	public function getOutExt()
+	{
 		return $this->getAsset()->getExt();
 	}
 }

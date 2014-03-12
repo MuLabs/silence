@@ -5,9 +5,9 @@ use Mu\Kernel;
 
 abstract class View extends Kernel\Core
 {
-	private $service;
-	private $compileDir;
-	private $vars = array();
+	protected $service;
+	protected $compileDir;
+	protected $vars = array();
 	protected $extension;
 
 	public function __construct()
@@ -170,14 +170,15 @@ abstract class View extends Kernel\Core
 
 		$siteName = '';
 		$site = $this->getApp()->getSiteService();
-		if($site && $site->getCurrentSiteName()) {
+		if ($site && $site->getCurrentSiteName()) {
 			$siteName = $site->getCurrentSiteName() . '/';
 		}
 
 		if ($fragment === null) {
-			return $this->getDir() . '/' . $target . '.'.$this->extension;
+			return $this->getDir() . '/' . $target . '.' . $this->extension;
 		}
-		return $this->getDir() . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.'.$this->extension;
+		return $this->getDir(
+		) . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.' . $this->extension;
 	}
 
 	/**
@@ -185,7 +186,8 @@ abstract class View extends Kernel\Core
 	 * @param null $fragment
 	 * @return string
 	 */
-	public function getCacheFilepath($target, $fragment = null) {
+	public function getCacheFilepath($target, $fragment = null)
+	{
 		return '';
 	}
 

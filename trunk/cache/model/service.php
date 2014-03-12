@@ -10,7 +10,7 @@ class Service extends Kernel\Service\Core
 	/**
 	 * @var Kernel\Cache\Handler\Core[]
 	 */
-	private $handlers = array();
+	protected $handlers = array();
 
 	/**
 	 * @param Kernel\Cache\Handler\Core[] $handlers

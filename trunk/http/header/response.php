@@ -19,11 +19,11 @@ class Response
 	const MIME_TYPE_GIF = 'image/gif';
 	const MIME_TYPE_PNG = 'image/png';
 
-	private $contentType = self::MIME_TYPE_HTML;
-	private $contentLength;
-	private $contentFilename;
-	private $location;
-	private $code = 200;
+	protected $contentType = self::MIME_TYPE_HTML;
+	protected $contentLength;
+	protected $contentFilename;
+	protected $location;
+	protected $code = 200;
 
 	public function send()
 	{

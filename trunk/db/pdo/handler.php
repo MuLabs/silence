@@ -8,7 +8,7 @@ class Handler extends Kernel\Db\Handler
 	// Query minimal time for log (in ms)
 	const QUERY_LOG_LIMIT = 10;
 
-	private $typeToSQL = array(
+	protected $typeToSQL = array(
 		'tinyint' => 'TINYINT',
 		'smallint' => 'SMALLINT',
 		'mediumint' => 'MEDIUMINT',

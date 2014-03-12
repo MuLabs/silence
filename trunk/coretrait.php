@@ -6,8 +6,8 @@ use Mu\Kernel;
 
 trait CoreTrait
 {
-	private $application;
-	private $logger;
+	protected $application;
+	protected $logger;
 
 	/**
 	 * @param Kernel\Application $app

@@ -8,7 +8,7 @@ use Mu\Kernel;
  */
 class Result extends Kernel\Db\Result
 {
-	private $ressource;
+	protected $ressource;
 
 	/**
 	 * @param Handler $handler

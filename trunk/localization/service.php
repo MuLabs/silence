@@ -6,13 +6,13 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
-	private $supportedLanguages = array();
-	private $currentLanguage;
-	private $localizedProperties = array();
+	protected $supportedLanguages = array();
+	protected $currentLanguage;
+	protected $localizedProperties = array();
 
-	private $localizationValuesCache = array();
-	private $localeFromUrl = false;
-	private $urlLocaleEnabled = true;
+	protected $localizationValuesCache = array();
+	protected $localeFromUrl = false;
+	protected $urlLocaleEnabled = true;
 
 	protected $properties = array(
 		'localization' => array(

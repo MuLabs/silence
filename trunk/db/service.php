@@ -5,9 +5,9 @@ use Mu\Kernel;
 
 abstract class Service extends Kernel\Service\Core
 {
-	private $logs = array();
-	private $handlers = array();
-	private $contexts = array();
+	protected $logs = array();
+	protected $handlers = array();
+	protected $contexts = array();
 	protected $properties = array(
 		'version' => array(
 			'infos' => array(

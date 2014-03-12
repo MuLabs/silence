@@ -7,7 +7,7 @@ class Service extends Kernel\Service\Core
 {
 	const KEY_PREFIX = 'PAGE||';
 
-	private $handler;
+	protected $handler;
 
 	/**
 	 * @param Kernel\Cache\Handler\Core $handler

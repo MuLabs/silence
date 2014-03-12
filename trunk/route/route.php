@@ -5,16 +5,16 @@ use Mu\Kernel;
 
 class Route extends Kernel\Core
 {
-	private $parameters = array();
-	private $controllerName;
-	private $bundleName;
-	private $defaultVars = array();
-	private $defaultFormat;
-	private $pattern;
-	private $name;
-	private $alias;
+	protected $parameters = array();
+	protected $controllerName;
+	protected $bundleName;
+	protected $defaultVars = array();
+	protected $defaultFormat;
+	protected $pattern;
+	protected $name;
+	protected $alias;
 
-	private $allowedFormats = array(self::FORMAT_HTML, self::FORMAT_JSON);
+	protected $allowedFormats = array(self::FORMAT_HTML, self::FORMAT_JSON);
 	const FORMAT_HTML = 'html';
 	const FORMAT_JSON = 'json';
 

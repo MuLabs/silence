@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
-	private $managers = array();
+	protected $managers = array();
 	protected $allowedEntities = array();
 	protected $entityClassName = array();
 

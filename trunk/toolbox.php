@@ -13,7 +13,7 @@ class Toolbox extends Service\Core
 	const TVA_VALUE = 0.196;
 	const INCH_TO_CM = 2.54;
 
-	private $bannedKeywords = array(
+	protected $bannedKeywords = array(
 		'10eme',
 		'1er',
 		'1ere',
@@ -555,31 +555,33 @@ class Toolbox extends Service\Core
 		}
 
 		//get the array to sort
-		$array 	= array_splice($args, 0, 1);
-		$array 	= $array[0];
+		$array = array_splice($args, 0, 1);
+		$array = $array[0];
 
 		//get the type of sort : DESC or NOT
-		$desc 	= array_splice($args, -1);
-		$desc 	= $desc[0];
+		$desc = array_splice($args, -1);
+		$desc = $desc[0];
 
 		//sort with an function giving in args
-		usort($array, function($a, $b) use($args) {
-			$i = 0;
-			$c = count($args);
-			$cmp = 0;
-			while($cmp == 0 && $i < $c)
-			{
-				if(!empty($args[ $i ])) {
-					$func = 'get'.ucfirst($args[ $i ]);
-					$cmp = strcmp($a->$func(), $b->$func());
+		usort(
+			$array,
+			function ($a, $b) use ($args) {
+				$i = 0;
+				$c = count($args);
+				$cmp = 0;
+				while ($cmp == 0 && $i < $c) {
+					if (!empty($args[$i])) {
+						$func = 'get' . ucfirst($args[$i]);
+						$cmp = strcmp($a->$func(), $b->$func());
+					}
+					$i++;
 				}
-				$i++;
+
+				return $cmp;
 			}
+		);
 
-			return $cmp;
-		});
-
-		if($desc) {
+		if ($desc) {
 			return array_reverse($array);
 		} else {
 			return $array;
@@ -995,12 +997,13 @@ class Toolbox extends Service\Core
 
 		return $return;
 	}
+
 	#endregion
 
 	public function getAttributeFromHtml($html, $attribute = 'src')
 	{
-		preg_match('/'.$attribute.'="([^"]+)"/', $html, $match);
-		$matchSrc = str_ireplace( 'src="', '',  $match[1]);
+		preg_match('/' . $attribute . '="([^"]+)"/', $html, $match);
+		$matchSrc = str_ireplace('src="', '', $match[1]);
 		return $matchSrc;
 	}
 }

@@ -22,35 +22,35 @@ class Request
 	const PARAM_TYPE_SESSION = 5;
 	const PARAM_TYPE_SERVER = 6;
 
-	private $method;
-	private $time;
-	private $queryString;
-	private $documentRoot;
-	private $scriptFilename;
-	private $scriptName;
-	private $pathTranslated;
-	private $requestUri;
-	private $pathInfo;
-	private $origPathInfo;
+	protected $method;
+	protected $time;
+	protected $queryString;
+	protected $documentRoot;
+	protected $scriptFilename;
+	protected $scriptName;
+	protected $pathTranslated;
+	protected $requestUri;
+	protected $pathInfo;
+	protected $origPathInfo;
 
-	private $phpAuthDigest;
-	private $phpAuthUser;
-	private $phpAuthPw;
-	private $authType;
+	protected $phpAuthDigest;
+	protected $phpAuthUser;
+	protected $phpAuthPw;
+	protected $authType;
 
-	private $serverAddr;
-	private $serverName;
-	private $serverSoftware;
-	private $serverProtocol;
-	private $serverAdmin;
-	private $serverPort;
-	private $serverSignature;
+	protected $serverAddr;
+	protected $serverName;
+	protected $serverSoftware;
+	protected $serverProtocol;
+	protected $serverAdmin;
+	protected $serverPort;
+	protected $serverSignature;
 
-	private $remoteAddr;
-	private $remoteHost;
-	private $remotePort;
+	protected $remoteAddr;
+	protected $remoteHost;
+	protected $remotePort;
 
-	private $requestHeader;
+	protected $requestHeader;
 
 	/********************/
 	/**    STANDART    **/

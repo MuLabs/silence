@@ -5,11 +5,11 @@ use Mu\Kernel;
 
 class Servicer extends Kernel\Core
 {
-	private $services = array();
+	protected $services = array();
 	/** @var Core[] */
-	private $servicesInstance = array();
-	private $servicesParameter = array();
-	private $defaultParameters = array();
+	protected $servicesInstance = array();
+	protected $servicesParameter = array();
+	protected $defaultParameters = array();
 
 	/**
 	 * @param $name

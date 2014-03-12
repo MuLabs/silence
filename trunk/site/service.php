@@ -8,10 +8,10 @@ class Service extends Kernel\Service\Core
 {
 	const BO_ID = 0;
 
-	private $sites = array();
-	private $sitesUrl = array();
-	private $currentSite;
-	private $boKey;
+	protected $sites = array();
+	protected $sitesUrl = array();
+	protected $currentSite;
+	protected $boKey;
 
 	/**
 	 * @param int $siteId
@@ -162,7 +162,8 @@ class Service extends Kernel\Service\Core
 	/**
 	 * @return string
 	 */
-	public function getBoKey() {
+	public function getBoKey()
+	{
 		return $this->boKey;
 	}
 }

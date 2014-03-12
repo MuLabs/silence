@@ -5,8 +5,8 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
-	private $routes = array();
-	private $currentRoute;
+	protected $routes = array();
+	protected $currentRoute;
 
 	const ROUTE_RULE_FILE = 'route.php';
 	const FRAGMENT_PARAM = '__fg';

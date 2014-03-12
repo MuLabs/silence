@@ -8,8 +8,8 @@ use Mu\Kernel\Handler;
 abstract class Extended extends Core
 {
 	/** @var Handler\Core[] $handlers */
-	private $handlers = array();
-	private $logs = array();
+	protected $handlers = array();
+	protected $logs = array();
 
 	abstract protected function getNamespace();
 

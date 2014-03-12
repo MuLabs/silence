@@ -16,7 +16,7 @@ abstract class Handler extends Kernel\Handler\Core
 	protected $pro_value = self::DEFAULT_PROTECTOR_VALUE;
 	protected $content = array();
 	protected $appendHandler = array();
-	private $filename;
+	protected $filename;
 
 	/**
 	 * {@inheritDoc}
