@@ -5,8 +5,6 @@ use Mu\Kernel;
 
 trait Requestable
 {
-	use Kernel\CoreTrait;
-
 	protected $properties = array();
 	protected $dbHandler;
 
