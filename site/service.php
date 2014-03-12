@@ -11,6 +11,7 @@ class Service extends Kernel\Service\Core
 	private $sites = array();
 	private $sitesUrl = array();
 	private $currentSite;
+	private $boKey;
 
 	/**
 	 * @param int $siteId
@@ -32,6 +33,7 @@ class Service extends Kernel\Service\Core
 	public function registerBo($boKey)
 	{
 		$this->sites[$boKey] = self::BO_ID;
+		$this->boKey = $boKey;
 	}
 
 	/**
@@ -155,5 +157,12 @@ class Service extends Kernel\Service\Core
 	public function isCurrentSiteBo()
 	{
 		return isset($this->currentSite) && $this->currentSite == self::BO_ID;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBoKey() {
+		return $this->boKey;
 	}
 }
