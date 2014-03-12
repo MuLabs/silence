@@ -41,7 +41,7 @@ class Form extends Kernel\Service\Core
 		self::TYPE_SELECT,
 		self::TYPE_CBLIST
 	);
-	private $defaultField = array(
+	protected $defaultField = array(
 		'type' => self::TYPE_DEFAULT,
 		'value' => null,
 		'default' => '', // Default value
