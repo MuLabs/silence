@@ -53,7 +53,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	public function multiGet(array $idList, $keepNull = false)
 	{
 		$cacheKeys = array();
-		$entities = array();
+		$entities = array_flip($idList);
 		// Generate cache key list and check local cache elements
 		foreach ($idList as $id) {
 			$cacheKey = $this->getCacheKey($id);
@@ -108,17 +108,13 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			unset($toRetrieve);
 		}
 
-
 		// Purge nulls if not allowed
 		if (!$keepNull) {
-			$tempList = $entities;
-			$entities = array();
-			foreach ($tempList as $id => $value) {
-				if ($value !== null) {
-					$entities[$id] = $value;
+			foreach ($entities as $id => $value) {
+				if ($value === null) {
+					unset($entities[$id]);
 				}
 			}
-			unset($tempList);
 		}
 
 		return $entities;
@@ -156,7 +152,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			if (!count($result)) {
 				$entity = null;
 			} else {
-				list($entity) = $result;
+				$entity = reset($result);
 				if (!$entity->isValid()) {
 					$entity = null;
 				}
