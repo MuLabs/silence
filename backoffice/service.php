@@ -5,10 +5,10 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
-	private $sections = array();
-	private $widgets = array();
-	private $widgetsInstance = array();
-	private $actionLogger;
+	protected $sections = array();
+	protected $widgets = array();
+	protected $widgetsInstance = array();
+	protected $actionLogger;
 
 	/**
 	 * @param array

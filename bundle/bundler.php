@@ -6,7 +6,7 @@ use Mu\Kernel;
 class Bundler extends Kernel\Core
 {
 	/** @var Core[] */
-	private $bundlesInstance = array();
+	protected $bundlesInstance = array();
 
 	/**
 	 * @param $name

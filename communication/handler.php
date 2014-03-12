@@ -11,12 +11,12 @@ abstract class Handler extends Kernel\Handler\Core
 	const MESSAGE_SENT = 3;
 
 	protected $configPrefix = 'com_';
-	private $subject = '';
-	private $content;
-	private $origin;
-	private $destination;
-	private $files = array();
-	private $status = 0;
+	protected $subject = '';
+	protected $content;
+	protected $origin;
+	protected $destination;
+	protected $files = array();
+	protected $status = 0;
 
 	/**
 	 * Attach one or more file to this communication thread
@@ -100,10 +100,10 @@ abstract class Handler extends Kernel\Handler\Core
 			$this->checkStatus();
 		} catch (Exception $e) {
 			throw new Exception($e->getMessage() . ' -- ' . substr(
-				$message,
-				0,
-				100
-			) . '...', Exception::INCORRECT_FORMAT_CONTENT);
+					$message,
+					0,
+					100
+				) . '...', Exception::INCORRECT_FORMAT_CONTENT);
 		}
 	}
 

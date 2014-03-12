@@ -8,8 +8,8 @@ abstract class Core extends Kernel\Core
 	const DEFAULT_CONTEXT = 'murloc';
 	const DELIMITER = ',';
 
-	private $context;
-	private $config;
+	protected $context;
+	protected $config;
 	protected $configPrefix = '';
 
 	/**

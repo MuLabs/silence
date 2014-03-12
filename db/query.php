@@ -9,12 +9,12 @@ use Mu\Kernel;
 class Query extends Kernel\Core
 {
 
-	private $values = array();
-	private $query = array();
-	private $defaultRequestable;
-	private $isShortMode = false;
-	private $comment;
-	private $type;
+	protected $values = array();
+	protected $query = array();
+	protected $defaultRequestable;
+	protected $isShortMode = false;
+	protected $comment;
+	protected $type;
 
 	const TYPE_SELECT = 1;
 	const TYPE_UPDATE = 2;

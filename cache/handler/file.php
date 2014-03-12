@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 class File extends Kernel\Cache\Handler\Core
 {
-	private $cache_path = CACHE_PATH;
+	protected $cache_path = CACHE_PATH;
 
 	/**
 	 * @param string $path

@@ -22,12 +22,12 @@ class Cookie extends Kernel\Session\Handler
 	const DEFAULT_SALT = 'Z10uzuhyNyH3FYN9';
 	const DEFAULT_SECURE = false;
 
-	private $keyVerify = 'mu_verify';
-	private $keyTime = 'mu_time';
-	private $salt;
-	private $secure; // Bool
-	private $httponly; // Bool
-	private $info = array();
+	protected $keyVerify = 'mu_verify';
+	protected $keyTime = 'mu_time';
+	protected $salt;
+	protected $secure; // Bool
+	protected $httponly; // Bool
+	protected $info = array();
 
 	/**
 	 * Load current cookie and check it's validity

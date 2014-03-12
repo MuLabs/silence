@@ -8,7 +8,7 @@ class Core
 {
 	use Kernel\CoreTrait;
 
-	private $classname;
+	protected $classname;
 
 	const TEST = 1;
 

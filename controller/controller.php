@@ -5,19 +5,19 @@ use Mu\Kernel;
 
 abstract class Controller extends Kernel\Core
 {
-	const REPORT_KEY 	= 'Report';
-	const MESSAGE_ERROR	= 'error';
-	const MESSAGE_WARN	= 'warning';
-	const MESSAGE_INFO	= 'info';
-	const MESSAGE_SUCCESS='success';
+	const REPORT_KEY = 'Report';
+	const MESSAGE_ERROR = 'error';
+	const MESSAGE_WARN = 'warning';
+	const MESSAGE_INFO = 'info';
+	const MESSAGE_SUCCESS = 'success';
 
 	protected $hasCache = false;
 	protected $cacheTtl = 60;
 	/** @var $view Kernel\View\View */
-	private $view;
-	private $fragmentName = null;
-	private $isFragmentExtracted = false;
-	private $messageTypes = array(self::MESSAGE_ERROR, self::MESSAGE_INFO, self::MESSAGE_SUCCESS, self::MESSAGE_WARN);
+	protected $view;
+	protected $fragmentName = null;
+	protected $isFragmentExtracted = false;
+	protected $messageTypes = array(self::MESSAGE_ERROR, self::MESSAGE_INFO, self::MESSAGE_SUCCESS, self::MESSAGE_WARN);
 
 	/************************************************************************************
 	 **  GETTERS / SETTERS                                                             **
@@ -103,8 +103,8 @@ abstract class Controller extends Kernel\Core
 	public function error($code = 404, $message = null)
 	{
 		$method = "error$code";
-		$service= $this->getApp()->getErrorService();
-		if ($message!==null) {
+		$service = $this->getApp()->getErrorService();
+		if ($message !== null) {
 			$service->$method($message);
 		} else {
 			$service->$method();
@@ -118,13 +118,13 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function report($message, $type = self::MESSAGE_ERROR)
 	{
-        if (empty($message)) {
-            return;
-        }
+		if (empty($message)) {
+			return;
+		}
 
 		// Get the current view:
 		$view = $this->getView();
-		$data = $view->getVar($type.self::REPORT_KEY, array());
+		$data = $view->getVar($type . self::REPORT_KEY, array());
 
 		// Append message to the current ones:
 		if (is_array($message)) {
@@ -134,20 +134,24 @@ abstract class Controller extends Kernel\Core
 		}
 
 		// Register all messages:
-		$view->setVar($type.self::REPORT_KEY, $data);
+		$view->setVar($type . self::REPORT_KEY, $data);
 	}
+
 	public function reportError($error)
 	{
 		$this->report($error, self::MESSAGE_ERROR);
 	}
+
 	public function reportInfo($info)
 	{
 		$this->report($info, self::MESSAGE_INFO);
 	}
+
 	public function reportSuccess($success)
 	{
 		$this->report($success, self::MESSAGE_SUCCESS);
 	}
+
 	public function reportWarning($warn)
 	{
 		$this->report($warn, self::MESSAGE_WARN);
@@ -164,18 +168,18 @@ abstract class Controller extends Kernel\Core
 	protected function getView($bNew = false)
 	{
 		if (!isset($this->view) || $bNew) {
-			$route  = $this->getApp()->getRoute();
+			$route = $this->getApp()->getRoute();
 			$format = $this->request('format', $route->getDefaultFormat());
 			if ($format == '') {
 				$format = $route->getDefaultFormat();
 			}
 			$this->view = ($format == $route::FORMAT_JSON)
-							? $this->getApp()->getJsonView()
-							: $this->getApp()->getViewManager()->getView();
+				? $this->getApp()->getJsonView()
+				: $this->getApp()->getViewManager()->getView();
 
 			// Initialize reports:
 			foreach ($this->messageTypes as $type) {
-				$this->view->setVar($type.self::REPORT_KEY, []);
+				$this->view->setVar($type . self::REPORT_KEY, []);
 			}
 		}
 
@@ -256,7 +260,7 @@ abstract class Controller extends Kernel\Core
 			}
 
 			$messages = [];
-			foreach ($view->getVar($type.self::REPORT_KEY, []) as $report) {
+			foreach ($view->getVar($type . self::REPORT_KEY, []) as $report) {
 				if (is_int($report)) {
 					$messages[] = $report;
 				}

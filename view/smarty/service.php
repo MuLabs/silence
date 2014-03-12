@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 class Service extends Kernel\View\Service
 {
-	private $smarty;
+	protected $smarty;
 	protected $specificDir = 'smarty';
 
 	/**

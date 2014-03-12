@@ -16,7 +16,7 @@ use Mu\Kernel;
 class Session extends Kernel\Session\Handler
 {
 	private static $sessionNumber = 0;
-	private $info = array();
+	protected $info = array();
 
 	/**
 	 * Start php session if needed and set context

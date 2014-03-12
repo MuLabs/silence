@@ -5,10 +5,10 @@ use Mu\Kernel;
 
 abstract class Service extends Kernel\Service\Core
 {
-	private $dir = '';
-	private $compileDir = '';
+	protected $dir = '';
+	protected $compileDir = '';
 	protected $specificDir = null;
-	private $extensions = array();
+	protected $extensions = array();
 
 	/**
 	 * @param string $dir

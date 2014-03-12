@@ -5,15 +5,15 @@ use Mu\Kernel;
 
 abstract class Application
 {
-	private $controller;
-	private $route;
-	private $servicer;
-	private $bundler;
-	private $statics = array();
-	private $updateFunctions = array();
-	private $installFunctions = array();
-	private $startMicrotime = 0;
-	private $defaultDbContext;
+	protected $controller;
+	protected $route;
+	protected $servicer;
+	protected $bundler;
+	protected $statics = array();
+	protected $updateFunctions = array();
+	protected $installFunctions = array();
+	protected $startMicrotime = 0;
+	protected $defaultDbContext;
 	protected $production = true;
 	protected $enableEsi = true;
 	protected $defaultDatabase;

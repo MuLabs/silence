@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 class Less extends Kernel\Asset\Generator\Css
 {
-	private $lesser;
+	protected $lesser;
 
 	/**
 	 * @return int
@@ -46,7 +46,8 @@ class Less extends Kernel\Asset\Generator\Css
 	/**
 	 * @return string
 	 */
-	public function getOutExt() {
+	public function getOutExt()
+	{
 		return 'css';
 	}
 }

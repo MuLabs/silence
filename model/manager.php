@@ -7,12 +7,12 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 {
 	use Kernel\Db\Traits\Requestable;
 
-	private $defaultScope = Kernel\Cache\Handler\Core::SCOPE_ALL;
-	private $entities = array();
-	private $entityType;
-	private $name;
+	protected $defaultScope = Kernel\Cache\Handler\Core::SCOPE_ALL;
+	protected $entities = array();
+	protected $entityType;
+	protected $name;
 
-	private $entityClassname;
+	protected $entityClassname;
 
 	/**
 	 * @return bool
@@ -99,6 +99,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				if (!$entity->isValid()) {
 					$entity = null;
 				}
+				$entity->initialize();
 
 				if ($entityCache) {
 					$entityCache->set($entity, $this->getDefaultScope());
@@ -156,6 +157,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				if (!$entity->isValid()) {
 					$entity = null;
 				}
+				$entity->initialize();
 			}
 		}
 

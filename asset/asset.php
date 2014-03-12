@@ -5,10 +5,10 @@ use Mu\Kernel;
 
 class Asset extends Kernel\Core
 {
-	private $key;
-	private $ext;
-	private $fileList;
-	private $manager;
+	protected $key;
+	protected $ext;
+	protected $fileList;
+	protected $manager;
 
 	public function __construct(Service $manager, $fileList)
 	{
@@ -59,7 +59,8 @@ class Asset extends Kernel\Core
 	 */
 	public function getPath()
 	{
-		return APP_STATIC_PATH . '/' . Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager()->getGenerator($this)->getOutExt();
+		return APP_STATIC_PATH . '/' . Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager(
+		)->getGenerator($this)->getOutExt();
 	}
 
 	/**
@@ -96,7 +97,9 @@ class Asset extends Kernel\Core
 	 */
 	public function getUrl()
 	{
-		return $this->getApp()->getUrlStatic(Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager()->getGenerator($this)->getOutExt());
+		return $this->getApp()->getUrlStatic(
+			Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager()->getGenerator($this)->getOutExt()
+		);
 	}
 
 	/**

@@ -33,8 +33,8 @@ abstract class Handler extends Kernel\Core
 		Query::TYPE_UPDATE,
 	);
 
-	private $link;
-	private $hasLog;
+	protected $link;
+	protected $hasLog;
 
 
 	public function enableLogs()

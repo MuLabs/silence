@@ -12,7 +12,7 @@ class Service extends Kernel\File\Service
 {
 	const DEFAULT_HANDLER = 'file';
 
-	private $currentLog;
+	protected $currentLog;
 
 	/**
 	 * @param string $section

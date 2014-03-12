@@ -5,8 +5,8 @@ use Mu\Kernel;
 
 class Response
 {
-	private $header;
-	private $content;
+	protected $header;
+	protected $content;
 
 	public function __construct()
 	{

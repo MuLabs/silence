@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 class View extends Kernel\View\View
 {
-	private $smarty;
+	protected $smarty;
 	protected $extension = 'tpl';
 
 	/**
@@ -40,7 +40,7 @@ class View extends Kernel\View\View
 
 		$siteName = '';
 		$site = $this->getApp()->getSiteService();
-		if($site && $site->getCurrentSiteName()) {
+		if ($site && $site->getCurrentSiteName()) {
 			$siteName = $site->getCurrentSiteName() . '/';
 		}
 

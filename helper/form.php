@@ -15,33 +15,42 @@ use Mu\Kernel\Model\Manager;
  */
 class Form extends Kernel\Service\Core
 {
-	const METHOD_POST	= 'POST';
-	const METHOD_GET	= 'GET';
+	const METHOD_POST = 'POST';
+	const METHOD_GET = 'GET';
 
-	const TYPE_DEFAULT	= 'text';
-	const TYPE_HIDDEN	= 'hidden';
-	const TYPE_PASSWORD	= 'password';
-	const TYPE_TEXTAREA	= 'textarea';
-	const TYPE_CHECK	= 'checkbox';
-	const TYPE_RADIO	= 'radio';
-	const TYPE_SELECT	= 'select';
-	const TYPE_CBLIST	= 'checkboxlist';
+	const TYPE_DEFAULT = 'text';
+	const TYPE_HIDDEN = 'hidden';
+	const TYPE_PASSWORD = 'password';
+	const TYPE_TEXTAREA = 'textarea';
+	const TYPE_CHECK = 'checkbox';
+	const TYPE_RADIO = 'radio';
+	const TYPE_SELECT = 'select';
+	const TYPE_CBLIST = 'checkboxlist';
 
-	private $action = '';
-	private $enctype= 'multipart/form-data';
-	private $method = self::METHOD_POST;
-	private $allowedMethod= array(self::METHOD_GET, self::METHOD_POST);
-	private $allowedTypes = array(self::TYPE_DEFAULT, self::TYPE_HIDDEN, self::TYPE_PASSWORD, self::TYPE_TEXTAREA, self::TYPE_CHECK, self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST);
-	private	$defaultField = array(
-		'type'		=> self::TYPE_DEFAULT,
-		'value'		=> null,
-		'default'	=> '',			// Default value
-		'class'		=> '',			// Specific field class
-		'required'	=> false,		// Is field required
-		'pattern'	=> '',			// Pattern to add to input fields (HTML5)
-		'values'	=> [],			// Values for checkbox, radio and select
-		'multiple'	=> false,		// Multiple select declarator
-		'separator'	=> ',',			// Default separator (for DB storage)
+	protected $action = '';
+	protected $enctype = 'multipart/form-data';
+	protected $method = self::METHOD_POST;
+	protected $allowedMethod = array(self::METHOD_GET, self::METHOD_POST);
+	protected $allowedTypes = array(
+		self::TYPE_DEFAULT,
+		self::TYPE_HIDDEN,
+		self::TYPE_PASSWORD,
+		self::TYPE_TEXTAREA,
+		self::TYPE_CHECK,
+		self::TYPE_RADIO,
+		self::TYPE_SELECT,
+		self::TYPE_CBLIST
+	);
+	private $defaultField = array(
+		'type' => self::TYPE_DEFAULT,
+		'value' => null,
+		'default' => '', // Default value
+		'class' => '', // Specific field class
+		'required' => false, // Is field required
+		'pattern' => '', // Pattern to add to input fields (HTML5)
+		'values' => [], // Values for checkbox, radio and select
+		'multiple' => false, // Multiple select declarator
+		'separator' => ',', // Default separator (for DB storage)
 	);
 
 	/**
@@ -52,13 +61,13 @@ class Form extends Kernel\Service\Core
 	public function getFormInfos($submit = null, $class = '')
 	{
 		return array(
-			'action'=> $this->action,
-			'method'=> $this->method,
-			'enctype'=>$this->enctype,
-			'class'	=> $class,
-			'submit'=> $submit,
+			'action' => $this->action,
+			'method' => $this->method,
+			'enctype' => $this->enctype,
+			'class' => $class,
+			'submit' => $submit,
 			'fieldAfter' => '<br />',
-			'fieldBefore'=> '',
+			'fieldBefore' => '',
 		);
 	}
 
@@ -94,20 +103,23 @@ class Form extends Kernel\Service\Core
 		}
 
 		// Get properties to check:
-		$properties = (!empty($properties)) ? array_intersect_key($allProperties[$group]['properties'], array_flip($properties))
-											: $allProperties[$group]['properties'];
+		$properties = (!empty($properties)) ? array_intersect_key(
+			$allProperties[$group]['properties'],
+			array_flip($properties)
+		)
+			: $allProperties[$group]['properties'];
 
 		// Start form creation:
 		$form = [];
-		foreach ($properties as $id=>$values) {
+		foreach ($properties as $id => $values) {
 			if (!is_array($values['form'])) {
 				continue;
 			}
 
 			// Set generalities:
 			$field = array_merge($this->defaultField, $values['form']);
-			$field['label']	= (isset($values['title'])) ? $values['title'] : null;
-			$field['length']= (isset($values['length']))? $values['length']: null;
+			$field['label'] = (isset($values['title'])) ? $values['title'] : null;
+			$field['length'] = (isset($values['length'])) ? $values['length'] : null;
 
 			// Check input type:
 			if (!in_array($field['type'], $this->allowedTypes)) {
@@ -115,7 +127,10 @@ class Form extends Kernel\Service\Core
 			}
 
 			// Set default values for radio and select:
-			if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['values'])) {
+			if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array(
+					$field['values']
+				)
+			) {
 				if (method_exists($manager, $field['values'])) {
 					$field['values'] = $manager->$field['values']();
 				} else {
@@ -124,8 +139,8 @@ class Form extends Kernel\Service\Core
 			}
 
 			// Add value if entity is found and its method too:
-			$getter = 'get'.ucfirst($id);
-			if ($entity!=null and method_exists($entity, $getter)) {
+			$getter = 'get' . ucfirst($id);
+			if ($entity != null and method_exists($entity, $getter)) {
 				$value = $entity->$getter();
 				if (!empty($value)) {
 					$field['value'] = $value;
@@ -137,10 +152,10 @@ class Form extends Kernel\Service\Core
 				$field['name'] = $id;
 			}
 
-            // Add default field ID:
-            if (!isset($field['id'])) {
-                $field['id'] = $id;
-            }
+			// Add default field ID:
+			if (!isset($field['id'])) {
+				$field['id'] = $id;
+			}
 
 			// Add field into the form array:
 			$form[$id] = $field;
@@ -177,7 +192,7 @@ class Form extends Kernel\Service\Core
 		$request = $this->getApp()->getHttp()->getRequest();
 
 		// Test fields:
-		foreach ($fields as $id=>$field) {
+		foreach ($fields as $id => $field) {
 			if (!$field['required']) {
 				continue;
 			}

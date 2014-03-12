@@ -5,7 +5,7 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
 {
-	private $datas;
+	protected $datas;
 
 	/**
 	 * @param array $datas

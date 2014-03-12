@@ -7,10 +7,10 @@ class Service extends Kernel\Service\Core
 {
 	const ASSET_DIR = 'assets';
 
-	private $forceRegenerate = false;
-	private $allowedExtension = array();
-	private $generator = array();
-	private $vars = array();
+	protected $forceRegenerate = false;
+	protected $allowedExtension = array();
+	protected $generator = array();
+	protected $vars = array();
 
 	/**
 	 * @param array $fileList
