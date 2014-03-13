@@ -12,6 +12,7 @@ class View extends Kernel\View\View
 	 */
 	public function fetch($target, $fragment = null)
 	{
+		header('Content-type: application/json');
 		return json_encode($this->getVars());
 	}
 }
