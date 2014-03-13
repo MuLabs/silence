@@ -180,7 +180,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		}
 
 		$sql = 'UPDATE @ SET :deleted = ? WHERE ' . $manager->getSpecificWhere();
-		$query = new Kernel\Db\Query($sql, array(1, $this->getId()), $manager);
+		$value = array(1, $this->getId());
+		$query = new Kernel\Db\Query($sql, $value, $manager);
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
