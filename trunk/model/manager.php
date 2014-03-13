@@ -98,8 +98,9 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			foreach ($toRetrieve as $id => $entity) {
 				if (!$entity->isValid()) {
 					$entity = null;
-				}
-				$entity->initialize();
+				} else {
+				    $entity->initialize();
+                }
 
 				if ($entityCache) {
 					$entityCache->set($entity, $this->getDefaultScope());
@@ -156,8 +157,9 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				$entity = reset($result);
 				if (!$entity->isValid()) {
 					$entity = null;
-				}
-				$entity->initialize();
+				} else {
+                    $entity->initialize();
+                }
 			}
 		}
 
