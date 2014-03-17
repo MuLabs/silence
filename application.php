@@ -80,6 +80,7 @@ abstract class Application
 	{
 		$servicer = $this->getServicer();
 		$servicer->register('log', '\Mu\Kernel\Log\Service');
+		$servicer->register('trigger', '\Mu\Kernel\Trigger\Service');
 		$servicer->register('toolbox', '\Mu\Kernel\Toolbox');
 		$servicer->register('http', '\Mu\Kernel\Http\Service');
 		$servicer->register('factory', '\Mu\Kernel\Factory');
