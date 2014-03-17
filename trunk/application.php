@@ -432,6 +432,14 @@ abstract class Application
 	}
 
 	/**
+	 * @return Kernel\Trigger\Service
+	 */
+	public function getTriggerService()
+	{
+		return $this->getServicer()->get('trigger');
+	}
+
+	/**
 	 * @return string
 	 */
 	private function getControllerClassname()
