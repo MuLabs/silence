@@ -12,7 +12,7 @@ class Service extends Kernel\Service\Core
 	 * @param callable $function
 	 * @return string
 	 */
-	public function register($name, callable $function)
+	public function register($name, $function)
 	{
 		$this->triggerFunctions[$name][] = $function;
 	}
@@ -26,6 +26,10 @@ class Service extends Kernel\Service\Core
 	{
 		if (isset($this->triggerFunctions[$name]) && is_array($this->triggerFunctions[$name])) {
 			foreach ($this->triggerFunctions[$name] as $oneTrigger) {
+				if (!is_callable($oneTrigger)) {
+					continue;
+				}
+
 				call_user_func($oneTrigger, $params);
 			}
 		} else {

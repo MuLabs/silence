@@ -51,6 +51,8 @@ abstract class Application
 			$this->setBundler($bundler);
 			$this->registerBundles();
 			#endregion
+
+			$this->defineTriggers();
 		} catch (Kernel\EndException $e) {
 			// Normal exception (end of execution)
 		}
@@ -98,6 +100,10 @@ abstract class Application
 	abstract protected function registerCustomServices();
 
 	abstract protected function registerBundles();
+
+	protected function defineTriggers() {
+
+	}
 
 	protected function initializeUpdate()
 	{
