@@ -29,7 +29,7 @@ class Service extends Kernel\Service\Core
 				call_user_func($oneTrigger, $params);
 			}
 		} else {
-			throw new Exception($name, Exception::TRIGGER_NOT_FOUND);
+			//throw new Exception($name, Exception::TRIGGER_NOT_FOUND);
 		}
 	}
 }
