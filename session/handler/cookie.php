@@ -19,7 +19,7 @@ class Cookie extends Kernel\Session\Handler
 {
 	const DEFAULT_EXPIRE = 12;
 	const DEFAULT_HTTPONLY = false;
-	const DEFAULT_SALT = 'Z10uzuhyNyH3FYN9';
+	const DEFAULT_SALT = '67e04b7bbbcbfbe9ebc84f7d29fdb0bc';
 	const DEFAULT_SECURE = false;
 
 	protected $keyVerify = 'mu_verify';
