@@ -752,6 +752,34 @@ class Toolbox extends Service\Core
 	}
 
 	/**
+	 * @param string|int $date
+	 * @param string $format
+	 * @return string
+	 */
+	public function getConvertedDate($date = null, $format = null)
+	{
+		// Get current timestamp:
+		if (empty($date)) {
+			$date = time();
+		}
+
+		// Convert date to time:
+		if (!is_int($date)) {
+			$date = strtotime($date);
+		}
+
+		if($format == 'fr') {
+			$format = '%e %B %Y';
+		} elseif($format == 'en') {
+			$format = '%B %e %Y';
+		} else {
+			$format = '%B %e %Y';
+		}
+
+		return strftime($format, $date);
+	}
+
+	/**
 	 * @static
 	 * @param string $a
 	 * @param string $b
