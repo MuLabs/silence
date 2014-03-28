@@ -18,14 +18,15 @@ class Form extends Kernel\Service\Core
 	const METHOD_POST = 'POST';
 	const METHOD_GET = 'GET';
 
-	const TYPE_DEFAULT = 'text';
-	const TYPE_HIDDEN = 'hidden';
+	const TYPE_DEFAULT  = 'text';
+    const TYPE_INPUT    = 'input';
+	const TYPE_HIDDEN   = 'hidden';
 	const TYPE_PASSWORD = 'password';
 	const TYPE_TEXTAREA = 'textarea';
-	const TYPE_CHECK = 'checkbox';
-	const TYPE_RADIO = 'radio';
-	const TYPE_SELECT = 'select';
-	const TYPE_CBLIST = 'checkboxlist';
+	const TYPE_CHECK    = 'checkbox';
+	const TYPE_RADIO    = 'radio';
+	const TYPE_SELECT   = 'select';
+	const TYPE_CBLIST   = 'checkboxlist';
 
 	protected $action = '';
 	protected $enctype = 'multipart/form-data';
@@ -122,7 +123,7 @@ class Form extends Kernel\Service\Core
 			$field['length'] = (isset($values['length'])) ? $values['length'] : null;
 
 			// Check input type:
-			if (!in_array($field['type'], $this->allowedTypes)) {
+			if (!isset($field['type']) || $field['type'] == self::TYPE_INPUT) {
 				$field['type'] = self::TYPE_DEFAULT;
 			}
 
