@@ -540,6 +540,21 @@ class Toolbox extends Service\Core
 		return (strlen($a) > strlen($b)) ? -1 : 1;
 	}
 
+    /**
+     * Convert a decimal value into hexadecimal color
+     * @param int $decimal
+     * @return string
+     */
+    public function decimalToColor($decimal)
+    {
+        $color = dechex($decimal);
+        // Check decimal length:
+        if (strlen($color) < 6) {
+            $color = str_repeat('0', 6-strlen($color))."$color";
+        }
+        return '#'.$color;
+    }
+
 	/**
 	 * @return array|bool
 	 */
