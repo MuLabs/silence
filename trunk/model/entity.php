@@ -91,9 +91,13 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	/**
 	 * @param Kernel\Model\Interfaces\Manager $manager
 	 */
-	public function setManager(Kernel\Model\Interfaces\Manager $manager)
+	public function setManager(Kernel\Model\Interfaces\Manager $manager = null)
 	{
 		$this->manager = $manager;
+
+		if ($manager !== null) {
+			$this->setApp($manager->getApp());
+		}
 	}
 
 	/**
@@ -163,6 +167,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
+		$this->discard();
 		$this->logAction(Kernel\Backoffice\ActionLogger::ACTION_UPDATE, $oldValues, $this->unsavedChanges);
 		$this->unsavedChanges = array();
 
@@ -185,6 +190,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
+		$this->discard();
 		$this->logAction(Kernel\Backoffice\ActionLogger::ACTION_UPDATE, array('deleted' => 0), array('deleted' => 1));
 
 		return true;
@@ -201,6 +207,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		$handler = $this->getManager()->getDbHandler();
 		$handler->sendQuery($query);
 
+		$this->discard();
 		$this->logAction(Kernel\Backoffice\ActionLogger::ACTION_DELETE, array(), array());
 
 		return true;
@@ -319,5 +326,24 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 			$value = print_r($value, true);
 		}
 		return '' . $value;
+	}
+
+	/**
+	 * @param array $cache
+	 */
+	public function reloadInternalCache(array $cache)
+	{
+		$this->_cache = $cache;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function resetInternalCache()
+	{
+		$cache = $this->_cache;
+		$this->_cache = array();
+		return $cache;
+
 	}
 }

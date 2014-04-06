@@ -8,10 +8,12 @@ class Redis extends Kernel\Cache\Handler\Core
 	/** @var  \Redis */
 	protected $handler;
 
-	public function __construct()
+	public function __construct($host = '127.0.0.1', $port = 6379)
 	{
 		try {
 			$this->handler = new \Redis();
+			$this->handler->connect($host, $port);
+			$this->handler->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 		} catch (\RedisException $e) {
 			throw new Kernel\Cache\Exception($e->getMessage(), Kernel\Cache\Exception::FAILED_TO_CONNECT);
 		}
@@ -41,7 +43,7 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function get($key)
 	{
-		return $this->handler->get($key);
+		return unserialize($this->handler->get($key));
 	}
 
 	/**
@@ -51,7 +53,17 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function multiGet(array $keys)
 	{
-		return $this->handler->mGet($keys);
+		$result = $this->handler->mGet($keys);
+
+		if (is_array($result)) {
+			foreach ($result as $key => $value) {
+				$result[$key] = unserialize($value);
+			}
+		} else {
+			$result = array();
+		}
+
+		return $result;
 	}
 
 	/**
@@ -62,7 +74,7 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function set($key, $value, $cacheTtl = 0)
 	{
-		return $this->handler->set($key, $value, $cacheTtl);
+		return $this->handler->set($key, serialize($value), $cacheTtl);
 	}
 
 	/**

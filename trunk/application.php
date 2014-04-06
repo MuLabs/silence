@@ -351,7 +351,7 @@ abstract class Application
 	public function getPageCache()
 	{
 		try {
-			return $this->getServicer()->get('page_cache');
+			return $this->getServicer()->get('pageCache');
 		} catch (Service\Exception $e) {
 			return null;
 		}
@@ -363,7 +363,7 @@ abstract class Application
 	public function getEntityCache()
 	{
 		try {
-			return $this->getServicer()->get('entity_cache');
+			return $this->getServicer()->get('entityCache');
 		} catch (Service\Exception $e) {
 			return null;
 		}
