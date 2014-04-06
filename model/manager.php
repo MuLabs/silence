@@ -86,9 +86,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				continue;
 			}
 
-			if ($entityCache) {
-				$entityCache->set($cacheEntities[$cacheKey], $this->getDefaultScope());
-			}
+			$cacheEntities[$cacheKey]->setManager($this);
 			$this->entities[$id] = $entities[$id] = $cacheEntities[$cacheKey];
 		}
 
@@ -102,7 +100,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				    $entity->initialize();
                 }
 
-				if ($entityCache) {
+				if ($entityCache && $entity) {
 					$entityCache->set($entity, $this->getDefaultScope());
 				}
 				$this->entities[$id] = $entities[$id] = $entity;
@@ -148,7 +146,9 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			}
 		}
 
-		if (!$entity) {
+		if ($entity) {
+			$entity->setManager($this);
+		} else {
 			/** @var Entity $entity */
 			$result = $this->initEntities(array($id));
 			if (!count($result)) {
@@ -163,7 +163,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			}
 		}
 
-		if ($entityCache) {
+		if ($entityCache && $entity) {
 			$entityCache->set($entity, $this->getDefaultScope());
 		}
 		$this->entities[$key] = $entity;
@@ -199,7 +199,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	}
 
 	/**
-	 * @param array $id
+	 * @param int $id
 	 * @return string
 	 */
 	public function getCacheKey($id)

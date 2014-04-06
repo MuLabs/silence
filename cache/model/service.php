@@ -79,13 +79,26 @@ class Service extends Kernel\Service\Core
 	 */
 	public function set(Kernel\Model\Entity $entity, $scope)
 	{
+		$cacheKey = $entity->getCacheKey();
+
+		/**
+		 * Keep entity clean of context
+		 */
+		$manager = $entity->getManager();
+		$entity->setManager(null);
+		$entity->setApp(null);
+		$cache = $entity->resetInternalCache();
 		foreach ($this->handlers as $handler) {
 			if (!($scope & $handler->getScope())) {
 				continue;
 			}
 
-			$handler->set($this->getRealKey($entity->getCacheKey()), $entity);
+			$handler->set($this->getRealKey($cacheKey), $entity);
+
 		}
+		$entity->setManager($manager);
+		$entity->reloadInternalCache($cache);
+
 	}
 
 	/**

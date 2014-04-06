@@ -12,7 +12,7 @@ trait CoreTrait
 	/**
 	 * @param Kernel\Application $app
 	 */
-	public function setApp(Application $app)
+	public function setApp(Application $app = null)
 	{
 		$this->application = $app;
 	}
