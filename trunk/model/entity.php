@@ -106,7 +106,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	 */
 	public function setId($id)
 	{
-		$this->id = $id;
+		$this->id = (int)$id;
 	}
 
 	/**
