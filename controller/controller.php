@@ -12,7 +12,7 @@ abstract class Controller extends Kernel\Core
 	const MESSAGE_SUCCESS = 'success';
 
 	protected $hasCache = false;
-	protected $cacheTtl = 60;
+	protected $cacheTtl = 0;
 	/** @var $view Kernel\View\View */
 	protected $view;
 	protected $fragmentName = null;
@@ -40,11 +40,31 @@ abstract class Controller extends Kernel\Core
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getCacheKeyElements()
+	{
+		return array();
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getCacheKey()
 	{
-		return '';
+		$cacheElements = $this->getCacheKeyElements();
+
+		if (!is_array($cacheElements)) {
+			return '';
+		}
+
+		foreach ($cacheElements as $key => $oneElement) {
+			if ($oneElement instanceof Kernel\Model\Entity) {
+				$cacheElements[$key] = '[' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ']';
+			}
+		}
+
+		return implode('|', $cacheElements);
 	}
 
 	/**
