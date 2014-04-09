@@ -560,12 +560,11 @@ abstract class Application
 		}
 
 		$cacheManager = $this->getPageCache();
-		$cacheKey = get_class($this->getController()) . '|' . $this->getController()->getCacheKey();
-
 		if ($cacheManager
 			&& $this->getController()->hasCache()
 		) {
 			try {
+				$cacheKey = get_class($this->getController()) . '|' . $this->getController()->getCacheKey();
 				return $cacheManager->get($cacheKey, $this->getController()->getCacheTtl());
 			} catch (Cache\Exception $e) {
 				$content = $this->getController()->fetch();
