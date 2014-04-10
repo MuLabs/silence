@@ -5,10 +5,23 @@ use Mu\Kernel;
 
 class Servicer extends Kernel\Core
 {
-	protected $services = array();
+	protected $services = array(
+		'log' => '\Mu\Kernel\Log\Service',
+		'trigger' => '\Mu\Kernel\Trigger\Service',
+		'toolbox' => '\Mu\Kernel\Toolbox',
+		'http' => '\Mu\Kernel\Http\Service',
+		'factory' => '\Mu\Kernel\Factory',
+		'route' => '\Mu\Kernel\Route\Service',
+		'config' => '\Mu\Kernel\Config\Service',
+		'error' => '\Mu\Kernel\Error\Service',
+		'localization' => '\Mu\Kernel\Localization\Service',
+		'site' => '\Mu\Kernel\Site\Service',
+	);
 	/** @var Core[] */
 	protected $servicesInstance = array();
-	protected $servicesParameter = array();
+	protected $servicesParameter = array(
+		'error' => array('type' => '\Mu\Kernel\Error\Service')
+	);
 	protected $defaultParameters = array();
 
 	/**
