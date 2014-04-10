@@ -20,7 +20,16 @@ class Servicer extends Kernel\Core
 	/** @var Core[] */
 	protected $servicesInstance = array();
 	protected $servicesParameter = array(
-		'error' => array('type' => '\Mu\Kernel\Error\Service')
+		'log' => array(),
+		'trigger' => array(),
+		'toolbox' => array(),
+		'http' => array(),
+		'factory' => array(),
+		'route' => array(),
+		'config' => array(),
+		'error' => array('type' => '\Mu\Kernel\Error\Service'),
+		'localization' => array(),
+		'site' => array(),
 	);
 	protected $defaultParameters = array();
 
