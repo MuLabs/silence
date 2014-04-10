@@ -98,7 +98,13 @@ class Service extends Kernel\Service\Core
 		if (!$handler) {
 			return;
 		}
-		$handler->delete($this->getRealKey($key));
+
+		$keys = $handler->getKeys($this->getRealKey($key));
+		if (!empty($keys)) {
+			foreach ($keys as $oneKey) {
+				$handler->delete($oneKey);
+			}
+		}
 	}
 
 	/**

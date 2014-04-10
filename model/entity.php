@@ -218,10 +218,20 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 
 	public function discard()
 	{
-		$cache_manager = $this->getApp()->getEntityCache();
-		if ($cache_manager) {
-			$cache_manager->delete($this, $this->getManager()->getDefaultScope());
-			$cache_manager->set($this, $this->getManager()->getDefaultScope());
+		$cacheManager = $this->getApp()->getEntityCache();
+		if ($cacheManager) {
+			// Discard entity cache and reload
+			$cacheManager->delete($this, $this->getManager()->getDefaultScope());
+			$cacheManager->set($this, $this->getManager()->getDefaultScope());
+		}
+
+		$pageCacheManage = $this->getApp()->getPageCache();
+		if ($pageCacheManage) {
+			// Discard entity cache page
+			$pageCacheManage->delete('*(' . $this->getEntityType() . ':' . $this->getId() . ')*');
+
+			// Discard manager cache page
+			$pageCacheManage->delete('*{' . $this->getEntityType() . '}*');
 		}
 	}
 

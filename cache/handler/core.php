@@ -23,6 +23,12 @@ abstract class Core extends Kernel\Core
 	public abstract function get($key);
 
 	/**
+	 * @param string $pattern
+	 * @return array
+	 */
+	public abstract function getKeys($pattern);
+
+	/**
 	 * @param array $keys
 	 * @return mixed
 	 */

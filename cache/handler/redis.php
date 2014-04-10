@@ -47,6 +47,15 @@ class Redis extends Kernel\Cache\Handler\Core
 	}
 
 	/**
+	 * @param string $pattern
+	 * @return array
+	 */
+	public function getKeys($pattern)
+	{
+		return $this->handler->getKeys($pattern);
+	}
+
+	/**
 	 * @param array $keys
 	 * @return mixed
 	 * @throws Kernel\Cache\Exception
