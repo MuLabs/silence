@@ -61,6 +61,8 @@ abstract class Controller extends Kernel\Core
 		foreach ($cacheElements as $key => $oneElement) {
 			if ($oneElement instanceof Kernel\Model\Entity) {
 				$cacheElements[$key] = '[' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ']';
+			} elseif ($oneElement instanceof Kernel\Model\Manager) {
+				$cacheElements[$key] = '{' . $oneElement->getEntityType() . '}';
 			}
 		}
 
