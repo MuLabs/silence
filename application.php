@@ -40,7 +40,6 @@ abstract class Application
 			$servicer = new Service\Servicer();
 			$servicer->setApp($this);
 			$this->setServicer($servicer);
-			$this->registerDefaultServices();
 			$this->loadConfiguration();
 			$this->registerCustomServices();
 			#endregion
@@ -78,21 +77,6 @@ abstract class Application
 		}
 	}
 
-	private function registerDefaultServices()
-	{
-		$servicer = $this->getServicer();
-		$servicer->register('log', '\Mu\Kernel\Log\Service');
-		$servicer->register('trigger', '\Mu\Kernel\Trigger\Service');
-		$servicer->register('toolbox', '\Mu\Kernel\Toolbox');
-		$servicer->register('http', '\Mu\Kernel\Http\Service');
-		$servicer->register('factory', '\Mu\Kernel\Factory');
-		$servicer->register('route', '\Mu\Kernel\Route\Service');
-		$servicer->register('config', '\Mu\Kernel\Config\Service');
-		$servicer->register('error', '\Mu\Kernel\Error\Service', array('type' => '\Mu\Kernel\Error\Service'));
-		$servicer->register('localization', '\Mu\Kernel\Localization\Service');
-		$servicer->register('site', '\Mu\Kernel\Site\Service');
-	}
-
 	abstract protected function initialize();
 
 	abstract protected function loadConfiguration();
@@ -101,7 +85,8 @@ abstract class Application
 
 	abstract protected function registerBundles();
 
-	protected function defineTriggers() {
+	protected function defineTriggers()
+	{
 
 	}
 
