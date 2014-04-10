@@ -97,8 +97,8 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				if (!$entity->isValid()) {
 					$entity = null;
 				} else {
-				    $entity->initialize();
-                }
+					$entity->initialize();
+				}
 
 				if ($entityCache && $entity) {
 					$entityCache->set($entity, $this->getDefaultScope());
@@ -158,8 +158,8 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				if (!$entity->isValid()) {
 					$entity = null;
 				} else {
-                    $entity->initialize();
-                }
+					$entity->initialize();
+				}
 			}
 		}
 
@@ -280,5 +280,14 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	public function getMainProperty()
 	{
 		return 'id';
+	}
+
+	public function discard()
+	{
+		$pageCacheManage = $this->getApp()->getPageCache();
+		if ($pageCacheManage) {
+			// Discard manager cache page
+			$pageCacheManage->delete('*{' . $this->getEntityType() . '}*');
+		}
 	}
 }
