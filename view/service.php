@@ -5,21 +5,26 @@ use Mu\Kernel;
 
 abstract class Service extends Kernel\Service\Core
 {
-	protected $dir = '';
+	protected $dir = array();
 	protected $compileDir = '';
 	protected $specificDir = null;
 	protected $extensions = array();
 
 	/**
 	 * @param string $dir
+	 * @param string $namespace
 	 */
-	public function setDir($dir)
+	public function addDir($dir, $namespace = null)
 	{
-		$this->dir = $dir . '/' . $this->specificDir;
+		if ($namespace === null) {
+			$this->dir[] = $dir;
+		} else {
+			$this->dir[$namespace] = $dir;
+		}
 	}
 
 	/**
-	 * @return string
+	 * @return string[]
 	 */
 	public function getDir()
 	{
@@ -40,6 +45,14 @@ abstract class Service extends Kernel\Service\Core
 	public function getCompileDir()
 	{
 		return $this->compileDir;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSpecificDir()
+	{
+		return $this->specificDir;
 	}
 
 	/**

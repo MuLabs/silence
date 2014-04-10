@@ -43,11 +43,16 @@ class Service extends Kernel\View\Service
 
 	private function initializeSmarty()
 	{
+		define('SMARTY_SPL_AUTOLOAD', 0);
 		require_once(VENDOR_PATH . '/smarty/smarty/distribution/libs/Smarty.class.php');
+		$this->getApp()->getToolbox()->registerAutoload('smartyAutoload');
 		$this->smarty = new \Smarty();
+		$this->addDir(KERNEL_PATH . '/backoffice/view/');
 
-		$this->smarty->setTemplateDir($this->getDir());
-		$this->smarty->addTemplateDir(KERNEL_PATH . '/backoffice/view/smarty/');
+		foreach ($this->getDir() as $oneDir) {
+			$this->smarty->addTemplateDir($oneDir . '/' . $this->getSpecificDir());
+		}
+
 		$this->smarty->setCompileDir($this->getCompileDir());
 		$this->smarty->registerFilter('pre', array($this, 'stripPrefilter'));
 		$this->caching = 0;

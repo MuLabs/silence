@@ -26,6 +26,15 @@ abstract class View extends Kernel\Core
 	/**
 	 * @return string
 	 */
+	public function getMainDir()
+	{
+		$dirList = $this->getService()->getDir();
+		return reset($dirList);
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getCompileDir()
 	{
 		return $this->getService()->getCompileDir();
@@ -138,25 +147,6 @@ abstract class View extends Kernel\Core
 
 	/**
 	 * @param string $target
-	 * @throws Exception
-	 */
-	protected function isValid($target)
-	{
-		if (!file_exists($this->getDir())) {
-			throw new Exception($this->getDir(), Exception::DIR_NOT_FOUND);
-		}
-
-		if ($this->compileDir && !file_exists($this->getCompileDir())) {
-			throw new Exception($this->getCompileDir(), Exception::COMPILE_DIR_NOT_FOUND);
-		}
-
-		if (!file_exists($this->getTemplateFilepath($target))) {
-			throw new Exception($this->getTemplateFilepath($target), Exception::TARGET_NOT_FOUND);
-		}
-	}
-
-	/**
-	 * @param string $target
 	 * @param null|string $fragment
 	 * @return string
 	 */
@@ -175,10 +165,9 @@ abstract class View extends Kernel\Core
 		}
 
 		if ($fragment === null) {
-			return $this->getDir() . '/' . $target . '.' . $this->extension;
+			return $this->getMainDir() . '/' . $target . '.' . $this->extension;
 		}
-		return $this->getDir(
-		) . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.' . $this->extension;
+		return $this->getMainDir() . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.' . $this->extension;
 	}
 
 	/**
