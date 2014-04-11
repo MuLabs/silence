@@ -60,13 +60,17 @@ abstract class Controller extends Kernel\Core
 
 		foreach ($cacheElements as $key => $oneElement) {
 			if ($oneElement instanceof Kernel\Model\Entity) {
-				$cacheElements[$key] = '[' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ']';
+				$cacheElements[$key] = '(' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ')';
 			} elseif ($oneElement instanceof Kernel\Model\Manager) {
 				$cacheElements[$key] = '{' . $oneElement->getEntityType() . '}';
+			} elseif (is_array($oneElement) && count($oneElement)) {
+				list($manager, $id) = $oneElement;
+				$cacheElements[$key] = '(' . $manager->getEntityType() . ':' . $id . ')';
 			}
 		}
 
-		return implode('|', $cacheElements);
+		$trail = implode('|', $cacheElements);
+		return get_called_class() . '|' . $trail;
 	}
 
 	/**

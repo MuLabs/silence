@@ -40,17 +40,13 @@ class Service extends Kernel\View\Service
 		ini_set('unserialize_callback_func', 'spl_autoload_call');
 		$this->getApp()->getToolbox()->registerAutoload(array('\\Twig_Autoloader', 'autoload'));
 		$this->getApp()->getToolbox()->registerAutoload(array('\\Twig_Extensions_Autoloader', 'autoload'));
-		$this->addDir(KERNEL_PATH . '/template/twig', 'template');
+		$this->addDir(KERNEL_PATH . '/template');
 
 		$dirList = $this->getDir();
-		$loader = null;
-
-		foreach ($dirList as $namespace => $oneDir) {
-			if ($loader === null) {
-				$loader = new \Twig_Loader_Filesystem($oneDir . '/' . $this->getSpecificDir());
-			}
-			$loader->addPath($oneDir, $namespace);
+		foreach ($dirList as $key => $oneDir) {
+			$dirList[$key] = $oneDir . '/' . $this->getSpecificDir();
 		}
+		$loader = new \Twig_Loader_Filesystem($dirList);
 
 		$this->twig = new \Twig_Environment($loader, array(
 			'cache' => ($this->getCompileDir()) ? $this->getCompileDir() : false,
