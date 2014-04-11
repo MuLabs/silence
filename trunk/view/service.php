@@ -12,15 +12,10 @@ abstract class Service extends Kernel\Service\Core
 
 	/**
 	 * @param string $dir
-	 * @param string $namespace
 	 */
-	public function addDir($dir, $namespace = null)
+	public function addDir($dir)
 	{
-		if ($namespace === null) {
-			$this->dir[] = $dir;
-		} else {
-			$this->dir[$namespace] = $dir;
-		}
+		$this->dir[] = $dir;
 	}
 
 	/**

@@ -549,7 +549,8 @@ abstract class Application
 			&& $this->getController()->hasCache()
 		) {
 			try {
-				$cacheKey = get_class($this->getController()) . '|' . $this->getController()->getCacheKey();
+				$cacheKey = $this->getController()->getCacheKey();
+
 				return $cacheManager->get($cacheKey, $this->getController()->getCacheTtl());
 			} catch (Cache\Exception $e) {
 				$content = $this->getController()->fetch();
