@@ -49,8 +49,7 @@ class Service extends Kernel\View\Service
 		$this->smarty = new \Smarty();
 		$this->addDir(KERNEL_PATH . '/backoffice/view/');
 
-		$dirsList = array_reverse($this->getDir());
-		foreach ($dirsList as $oneDir) {
+		foreach ($this->getDir() as $oneDir) {
 			$this->smarty->addTemplateDir($oneDir . '/' . $this->getSpecificDir());
 		}
 
