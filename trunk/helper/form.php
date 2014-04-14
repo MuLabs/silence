@@ -128,10 +128,7 @@ class Form extends Kernel\Service\Core
 			}
 
 			// Set default values for radio and select:
-			if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array(
-					$field['values']
-				)
-			) {
+			if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['values'])) {
 				if (method_exists($manager, $field['values'])) {
 					$field['values'] = $manager->$field['values']();
 				} else {
