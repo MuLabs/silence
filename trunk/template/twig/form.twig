@@ -1,7 +1,7 @@
 <form action="{{ form.action }}" class="{{ form.class }}" method="{{ form.method }}" enctype="{{ form.enctype }}">
 	{% for name,field in fields %}
 		{{ form.fieldBefore | raw }}
-		{% include '@template/field.twig' with {'name':name, 'field':field} only %}
+		{% include 'field.twig' with {'name':name, 'field':field} only %}
 		{{ form.fieldAfter | raw }}
 	{% endfor %}
 
