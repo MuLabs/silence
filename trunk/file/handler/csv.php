@@ -20,8 +20,8 @@ class Csv extends Kernel\File\Handler
 					array("#\\r\\n#", "#\\n\\r#", "#\\r#", "#\\n#"),
 					' - ',
 					$value
-				); // Replace carriage returns
-				//$value = htmlspecialchars_decode($value);
+				);
+				// Replace carriage returns
 				$value = html_entity_decode($value);
 				$line[$key] = $value;
 			}
