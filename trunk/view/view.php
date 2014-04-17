@@ -165,9 +165,11 @@ abstract class View extends Kernel\Core
 		}
 
 		if ($fragment === null) {
-			return $this->getMainDir() . '/' . $target . '.' . $this->extension;
+			return $this->getMainDir() . '/' . $this->getService()->getSpecificDir(
+			) . '/' . $target . '.' . $this->extension;
 		}
-		return $this->getMainDir() . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.' . $this->extension;
+		return $this->getMainDir() . '/' . $this->getService()->getSpecificDir(
+		) . '/fragment/' . $target . '/' . $siteName . $language . $fragment . '.' . $this->extension;
 	}
 
 	/**
