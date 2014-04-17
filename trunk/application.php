@@ -165,6 +165,14 @@ abstract class Application
 	/**
 	 * @return string
 	 */
+	public function getProjectName()
+	{
+		return $this->projectName;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getDefaultDatabase()
 	{
 		return $this->defaultDatabase;

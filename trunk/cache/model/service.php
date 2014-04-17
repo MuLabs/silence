@@ -130,7 +130,7 @@ class Service extends Kernel\Service\Core
 	 */
 	private function getRealKey($key)
 	{
-		return self::KEY_PREFIX . $key;
+		return $this->getApp()->getself::KEY_PREFIX . $key;
 	}
 
 	/**
