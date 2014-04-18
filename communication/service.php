@@ -21,11 +21,10 @@ class Service extends Kernel\Service\Extended
 	 * @param $message
 	 * @param $to
 	 * @param $from
-	 * @param $handler		Load an handler by its type
-	 * @return void
+	 * @param string $handler		Load an handler by its type
 	 * @throws \Exception
 	 */
-	public function send($message, $to, $from, $handler = self::DEFAULT_HANDLER)
+    public function send($message, $to, $from, $handler = self::DEFAULT_HANDLER)
 	{
 		try {
 			// Try to get context handler:

@@ -205,6 +205,14 @@ abstract class Handler extends Kernel\Handler\Core
 		}
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+    public function __close()
+    {
+        return;
+    }
+
 	/**
 	 * Format the content, should throw an exception if format is incorrect, else return formated content
 	 * @param $message
