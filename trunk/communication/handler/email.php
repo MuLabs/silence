@@ -8,7 +8,10 @@ use Mu\Kernel\Communication;
  * Email Handler ::
  * Manage email with contexts
  *
- * Configuration: no configuration
+ * Configuration:
+ * - from
+ * - subject
+ * - autosend
  *
  * @package Mu\Kernel\Session\Handler
  * @author Olivier Stahl
