@@ -1,7 +1,7 @@
 <?php
 namespace Mu\Kernel\Communication\Handler;
 
-require_once('/usr/share/php/libphp-phpmailer/class.phpmailer.php');
+require_once(VENDOR_PATH . '/phpmailer/phpmailer/class.phpmailer.php');
 
 use Mu\Kernel;
 use Mu\Kernel\Communication;
@@ -20,6 +20,9 @@ use Mu\Kernel\Communication;
  * - auth       : default = login
  * - secure     : default = ssl
  * - fromname   : default = from address
+ *
+ * Composer require : "phpmailer/phpmailer": "v5.2.7"
+ *
  *
  * @package Mu\Kernel\Session\Handler
  * @author Olivier Stahl
