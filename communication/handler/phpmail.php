@@ -90,8 +90,8 @@ class Phpmail extends Kernel\Communication\Handler
         $mailer->IsSMTP();
         $mailer->CharSet    = 'UTF-8';
         $mailer->SMTPDebug  = 0;
-        $mailer->SMTPAuth   = $this->getConfig('auth', 'login');
-        $mailer->SMTPSecure = $this->getConfig('secure', 'ssl');
+		$mailer->SMTPAuth = (int)$this->getConfig('auth', 1);
+		$mailer->SMTPSecure = $this->getConfig('secure', 'ssl');
         $mailer->Host       = $this->getConfig('host');
         $mailer->Port       = $this->getConfig('port');
         $mailer->Username   = $this->getConfig('login');
