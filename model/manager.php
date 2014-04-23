@@ -126,7 +126,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	 * @param bool $force
 	 * @return Entity
 	 */
-	public function get($id, $force = false)
+	public function get($id)
 	{
 		if (empty($id)) {
 			return null;
