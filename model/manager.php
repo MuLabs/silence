@@ -290,4 +290,15 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			$pageCacheManage->delete('*{' . $this->getEntityType() . '}*');
 		}
 	}
+
+	/**
+	 * @param Entity $entity
+	 */
+	public function discardLocalCache(Entity $entity) {
+		$cacheKey = $this->getCacheKey($entity->getId());
+
+		if (isset($this->entities[$cacheKey])) {
+			unset($this->entities[$cacheKey]);
+		}
+	}
 }
