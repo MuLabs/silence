@@ -11,6 +11,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	protected $entities = array();
 	protected $entityType;
 	protected $name;
+	protected $forceGet = false;
 
 	protected $entityClassname;
 
@@ -131,6 +132,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			return null;
 		}
 
+		$force = $this->getForceGet();
 		$key = $this->getCacheKey($id);
 		if (isset($this->entities[$key]) && !$force) {
 			return $this->entities[$key];
@@ -197,6 +199,22 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	public function setDefaultScope($scope)
 	{
 		$this->defaultScope = (int)$scope;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function getForceGet()
+	{
+		return $this->forceGet;
+	}
+
+	/**
+	 * @param bool $force
+	 */
+	public function setForceGet($force)
+	{
+		$this->forceGet = (bool)$force;
 	}
 
 	/**
