@@ -44,7 +44,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	 * @param Entity[] $entities
 	 * @return Entity[]
 	 */
-	abstract protected function initEntities(array $entities);
+	abstract public function initEntities(array $entities);
 
 	/**
 	 * @param array $idList
