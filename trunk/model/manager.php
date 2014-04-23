@@ -122,23 +122,24 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 
 	/**
 	 * @param mixed $id
+	 * @param bool $force
 	 * @return Entity
 	 */
-	public function get($id)
+	public function get($id, $force = false)
 	{
 		if (empty($id)) {
 			return null;
 		}
 
 		$key = $this->getCacheKey($id);
-		if (isset($this->entities[$key])) {
+		if (isset($this->entities[$key]) && !$force) {
 			return $this->entities[$key];
 		}
 
 		$entity = false;
 		$entityCache = $this->getApp()->getEntityCache();
 
-		if ($entityCache) {
+		if ($entityCache && !$force) {
 			try {
 				$entity = $entityCache->get($key, $this->getDefaultScope());
 			} catch (Kernel\Cache\Exception $e) {
@@ -288,17 +289,6 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 		if ($pageCacheManage) {
 			// Discard manager cache page
 			$pageCacheManage->delete('*{' . $this->getEntityType() . '}*');
-		}
-	}
-
-	/**
-	 * @param Entity $entity
-	 */
-	public function discardLocalCache(Entity $entity) {
-		$cacheKey = $this->getCacheKey($entity->getId());
-
-		if (isset($this->entities[$cacheKey])) {
-			unset($this->entities[$cacheKey]);
 		}
 	}
 }
