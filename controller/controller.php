@@ -18,6 +18,7 @@ abstract class Controller extends Kernel\Core
 	protected $fragmentName = null;
 	protected $isFragmentExtracted = false;
 	protected $messageTypes = array(self::MESSAGE_ERROR, self::MESSAGE_INFO, self::MESSAGE_SUCCESS, self::MESSAGE_WARN);
+    protected $messageCodes = array();
 
 	/************************************************************************************
 	 **  GETTERS / SETTERS                                                             **
@@ -85,6 +86,15 @@ abstract class Controller extends Kernel\Core
 		return $this->fragmentName;
 	}
 
+    /**
+     * @param null $code
+     * @return string
+     */
+    protected function getMessageFromCode($code = null)
+    {
+        return (!isset($this->messageCodes[$code])) ? '' : $this->messageCodes[$code];
+    }
+
 	/************************************************************************************
 	 **  ACTION                                                                        **
 	 ************************************************************************************/
@@ -99,7 +109,9 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function initialize()
 	{
-
+        // Test success and error codes:
+        $this->reportSuccess($this->getMessageFromCode($this->request('success')));
+        $this->reportError($this->getMessageFromCode($this->request('error')));
 	}
 
 	/**
