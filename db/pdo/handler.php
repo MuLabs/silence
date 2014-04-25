@@ -229,6 +229,9 @@ class Handler extends Kernel\Db\Handler
 			case 'unique':
 				$keyType = 'UNIQUE KEY';
 				break;
+			case 'fulltext':
+				$keyType = 'FULLTEXT';
+				break;
 		}
 
 		$keyProperties = array();
