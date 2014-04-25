@@ -9,6 +9,7 @@ class Asset extends Kernel\Core
 	protected $ext;
 	protected $fileList;
 	protected $manager;
+	protected $fileTime;
 
 	public function __construct(Service $manager, $fileList)
 	{
@@ -99,7 +100,7 @@ class Asset extends Kernel\Core
 	{
 		return $this->getApp()->getUrlStatic(
 			Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager()->getGenerator($this)->getOutExt()
-		);
+		) . '?v=' . $this->getFiletime();
 	}
 
 	/**
@@ -116,5 +117,16 @@ class Asset extends Kernel\Core
 	public function exists()
 	{
 		return file_exists($this->getPath());
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getFiletime()
+	{
+		if ($this->fileTime === null) {
+			$this->fileTime = filemtime($this->getPath());
+		}
+		return $this->fileTime;
 	}
 }
