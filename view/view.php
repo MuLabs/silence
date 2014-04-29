@@ -46,6 +46,7 @@ abstract class View extends Kernel\Core
 	public function setService(Service $service)
 	{
 		$this->service = $service;
+		$this->setVar('app', $service->getApp());
 	}
 
 	/**
