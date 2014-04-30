@@ -219,6 +219,10 @@ abstract class Controller extends Kernel\Core
 			foreach ($this->messageTypes as $type) {
 				$this->view->setVar($type . self::REPORT_KEY, []);
 			}
+            // Initialize redirect link:
+            if ($format == 'json') {
+                $this->view->setVar('redirect', $this->request('redirect', ''));
+            }
 		}
 
 		return $this->view;
@@ -233,6 +237,32 @@ abstract class Controller extends Kernel\Core
 	{
 		return $this->getApp()->getRouteManager()->getUrl($routeName, $parameters);
 	}
+
+    /**
+     * @param bool   $bEncode
+     * @param string $format
+     * @return string
+     */
+    protected function getCurrentUrl($bEncode = false, $format = Kernel\Route\Route::FORMAT_HTML)
+    {
+        $params = $this->getApp()->getHttp()->getRequest()->getAllParameters(
+            Kernel\Http\Request::PARAM_TYPE_REQUEST
+        );
+
+        // Overload format:
+        $params['format'] = $format;
+        if ($format == Kernel\Route\Route::FORMAT_HTML) {
+            unset($params['format']);
+        }
+        // Remove redirect link:
+        unset($params['redirect']);
+
+        // Build URL:
+        $url = $this->getUrl($this->getApp()->getRoute()->getName(), $params);
+
+        // Return URL:
+        return ($bEncode) ? base64_encode($url) : $url;
+    }
 
 	/**
 	 * @param string $label
@@ -307,6 +337,20 @@ abstract class Controller extends Kernel\Core
 				$parameters[$type] = implode(',', $messages);
 			}
 		}
+
+        // Transfer json format and redirection link:
+        if ($this->request('format') == 'json') {
+            $parameters['format']   = 'json';
+
+            // Update redirection link or generate it:
+            if (isset($parameters['redirect'])) {
+                $parameters['redirect'] = $this->getCurrentUrl(true);
+            } else {
+                $params = $parameters;
+                unset($params['format']);
+                $parameters['redirect'] = base64_encode($this->getApp()->getRouteManager()->getUrl($routeName, $params, $forceRedirection, $sendData));
+            }
+        }
 
 		// Return application redirection:
 		return $this->getApp()->redirect($routeName, $parameters, $forceRedirection, $sendData);
