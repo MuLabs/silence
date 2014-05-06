@@ -14,9 +14,10 @@ class Route extends Kernel\Core
 	protected $name;
 	protected $alias;
 
-	protected $allowedFormats = array(self::FORMAT_HTML, self::FORMAT_JSON);
+	protected $allowedFormats = array(self::FORMAT_HTML, self::FORMAT_JSON, self::FORMAT_AJAX);
 	const FORMAT_HTML = 'html';
 	const FORMAT_JSON = 'json';
+    const FORMAT_AJAX = 'ajax';
 
 	/**
 	 * @return string
@@ -155,6 +156,15 @@ class Route extends Kernel\Core
 	{
 		return $this->allowedFormats;
 	}
+
+    /**
+     * @param string
+     * @return bool
+     */
+    public function isAllowedFormat($format = self::FORMAT_HTML)
+    {
+        return (in_array($format, $this->allowedFormats));
+    }
 
 	/**
 	 * @param Kernel\Http\Request $request

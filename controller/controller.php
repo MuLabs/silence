@@ -207,12 +207,9 @@ abstract class Controller extends Kernel\Core
 	{
 		if (!isset($this->view) || $bNew) {
 			$route = $this->getApp()->getRoute();
-			$format = $this->request('format', $route->getDefaultFormat());
-			if ($format == '') {
-				$format = $route->getDefaultFormat();
-			}
-			$this->view = ($format == $route::FORMAT_JSON)
-				? $this->getApp()->getJsonView()
+			$format = $this->request('format');
+			$this->view = ($route->isAllowedFormat($format))
+				? $this->getApp()->getViewByFormat($format)
 				: $this->getApp()->getViewManager()->getView();
 
 			// Initialize reports:
@@ -220,7 +217,7 @@ abstract class Controller extends Kernel\Core
 				$this->view->setVar($type . self::REPORT_KEY, []);
 			}
             // Initialize redirect link:
-            if ($format == 'json') {
+            if ($format == Kernel\Route\Route::FORMAT_JSON) {
                 $this->view->setVar('redirect', $this->request('redirect', ''));
             }
 		}

@@ -20,9 +20,6 @@ abstract class Application
 	protected $siteUrl;
 	protected $projectName;
 
-	const VIEW_JSON = 'json';
-
-
 	/************************************************************************************
 	 **  INITIALISATION                                                                **
 	 ************************************************************************************/
@@ -757,15 +754,26 @@ abstract class Application
 	 */
 	public function getJsonView()
 	{
-		// Try to return json view or initialize it:
-		try {
-			$service = $this->getServicer()->get(self::VIEW_JSON);
-		} catch (Kernel\Service\Exception $e) {
-			$this->getServicer()->register(self::VIEW_JSON, '\\Mu\\Kernel\\View\\Json\\Service');
-			$service = $this->getServicer()->get(self::VIEW_JSON);
-		}
-
-		// Return view object:
-		return $service->getView();
+		return $this->getViewByFormat(Kernel\Route\Route::FORMAT_JSON);
 	}
+
+    /**
+     * Automatically load a View by its format
+     * @param string $format
+     * @return Kernel\View\View
+     */
+    public function getViewByFormat($format = Kernel\Route\Route::FORMAT_HTML)
+    {
+        // Try to return json view or initialize it:
+        try {
+            $service = $this->getServicer()->get($format);
+        } catch (Kernel\Service\Exception $e) {
+            $class = '\\Mu\\Kernel\\View\\'.ucfirst($format).'\\Service';
+            $this->getServicer()->register($format, $class);
+            $service = $this->getServicer()->get($format);
+        }
+
+        // Return view object:
+        return $service->getView();
+    }
 }
