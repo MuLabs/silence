@@ -203,7 +203,7 @@ abstract class Controller extends Kernel\Core
 	 * @param bool $bNew
 	 * @return \Mu\Kernel\View\View
 	 */
-	protected function getView($bNew = false)
+	public function getView($bNew = false)
 	{
 		if (!isset($this->view) || $bNew) {
 			$route = $this->getApp()->getRoute();
