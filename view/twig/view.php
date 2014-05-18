@@ -48,7 +48,7 @@ class View extends Kernel\View\View
 			return $this->getTwig()->getCacheFilename($target . '.twig', $this->getVars());
 		}
 		return $this->getTwig()->getCacheFilename(
-			'fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
+			'/fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
 			$this->getVars()
 		);
 	}
@@ -76,7 +76,7 @@ class View extends Kernel\View\View
 			return $this->getTwig()->render($target . '.twig', $this->getVars());
 		}
 		return $this->getTwig()->render(
-			'fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
+			'/fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
 			$this->getVars()
 		);
 	}
