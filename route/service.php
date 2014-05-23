@@ -32,7 +32,6 @@ class Service extends Kernel\Service\Core
 	 */
 	public function selectRoute()
 	{
-		$this->loadRoutes();
 		$httpRequest = $this->getApp()->getHttp()->getRequest();
 
 		foreach ($this->getRoutes() as $route) {
@@ -82,10 +81,6 @@ class Service extends Kernel\Service\Core
 
 	public function loadRoutes()
 	{
-		$routes = $this->getRoutes();
-		if (!empty($routes)) {
-			return;
-		}
 		$filepath = APP_PATH . '/' . self::ROUTE_RULE_FILE;
 		if (!file_exists($filepath)) {
 			throw new Exception($filepath, Exception::FILE_NOT_FOUND);
@@ -198,6 +193,9 @@ class Service extends Kernel\Service\Core
 	 */
 	private function getRoutes()
 	{
+		if (empty($this->routes)) {
+			$this->loadRoutes();
+		}
 		return $this->routes;
 	}
 
@@ -206,7 +204,6 @@ class Service extends Kernel\Service\Core
 	 */
 	public function dumpRoutes($type = 'Apache')
 	{
-		$this->loadRoutes();
 		$dumperName = '\\Mu\\Kernel\\Route\\Dumper\\' . $type;
 		/** @var Dumper $dumper */
 		$dumper = new $dumperName();
