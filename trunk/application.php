@@ -542,7 +542,13 @@ abstract class Application
 	 */
 	private function fetch()
 	{
-		$this->getController()->initialize();
+		$error = $this->getController()->initialize();
+
+		// If initialize return content, it's an error
+		if ($error) {
+			return $error;
+		}
+
 		// Fetch fragment and skip controller if request is only for fragment
 		$fragmentContent = $this->getController()->fetchFragment();
 		if (is_string($fragmentContent)) {
