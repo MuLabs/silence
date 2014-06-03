@@ -16,7 +16,7 @@ abstract class Handler extends Kernel\Core
 		'mediumint' => self::PARAM_INT,
 		'int' => self::PARAM_INT,
 		'bigint' => self::PARAM_INT,
-		'timestamp' => self::PARAM_INT,
+		'timestamp' => self::PARAM_STR,
 		'float' => self::PARAM_FLOAT,
 		'bool' => self::PARAM_BOOL,
 		'string' => self::PARAM_STR,
