@@ -787,8 +787,6 @@ class Toolbox extends Service\Core
 			$format = '%e %B %Y';
 		} elseif($format == 'en') {
 			$format = '%B %e %Y';
-		} else {
-			$format = '%B %e %Y';
 		}
 
 		return strftime($format, $date);
