@@ -101,9 +101,16 @@ class Phpmail extends Kernel\Communication\Handler
         $mailer->From       = $this->getConfig('from');
         $mailer->FromName   = $this->getConfig('fromname', $this->getConfig('from'));
         $mailer->Subject    = $this->getSubject();
+
         foreach ($this->getDestination() as $to) {
             $mailer->AddAddress($to);
         }
+		$bccDestination = $this->getBccDestination();
+		if(!empty($bccDestination)) {
+			foreach ($bccDestination as $toBcc) {
+				$mailer->AddBcc($toBcc);
+			}
+		}
 
         // Message HTML
         $mailer->MsgHTML($this->getContent());
@@ -128,7 +135,10 @@ class Phpmail extends Kernel\Communication\Handler
 		if (!is_array($emails)) {
 			$emails = explode(self::DELIMITER, $emails);
 		}
-		foreach ($emails as $email) {
+		foreach ($emails as $key=>$email) {
+			$email = trim($email);
+			$emails[$key] = $email;
+
 			if (!preg_match('#^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$#', $email)) {
 				throw new Communication\Exception('incorrectly formated email : ' . $email);
 			}

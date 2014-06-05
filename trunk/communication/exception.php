@@ -11,6 +11,7 @@ class Exception extends Service\Exception
 	const INCORRECT_FORMAT_ORIGIN = 102;
 	const STATUS_NOT_READY = 103;
 	const SENDING_FAILURE = 104;
+	const INCORRECT_FORMAT_BCC_DESTINATION = 105;
 
 	/**
 	 * @return string
@@ -23,6 +24,9 @@ class Exception extends Service\Exception
 				break;
 			case self::INCORRECT_FORMAT_DESTINATION:
 				return 'Incorrect destination format -- ' . $this->message;
+				break;
+			case self::INCORRECT_FORMAT_BCC_DESTINATION:
+				return 'Incorrect bcc destination format -- ' . $this->message;
 				break;
 			case self::INCORRECT_FORMAT_ORIGIN:
 				return 'Incorrect origin format -- ' . $this->message;

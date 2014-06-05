@@ -11,10 +11,12 @@ abstract class Handler extends Kernel\Handler\Core
 	const MESSAGE_SENT = 3;
 
 	protected $configPrefix = 'com_';
+	protected $delimiter = ',';
 	protected $subject = '';
 	protected $content;
 	protected $origin;
 	protected $destination;
+	protected $bccDestination;
 	protected $files = array();
 	protected $status = 0;
 
@@ -136,6 +138,15 @@ abstract class Handler extends Kernel\Handler\Core
 	}
 
 	/**
+	 * Return current stored bccDestination
+	 * @return mixed
+	 */
+	public function getBccDestination()
+	{
+		return $this->bccDestination;
+	}
+
+	/**
 	 * Set destination, formated by the handler
 	 * @param mixed $to Format : see handler formatDestination
 	 * @throws Exception
@@ -155,6 +166,24 @@ abstract class Handler extends Kernel\Handler\Core
 			$this->checkStatus();
 		} catch (Exception $e) {
 			throw new Exception($e->getMessage() . ' -- ' . $to, Exception::INCORRECT_FORMAT_DESTINATION);
+		}
+	}
+
+	public function setBccDestination($to)
+	{
+		try {
+			$formated = $this->formatDestination($to);
+			if (is_array($formated)) {
+				$this->bccDestination = (!isset($this->bccDestination)) ? $formated : array_merge(
+					$this->bccDestination,
+					$formated
+				);
+			} else {
+				$this->bccDestination .= (!isset($this->bccDestination)) ? $formated : $this->delimiter . $formated;
+			}
+			$this->checkStatus();
+		} catch (Exception $e) {
+			throw new Exception($e->getMessage() . ' -- ' . $to, Exception::INCORRECT_FORMAT_BCC_DESTINATION);
 		}
 	}
 
