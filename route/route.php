@@ -203,6 +203,13 @@ class Route extends Kernel\Core
 	{
 		$paramString = array();
 		$pattern = $this->getPattern();
+		$dash = '';
+
+		if (isset($parameters['#'])) {
+			$dash = '#' . $parameters['#'];
+			unset($parameters['#']);
+		}
+
 		foreach ($parameters as $key => $value) {
 			if ($value == '') {
 				continue;
@@ -251,7 +258,7 @@ class Route extends Kernel\Core
 		while (strpos($pattern, '//') !== false) {
 			$pattern = str_replace('//', '/', $pattern);
 		}
-		return $this->getApp()->getUrl() . $pattern . $paramString;
+		return $this->getApp()->getUrl() . $pattern . $paramString . $dash;
 	}
 
 	/**
