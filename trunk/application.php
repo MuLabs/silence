@@ -15,7 +15,8 @@ abstract class Application
 	protected $startMicrotime = 0;
 	protected $defaultDbContext;
 	protected $production = true;
-	protected $enableEsi = true;
+	protected $enableEsi = false;
+	protected $enableSsi = false;
 	protected $defaultDatabase;
 	protected $siteUrl;
 	protected $projectName;
@@ -133,6 +134,14 @@ abstract class Application
 	public function isEsiEnabled()
 	{
 		return $this->enableEsi;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSsiEnabled()
+	{
+		return $this->enableSsi;
 	}
 
 	/**
@@ -763,23 +772,23 @@ abstract class Application
 		return $this->getViewByFormat(Kernel\Route\Route::FORMAT_JSON);
 	}
 
-    /**
-     * Automatically load a View by its format
-     * @param string $format
-     * @return Kernel\View\View
-     */
-    public function getViewByFormat($format = Kernel\Route\Route::FORMAT_HTML)
-    {
-        // Try to return json view or initialize it:
-        try {
-            $service = $this->getServicer()->get($format);
-        } catch (Kernel\Service\Exception $e) {
-            $class = '\\Mu\\Kernel\\View\\'.ucfirst($format).'\\Service';
-            $this->getServicer()->register($format, $class);
-            $service = $this->getServicer()->get($format);
-        }
+	/**
+	 * Automatically load a View by its format
+	 * @param string $format
+	 * @return Kernel\View\View
+	 */
+	public function getViewByFormat($format = Kernel\Route\Route::FORMAT_HTML)
+	{
+		// Try to return json view or initialize it:
+		try {
+			$service = $this->getServicer()->get($format);
+		} catch (Kernel\Service\Exception $e) {
+			$class = '\\Mu\\Kernel\\View\\' . ucfirst($format) . '\\Service';
+			$this->getServicer()->register($format, $class);
+			$service = $this->getServicer()->get($format);
+		}
 
-        // Return view object:
-        return $service->getView();
-    }
+		// Return view object:
+		return $service->getView();
+	}
 }
