@@ -45,7 +45,12 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function getCacheKeyElements()
 	{
-		return array();
+		return array(
+			'info' => $this->request('info'),
+			'warn' => $this->request('warn'),
+			'success' => $this->request('success'),
+			'error' => $this->request('error'),
+		);
 	}
 
 	/**
