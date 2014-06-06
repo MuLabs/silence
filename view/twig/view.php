@@ -60,23 +60,11 @@ class View extends Kernel\View\View
 	 */
 	public function fetch($target, $fragment = null)
 	{
-		$language = '';
-		$localization = $this->getApp()->getLocalizationService();
-		if ($localization && $localization->isUrlLocaleEnabled()) {
-			$language = $this->getApp()->getLocalizationService()->getCurrentLanguage() . '/';
-		}
-
-		$siteName = '';
-		$site = $this->getApp()->getSiteService();
-		if ($site && $site->getCurrentSiteName()) {
-			$siteName = $site->getCurrentSiteName() . '/';
-		}
-
 		if ($fragment === null) {
 			return $this->getTwig()->render($target . '.twig', $this->getVars());
 		}
 		return $this->getTwig()->render(
-			'/fragment/' . $target . '/' . $siteName . $language . $fragment . '.twig',
+			'/fragment/' . $target . '/' . $fragment . '.twig',
 			$this->getVars()
 		);
 	}

@@ -75,7 +75,14 @@ trait Core
 	 */
 	public function addFragment($controllerName, $fragmentName, array $parameters = array())
 	{
-		if ($this->getApp()->isEsiEnabled()) {
+		if ($this->getApp()->isSsiEnabled()) {
+			return '<!--# block name="' . $fragmentName . '" -->&nbsp;<!-- endblock -->
+			<!--# include file="' . $this->getFragmentUrl(
+				$controllerName,
+				$fragmentName,
+				$parameters
+			) . '" stub="' . $fragmentName . '" -->';
+		} elseif ($this->getApp()->isEsiEnabled()) {
 			return '<esi:include src="' . $this->getFragmentUrl(
 				$controllerName,
 				$fragmentName,
