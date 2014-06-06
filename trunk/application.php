@@ -516,6 +516,8 @@ abstract class Application
 	 */
 	public function fragmentRedirect($controllerName, $fragmentName, array $parameters = array())
 	{
+		// Force HTML format
+		$parameters['format'] = '';
 		$parameters[Kernel\Route\Service::FRAGMENT_PARAM] = $fragmentName;
 
 		return $this->redirect($controllerName, $parameters, false, false);
