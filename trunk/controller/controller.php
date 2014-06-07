@@ -340,9 +340,9 @@ abstract class Controller extends Kernel\Core
 			}
 		}
 
-        // Transfer json format and redirection link:
-        if ($this->request('format') == 'json') {
-            $parameters['format']   = 'json';
+        // Transfer format and redirection link:
+        if (in_array($this->request('format'), array('json','ajax'))) {
+            $parameters['format'] = $this->request('format');
 
             // Update redirection link or generate it:
             if (isset($parameters['redirect'])) {
