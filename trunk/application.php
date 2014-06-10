@@ -39,6 +39,7 @@ abstract class Application
 			$servicer->setApp($this);
 			$this->setServicer($servicer);
 			$this->loadConfiguration();
+			$this->initConfiguration();
 			$this->registerCustomServices();
 			#endregion
 
@@ -73,6 +74,27 @@ abstract class Application
 			$id = uniqid();
 			$xhprofRuns->save_run($xhprofData, strtolower(str_replace(' ', '_', $this->getName())), $id);
 		}
+	}
+
+	/**
+	 * @throws Config\Exception
+	 */
+	private function initConfiguration()
+	{
+		$configManager = $this->getConfigManager();
+		$statics = $configManager->get('url.statics', array());
+
+		foreach ($statics as $staticUrl) {
+			$this->registerStatic($staticUrl);
+		}
+
+		$projectName = $configManager->get('general.projectName', false);
+		if (!$projectName) {
+			throw new Kernel\Config\Exception('projectName', Kernel\Config\Exception::MISSING_MANDATORY_CONFIG);
+		}
+		$this->setProjectName($projectName);
+
+		$this->production = (bool)$this->getConfigManager()->get('general.production', true);
 	}
 
 	abstract protected function initialize();
