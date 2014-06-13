@@ -239,6 +239,30 @@ class Request
 		}
 	}
 
+    /**
+     * @param string $label
+     * @param int $type
+     * @return void
+     */
+    public function removeParameter($label, $type)
+    {
+        switch ($type) {
+            case self::PARAM_TYPE_GET:
+                unset($_GET[$label]);
+                unset($_REQUEST[$label]);
+                break;
+
+            case self::PARAM_TYPE_POST:
+                unset($_POST[$label]);
+                unset($_REQUEST[$label]);
+                break;
+
+            case self::PARAM_TYPE_SESSION:
+                unset($_SESSION[$label]);
+                break;
+        }
+    }
+
 	/**
 	 * @param int $type
 	 * @return void
