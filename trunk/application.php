@@ -521,7 +521,6 @@ abstract class Application
 			$this->getHttp()->getResponse()->send();
 		}
 		foreach ($parameters as $key => $value) {
-			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_POST, $value);
 			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 		}
 		$this->getHttp()->getRequest()->setParameter('rn', Kernel\Http\Request::PARAM_TYPE_GET, $routeName);
