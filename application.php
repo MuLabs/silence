@@ -520,11 +520,18 @@ abstract class Application
 			$this->getHttp()->getResponse()->getHeader()->setLocation($url);
 			$this->getHttp()->getResponse()->send();
 		}
+
+        $request = $this->getHttp()->getRequest();
 		foreach ($parameters as $key => $value) {
-			$this->getHttp()->getRequest()->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
+            $request->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 		}
-		$this->getHttp()->getRequest()->setParameter('rn', Kernel\Http\Request::PARAM_TYPE_GET, $routeName);
+        $request->setParameter('rn', Kernel\Http\Request::PARAM_TYPE_GET, $routeName);
 		$this->route = $this->getRouteManager()->selectRoute();
+
+        // Force format if there is a difference between parameter and post:
+        if (isset($parameters['format'])) {
+            $request->removeParameter('format', Kernel\Http\Request::PARAM_TYPE_POST);
+        }
 
 		return $this->dispatch($sendData);
 	}
