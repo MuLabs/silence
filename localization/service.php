@@ -101,8 +101,8 @@ class Service extends Kernel\Service\Core
 	 * @param string $lang
 	 * @param string $locale
 	 */
-	private function registerLanguage($lang, $locale)
-	{
+    public function registerLanguage($lang, $locale)
+    {
 		$this->supportedLanguages[$lang] = $locale;
 	}
 
@@ -145,9 +145,11 @@ class Service extends Kernel\Service\Core
 		textdomain($domain);
 
 		$langCookie = $this->getLangCookie();
-		$langCookie->set('currentLang', $lang);
-		$langCookie->save();
-	}
+        if ($langCookie) {
+            $langCookie->set('currentLang', $lang);
+            $langCookie->save();
+        }
+    }
 
 	/**
 	 * @return string
@@ -173,9 +175,9 @@ class Service extends Kernel\Service\Core
 	private function detectDefaultLanguage()
 	{
 		$langCookie = $this->getLangCookie();
-		$savedLang = $langCookie->get('currentLang');
+        $savedLang = ($langCookie) ? $langCookie->get('currentLang') : null;
 
-		if ($this->isSupportedLanguage($savedLang)) {
+        if ($this->isSupportedLanguage($savedLang)) {
 			return $savedLang;
 		}
 
@@ -323,8 +325,13 @@ class Service extends Kernel\Service\Core
 	 */
 	private function getLangCookie()
 	{
-		return $this->getApp()->getSession()->getHandler('cookie', 'lang');
-	}
+        $session = $this->getApp()->getSession();
+
+        if (!$session) {
+            return null;
+        }
+        return $session->getHandler('cookie', 'lang');
+    }
 
 	/**
 	 * @param bool $bool
