@@ -771,7 +771,7 @@ class Toolbox extends Service\Core
 	 * @param string $format
 	 * @return string
 	 */
-	public function getConvertedDate($date = null, $format = null)
+	public function getConvertedDate($date = null, $format = 'fr')
 	{
 		// Get current timestamp:
 		if (empty($date)) {
