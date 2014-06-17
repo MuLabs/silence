@@ -18,8 +18,8 @@ trait CoreTrait
 	}
 
 	/**
-	 * @return App\Application
-	 */
+     * @return Kernel\Application
+     */
 	public function getApp()
 	{
 		return $this->application;

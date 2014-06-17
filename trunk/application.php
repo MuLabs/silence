@@ -89,12 +89,11 @@ abstract class Application
 		}
 
 		$projectName = $configManager->get('general.projectName', false);
-		if (!$projectName) {
-			throw new Kernel\Config\Exception('projectName', Kernel\Config\Exception::MISSING_MANDATORY_CONFIG);
-		}
-		$this->setProjectName($projectName);
+        if ($projectName) {
+            $this->setProjectName($projectName);
+        }
 
-		$this->production = (bool)$this->getConfigManager()->get('general.production', true);
+        $this->production = (bool)$this->getConfigManager()->get('general.production', true);
 	}
 
 	abstract protected function initialize();
@@ -190,12 +189,16 @@ abstract class Application
 		$this->projectName = $projectName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getProjectName()
+    /**
+     * @throws Config\Exception
+     * @return string
+     */
+    public function getProjectName()
 	{
-		return $this->projectName;
+        if (!$this->projectName) {
+            throw new Kernel\Config\Exception('projectName', Kernel\Config\Exception::MISSING_MANDATORY_CONFIG);
+        }
+        return $this->projectName;
 	}
 
 	/**
