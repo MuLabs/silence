@@ -17,161 +17,169 @@ use Mu\Kernel;
  */
 class Cookie extends Kernel\Session\Handler
 {
-	const DEFAULT_EXPIRE = 12;
-	const DEFAULT_HTTPONLY = false;
-	const DEFAULT_SALT = '67e04b7bbbcbfbe9ebc84f7d29fdb0bc';
-	const DEFAULT_SECURE = false;
+    const DEFAULT_EXPIRE = 12;
+    const DEFAULT_HTTPONLY = false;
+    const DEFAULT_SALT = '67e04b7bbbcbfbe9ebc84f7d29fdb0bc';
+    const DEFAULT_SECURE = false;
 
-	protected $keyVerify = 'mu_verify';
-	protected $keyTime = 'mu_time';
-	protected $salt;
-	protected $secure; // Bool
-	protected $httponly; // Bool
-	protected $info = array();
+    protected $keyVerify = 'mu_verify';
+    protected $keyTime = 'mu_time';
+    protected $salt;
+    protected $secure; // Bool
+    protected $httponly; // Bool
+    protected $info = array();
+    protected $disableRefresh = false;
 
-	/**
-	 * Load current cookie and check it's validity
-	 */
-	public function __init()
-	{
-		// Initialize configuration:
-		$this->salt = $this->getConfig('salt', self::DEFAULT_SALT);
-		$this->setExpire($this->getConfig('expire', self::DEFAULT_EXPIRE));
-		$this->secure = $this->getConfig('secure', self::DEFAULT_SECURE);
-		$this->httponly = $this->getConfig('httponly', self::DEFAULT_HTTPONLY);
+    /**
+     * Load current cookie and check it's validity
+     */
+    public function __init()
+    {
+        // Initialize configuration:
+        $this->salt = $this->getConfig('salt', self::DEFAULT_SALT);
+        $this->setExpire($this->getConfig('expire', self::DEFAULT_EXPIRE));
+        $this->secure = $this->getConfig('secure', self::DEFAULT_SECURE);
+        $this->httponly = $this->getConfig('httponly', self::DEFAULT_HTTPONLY);
 
-		// Get cookie:
-		$cookie = $this->__getCookie();
-		foreach ($cookie as $key => $jsonValue) {
-			$cookie[$key] = json_decode($jsonValue, true);
-		}
+        // Get cookie:
+        $cookie = $this->__getCookie();
+        foreach ($cookie as $key => $jsonValue) {
+            $cookie[$key] = json_decode($jsonValue, true);
+        }
 
-		// Test cookie validity if not empty
-		if (is_array($cookie)) {
-			// Test validity:
-			if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify] != $this->getId()) {
-				return;
-			}
-			// Test timestamp:
-			if (!isset($cookie[$this->keyTime]) || time() - $cookie[$this->keyTime] > $this->getExpire() * 3600) {
-				return;
-			}
+        // Test cookie validity if not empty
+        if (is_array($cookie)) {
+            // Test validity:
+            if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify] != $this->getId()) {
+                return;
+            }
+            // Test timestamp:
+            if (!isset($cookie[$this->keyTime]) || time() - $cookie[$this->keyTime] > $this->getExpire() * 3600) {
+                return;
+            }
 
-			// Store infos:
-			$this->info = $cookie;
-		}
-	}
+            // Store infos:
+            $this->info = $cookie;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function __close()
-	{
-		$this->save();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function __close()
+    {
+        if (!$this->disableRefresh) {
+            $this->save();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function save()
-	{
-		// Test if header has been already sent, in this case cookie couldn't be saved:
-		if (headers_sent()) {
-			return; // TODO Add log
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function save()
+    {
+        // Test if header has been already sent, in this case cookie couldn't be saved:
+        if (headers_sent()) {
+            return; // TODO Add log
+        }
 
-		// Force the cookie to be cleaned if needed, but after rendering:
-		if (count($this->info) == 0) {
-			foreach ($this->__getCookie() as $key => $value) {
-				setcookie($this->getContext() . '[' . $key . ']', null, -1, '/');
-			}
-		} else {
-			// Set protected keys:
-			$this->info[$this->keyVerify] = $this->getId();
-			$this->info[$this->keyTime] = time();
+        // Force the cookie to be cleaned if needed, but after rendering:
+        if (count($this->info) == 0) {
+            foreach ($this->__getCookie() as $key => $value) {
+                setcookie($this->getContext() . '[' . $key . ']', null, -1, '/');
+            }
+        } else {
+            // Set protected keys:
+            $this->info[$this->keyVerify] = $this->getId();
+            $this->info[$this->keyTime] = time();
 
-			// Save values:
-			$expire = time() + $this->getExpire();
-			foreach ($this->info as $key => $value) {
-				setcookie(
-					$this->getContext() . '[' . $key . ']',
-					json_encode($value),
-					$expire,
-					'/',
-					'',
-					$this->secure,
-					$this->httponly
-				);
-			}
-		}
-	}
+            // Save values:
+            $expire = time() + $this->getExpire();
+            foreach ($this->info as $key => $value) {
+                setcookie(
+                    $this->getContext() . '[' . $key . ']',
+                    json_encode($value),
+                    $expire,
+                    '/',
+                    '',
+                    $this->secure,
+                    $this->httponly
+                );
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function parseConfig(array $config = array())
-	{
-		return array(
-			'expire' => (isset($config[0])) ? $config[0] : self::DEFAULT_EXPIRE,
-			'secure' => (isset($config[1]) && $config[1] == 1),
-			'httponly' => (isset($config[2]) && $config[2] == 1)
-		);
-	}
+    public function disableRefresh()
+    {
+        $this->disableRefresh = true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function get($name, $default = null)
-	{
-		return (isset($this->info[$name])) ? $this->info[$name] : $default;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function parseConfig(array $config = array())
+    {
+        return array(
+            'expire' => (isset($config[0])) ? $config[0] : self::DEFAULT_EXPIRE,
+            'secure' => (isset($config[1]) && $config[1] == 1),
+            'httponly' => (isset($config[2]) && $config[2] == 1)
+        );
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getAll()
-	{
-		return $this->info;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function get($name, $default = null)
+    {
+        return (isset($this->info[$name])) ? $this->info[$name] : $default;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getId()
-	{
-		return md5($this->getContext() . '--' . $this->salt);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getAll()
+    {
+        return $this->info;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function set($name, $value = null)
-	{
-		// Do not overload protected keys
-		if ($name != $this->keyVerify || $name != $this->keyTime) {
-			$this->info[$name] = $value;
-		}
-		return $value;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        return md5($this->getContext() . '--' . $this->salt);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setAll($values = array())
-	{
-		$this->info = $values;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function set($name, $value = null)
+    {
+        // Do not overload protected keys
+        if ($name != $this->keyVerify || $name != $this->keyTime) {
+            $this->info[$name] = $value;
+        }
+        return $value;
+    }
 
-	/**
-	 * Get correct cookie
-	 * @return array
-	 */
-	private function __getCookie()
-	{
-		return $this->getApp()->getHttp()->getRequest()->getParameters(
-			$this->getContext(),
-			Kernel\Http\Request::PARAM_TYPE_COOKIE,
-			array()
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function setAll($values = array())
+    {
+        $this->info = $values;
+    }
+
+    /**
+     * Get correct cookie
+     * @return array
+     */
+    private function __getCookie()
+    {
+        return $this->getApp()->getHttp()->getRequest()->getParameters(
+            $this->getContext(),
+            Kernel\Http\Request::PARAM_TYPE_COOKIE,
+            array()
+        );
+    }
 }
