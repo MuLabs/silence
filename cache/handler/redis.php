@@ -15,8 +15,9 @@ class Redis extends Kernel\Cache\Handler\Core
 			$this->handler->connect($host, $port);
 			$this->handler->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 		} catch (\RedisException $e) {
-			throw new Kernel\Cache\Exception($e->getMessage(), Kernel\Cache\Exception::FAILED_TO_CONNECT);
-		}
+            // Don't throw error if connection failed
+            return;
+        }
 	}
 
 	/**
