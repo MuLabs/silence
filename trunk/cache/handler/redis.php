@@ -16,6 +16,7 @@ class Redis extends Kernel\Cache\Handler\Core
 			$this->handler->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 		} catch (\RedisException $e) {
             // Don't throw error if connection failed
+            $this->handler = null;
             return;
         }
 	}
@@ -34,8 +35,12 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function exists($key)
 	{
-		return $this->handler->exists($key);
-	}
+        if (!$this->handler) {
+            return null;
+        }
+        return $this->handler->exists($key);
+
+    }
 
 	/**
 	 * @param string $key
@@ -44,7 +49,10 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function get($key)
 	{
-		return unserialize($this->handler->get($key));
+        if (!$this->handler) {
+            return null;
+        }
+        return unserialize($this->handler->get($key));
 	}
 
 	/**
@@ -53,7 +61,10 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function getKeys($pattern)
 	{
-		return $this->handler->getKeys($pattern);
+        if (!$this->handler) {
+            return null;
+        }
+        return $this->handler->getKeys($pattern);
 	}
 
 	/**
@@ -63,7 +74,10 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function multiGet(array $keys)
 	{
-		$result = $this->handler->mGet($keys);
+        if (!$this->handler) {
+            return array();
+        }
+        $result = $this->handler->mGet($keys);
 
 		if (is_array($result)) {
 			foreach ($result as $key => $value) {
@@ -84,7 +98,10 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function set($key, $value, $cacheTtl = 0)
 	{
-		return $this->handler->set($key, serialize($value), $cacheTtl);
+        if (!$this->handler) {
+            return null;
+        }
+        return $this->handler->set($key, serialize($value), $cacheTtl);
 	}
 
 	/**
@@ -93,7 +110,10 @@ class Redis extends Kernel\Cache\Handler\Core
 	 */
 	public function delete($key)
 	{
-		$this->handler->delete($key);
+        if (!$this->handler) {
+            return null;
+        }
+        $this->handler->delete($key);
 		return true;
 	}
 
