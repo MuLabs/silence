@@ -1,0 +1,8 @@
+<nav id="gl_nav">
+	<ul id="nav">
+        {% set sections = backoffice.getSections() %}
+		{% for oneSection in sections %}
+			{% include 'backoffice/common/oneSection.twig' with {'section':oneSection} %}
+		{% endfor %}
+	</ul>
+</nav>
