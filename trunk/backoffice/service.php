@@ -119,10 +119,8 @@ class Service extends Kernel\Service\Core
 			return array();
 		}
 
-		if (!isset($this->widgetsInstance[$sectionName]) || count($this->widgetsInstance[$sectionName]) != count(
-				$this->widgets[$sectionName]
-			)
-		) {
+		if (!isset($this->widgetsInstance[$sectionName]) ||
+            count($this->widgetsInstance[$sectionName]) != count($this->widgets[$sectionName])) {
 			$this->generateSectionWidgets($sectionName);
 		}
 
