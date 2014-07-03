@@ -2,9 +2,8 @@
 namespace Mu\Kernel\Communication;
 
 use Mu\Kernel;
-use Mu\Kernel\Service;
 
-class Exception extends Service\Exception
+class Exception extends Kernel\Service\Exception
 {
 	const INCORRECT_FORMAT_CONTENT = 100;
 	const INCORRECT_FORMAT_DESTINATION = 101;
