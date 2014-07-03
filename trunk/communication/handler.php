@@ -165,8 +165,11 @@ abstract class Handler extends Kernel\Handler\Core
 			}
 			$this->checkStatus();
 		} catch (Exception $e) {
-			throw new Exception($e->getMessage() . ' -- ' . $to, Exception::INCORRECT_FORMAT_DESTINATION);
-		}
+            throw new Exception($e->getMessage() . ' -- ' . print_r(
+                $to,
+                true
+            ), Exception::INCORRECT_FORMAT_DESTINATION);
+        }
 	}
 
 	public function setBccDestination($to)
