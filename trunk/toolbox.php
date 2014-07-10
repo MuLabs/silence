@@ -694,7 +694,7 @@ class Toolbox extends Service\Core
      */
     public function formatPhoneNumber($prefix, $number)
     {
-        return '+' . (int)$prefix . $number;
+        return (!empty($prefix)) ? '+' . (int)$prefix . ' ' . $number : $number;
     }
 
     /**
