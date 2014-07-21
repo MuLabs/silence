@@ -118,7 +118,12 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		if (!$this->isInitialized) {
 			$this->initialValues[$propertyName] = $value;
 		} else {
-			if (is_array($value)) {
+            // Only register modification if something changed
+            if ($this->initialValues[$propertyName] == $value) {
+                return;
+            }
+
+            if (is_array($value)) {
 				$value = json_encode($value);
 			}
 			$this->unsavedChanges[$propertyName] = $value;
@@ -160,7 +165,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		$oldValues = array();
 		foreach ($keys as $oneKey) {
 			$oldValues[$oneKey] = $initialValues[$oneKey];
-		}
+            $this->initialValues[$oneKey] = $this->unsavedChanges[$oneKey];
+        }
 
 		$sql = 'UPDATE @ SET ' . $updateDatas . ' WHERE ' . $manager->getSpecificWhere();
 		$query = new Kernel\Db\Query($sql, $updateValues, $manager);
