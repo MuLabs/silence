@@ -16,6 +16,7 @@ class Handler extends Kernel\Db\Handler
 		'bigint' => 'BIGINT',
 		'timestamp' => 'TIMESTAMP',
 		'float' => 'FLOAT',
+        'double' => 'DOUBLE',
 		'bool' => 'TINYINT',
 		'string' => 'VARCHAR',
 		'varchar' => 'VARCHAR',
