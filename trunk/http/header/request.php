@@ -8,6 +8,13 @@ class Request
     const OS_OTHER = 1;
     const OS_WINDOWS = 2;
     const OS_MAC = 3;
+    const OS_LINUX = 4;
+    const OS_IPHONE = 5;
+    const OS_IPAD = 6;
+    const OS_IPOD = 7;
+    const OS_ANDROID = 8;
+    const OS_BLACKBERRY = 9;
+    const OS_PHONE = 10;
 
     /**
      * @return string
@@ -95,28 +102,5 @@ class Request
     public function getHttps()
     {
         return isset($_SERVER['HTTP_HTTPS']) ? $_SERVER['HTTP_HTTPS'] : false;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOS()
-    {
-        $ua = $this->getUserAgent();
-        if (preg_match('#windows#i', $ua)
-            || preg_match('#cygwin_nt#i', $ua)
-            || preg_match('#os\/2#i', $ua)
-        ) {
-            return self::OS_WINDOWS;
-        } else {
-            if (preg_match('#mac\sos#i', $ua)
-                || preg_match('#mac_powerpc#i', $ua)
-                || preg_match('#macintosh#i', $ua)
-            ) {
-                return self::OS_MAC;
-            } else {
-                return self::OS_OTHER;
-            }
-        }
     }
 }
