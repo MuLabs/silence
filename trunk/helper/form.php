@@ -142,13 +142,15 @@ class Form extends Kernel\Service\Core
 
             // Add value if entity is found and its method too:
             $value = null;
-            if ($lang == null) {
-                $getter = 'get' . ucfirst($id);
-                if ($entity != null and method_exists($entity, $getter)) {
-                    $value = $entity->$getter();
+            if (is_a($object, '\Mu\Kernel\Model\Entity')) {
+                if ($lang == null) {
+                    $getter = 'get' . ucfirst($id);
+                    if ($entity != null and method_exists($entity, $getter)) {
+                        $value = $entity->$getter();
+                    }
+                } else {
+                    $value = $object->getLocalizedValue($id, $lang);
                 }
-            } else {
-                $value = $object->getLocalizedValue($id, $lang);
             }
 
             if (!empty($value)) {
