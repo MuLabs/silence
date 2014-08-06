@@ -8,10 +8,11 @@ class Exception extends Kernel\Exception
 	const INVALID_ENTITY_TYPE = 3;
 	const INVALID_ENTITY_CLASSNAME = 4;
 	const INVALID_ENTITY = 5;
-	const INVALID_CREATE_PARAMETERS = 6;
-	const INVALID_ENTITY_BUNDLE = 7;
+    const INVALID_CREATE_PARAMETERS = 6;
+    const INVALID_ENTITY_BUNDLE = 7;
+    const INVALID_PARAMETERS = 8;
 
-	/**
+    /**
 	 * @return string
 	 */
 	public function getFormatedMessage()
@@ -31,6 +32,9 @@ class Exception extends Kernel\Exception
 				break;
 			case self::INVALID_CREATE_PARAMETERS:
 				return 'Invalid creation parameters : ' . $this->message;
+				break;
+			case self::INVALID_PARAMETERS:
+				return 'Invalid parameters : ' . $this->message;
 				break;
 			default:
 				return parent::getFormatedMessage();
