@@ -9,6 +9,8 @@ abstract class ActionLogger extends Kernel\Core
 	const ACTION_DELETE = 2;
 	const ACTION_UPDATE = 3;
 	const ACTION_ADD = 4;
+	const RELATION_TYPE_COLUMN = 'column';
+	const RELATION_TYPE_ENTITY_TYPE = 'entityType';
 
 	/**
 	 * @param Kernel\Model\Entity $object
