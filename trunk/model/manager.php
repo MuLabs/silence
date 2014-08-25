@@ -15,6 +15,8 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 
 	protected $entityClassname;
 
+    public function __construct() {}
+
 	/**
 	 * @return bool
 	 */
