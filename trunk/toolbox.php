@@ -811,6 +811,21 @@ class Toolbox extends Service\Core
         return (strlen($a) > strlen($b)) ? -1 : 1;
     }
 
+    /**
+     * @param $string
+     * @return array|mixed
+     */
+    function realEscapeString($string)
+    {
+        if(is_array($string))
+            return array_map(__METHOD__, $string);
+
+        if(!empty($string) && is_string($string)) {
+            return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $string);
+        }
+
+        return trim($string);
+    }
     #endregion
 
     /************************************************************************************
