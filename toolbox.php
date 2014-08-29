@@ -826,6 +826,26 @@ class Toolbox extends Service\Core
 
         return trim($string);
     }
+    /**
+     * @param $string
+     * @return Kernel\Model\Entity[]
+     */
+    public function getEntitiesFromAutocompleteString($string)
+    {
+        if (substr($string, -3) == '|,|') {
+            $string = substr($string, 0, -3);
+        }
+
+        $objects = array_unique(explode('|,|', $string));
+
+        $entities = array();
+        foreach($objects as $object) {
+            list($type, $id) = explode('|:|', $object);
+            $entities[] = $this->getApp()->getModelManager()->getEntityFromTypeAndId($type, $id);
+        }
+
+        return $entities;
+    }
     #endregion
 
     /************************************************************************************
