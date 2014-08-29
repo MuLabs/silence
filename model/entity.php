@@ -119,7 +119,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 			$this->initialValues[$propertyName] = $value;
 		} else {
             // Only register modification if something changed
-            if ($this->initialValues[$propertyName] == $value) {
+            if ($this->initialValues[$propertyName] === $value) {
                 return;
             }
 
