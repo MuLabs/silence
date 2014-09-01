@@ -118,13 +118,14 @@ trait Core
 		return $this->getApp()->getAssetManager()->getAsset($files);
 	}
 
-	/**
-	 * @param string|int $date
-	 * @return string
-	 */
-	public function getConvertedDate($date = null)
+    /**
+     * @param $date
+     * @param $format
+     * @return string
+     */
+    public function getConvertedDate($date = null, $format = null)
 	{
-		$format = $format = $this->getApp()->getLocalizationService()->getCurrentLanguage();
+		$format = ($format) ? $format : $this->getApp()->getLocalizationService()->getCurrentLanguage();
 		return $this->getApp()->getToolbox()->getConvertedDate($date, $format);
 	}
 }
