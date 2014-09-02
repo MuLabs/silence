@@ -459,7 +459,7 @@ class Request
 	 */
 	public function getRemoteAddr()
 	{
-		return $this->remoteAddr;
+		return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
 	}
 
 	/**
