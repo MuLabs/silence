@@ -27,6 +27,7 @@ abstract class Handler extends Kernel\Core
 		'long_blob' => self::PARAM_STR,
 		'long_text' => self::PARAM_STR,
 		'date' => self::PARAM_STR,
+		'ip' => self::PARAM_INT,
 	);
 	protected $typeCheckValues = array(
 		Query::TYPE_SELECT,
