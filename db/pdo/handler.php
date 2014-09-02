@@ -26,6 +26,7 @@ class Handler extends Kernel\Db\Handler
 		'long_blob' => 'LONG_BLOB',
 		'long_text' => 'LONG_TEXT',
 		'date' => 'DATETIME',
+		'ip' => 'INT',
 	);
 
 	public function __construct($dbDsn, $dbUsername, $dbPass)
@@ -79,7 +80,8 @@ class Handler extends Kernel\Db\Handler
 	private function transformTypeToPDO($type)
 	{
 		switch ($type) {
-			case self::PARAM_INT:
+            case self::PARAM_INT:
+            case self::PARAM_FLOAT:
 				$value = \PDO::PARAM_INT;
 				break;
 			default:
@@ -88,9 +90,6 @@ class Handler extends Kernel\Db\Handler
 				break;
 			case self::PARAM_BOOL:
 				$value = \PDO::PARAM_BOOL;
-				break;
-			case self::PARAM_FLOAT:
-				$value = \PDO::PARAM_INT;
 				break;
 		}
 
