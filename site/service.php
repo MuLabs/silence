@@ -1,7 +1,6 @@
 <?php
 namespace Mu\Kernel\Site;
 
-use Mu\Bundle\Glices\Model\Manager;
 use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
