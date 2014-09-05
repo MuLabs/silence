@@ -128,28 +128,32 @@ class Service extends Kernel\Service\Core
 	/**
 	 * @throws Exception
 	 */
-	public function setCurrentSite()
-	{
-		$httpRequestHeader = $this->getApp()->getHttp()->getRequest()->getRequestHeader();
-		$host = $httpRequestHeader->getHost();
+    public function setCurrentSite($forceSite = null)
+    {
+        if ($forceSite && in_array($forceSite, $this->sites)) {
+            $this->currentSite = $forceSite;
+        } else {
+            $httpRequestHeader = $this->getApp()->getHttp()->getRequest()->getRequestHeader();
+            $host = $httpRequestHeader->getHost();
 
-		if (empty($host)) {
-			return;
-		}
+            if (empty($host)) {
+                return;
+            }
 
-		$urls = array_flip($this->sitesUrl);
+            $urls = array_flip($this->sitesUrl);
 
-		foreach ($urls as $oneUrl => $oneId) {
-			if (strpos($oneUrl, $host) !== false) {
-				$this->currentSite = $oneId;
-				break;
-			}
-		}
+            foreach ($urls as $oneUrl => $oneId) {
+                if (strpos($oneUrl, $host) !== false) {
+                    $this->currentSite = $oneId;
+                    break;
+                }
+            }
 
-		if (!is_int($this->currentSite)) {
-			throw new Exception($host, Exception::INVALID_HOST);
-		}
-	}
+            if (!is_int($this->currentSite)) {
+                throw new Exception($host, Exception::INVALID_HOST);
+            }
+        }
+    }
 
 	/**
 	 * @return bool
