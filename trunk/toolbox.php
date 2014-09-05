@@ -519,6 +519,11 @@ class Toolbox extends Service\Core
         return htmlspecialchars(trim($string), ENT_NOQUOTES);
     }
 
+    public function arrayWithKeyToString($array)
+    {
+        return implode(', ', array_map(function ($v, $k) { return $k . '=' . $v; }, $array, array_keys($array)));
+    }
+
     /**
      * Compare two string size
      * @param string $a
