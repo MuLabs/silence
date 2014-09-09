@@ -8,6 +8,9 @@ trait CoreTrait
 {
     protected $application;
     protected $logger;
+    protected $constructDone = false;
+
+    public function __realConstruct() {}
 
     /**
      * @param Kernel\Application $app
@@ -15,6 +18,10 @@ trait CoreTrait
     public function setApp(Application $app = null)
     {
         $this->application = $app;
+        if (!$this->constructDone) {
+            $this->__realConstruct();
+            $this->constructDone = true;
+        }
     }
 
     /**
