@@ -355,12 +355,29 @@ class Service extends Kernel\Service\Core
 
         $dbhr = $this->getApp()->getDatabase()->getHandler('readFront');
         $query = new Kernel\Db\Query('
-            SELECT :id, :type, :priority, :message, :file, :line, :url, :referer, :date, :trace
+            SELECT :id, :type, :priority, :message, :file, :line, :url, :referer, :date, :trace, :count
 			  FROM @
 			ORDER BY :date DESC', array(), $this);
         $result = $dbhr->sendQuery($query);
 
-        return $result->fetchAll();
+        $errorsList = array();
+        while (list($id, $type, $priority, $message, $file, $line, $url, $referer, $date, $trace, $count) = $result->fetchRow(
+        )) {
+            $errorsList[] = array(
+                'id' => $id,
+                'type' => $type,
+                'priority' => $priority,
+                'message' => $message,
+                'file' => $file,
+                'line' => $line,
+                'url' => $url,
+                'referer' => $referer,
+                'date' => $date,
+                'trace' => $trace,
+                'count' => $count,
+            );
+        }
+        return $errorsList;
     }
 
     /**
