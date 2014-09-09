@@ -1,0 +1,95 @@
+<html>
+<body>
+<style type="text/css">
+	table {
+		font-size: 11px;
+		font-family: sans-serif;
+		border-collapse: collapse;
+		display: table;
+		border-color: #aaaaaa;
+		border-style: solid;
+		border-width: 1px;
+	}
+
+	td {
+		word-wrap: break-word;
+		max-width: 200px;
+		display: table-cell;
+		padding: 5px;
+	}
+
+	tr {
+		display: table-row;
+		vertical-align: top;
+	}
+
+	th {
+		background-color: #fff1df;
+		font-size: 12px;
+		padding: 5px;
+	}
+
+	pre {
+		max-height: 200px;
+		overflow-y: scroll;
+	}
+
+	tr:nth-child(odd) {
+		background-color: #fefefe;
+	}
+
+	tr:nth-child(even) {
+		background-color: #f1f1f1;
+	}
+
+	tr:first-child {
+		background-color: #ffba62;
+		font-size: 14px
+	}
+
+	td:first-child {
+		font-weight: bold;
+	}
+
+	td:last-child {
+		max-width: 350px;
+	}
+</style>
+
+
+<table cellspacing="0" cellpadding="0" border="1">
+	<thead>
+	<tr>
+		<td colspan="8">Liste des erreurs rencontrées :</td>
+	</tr>
+	<tr>
+		<th>Répétition</th>
+		<th>Date</th>
+		<th>Type</th>
+		<th>Erreur</th>
+		<th>Fichier</th>
+		<th>URL</th>
+		<th>Referer</th>
+		<th>trace</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	{% for error in errorsList %}
+		<tr>
+			<td>{{ error['count'] }}</td>
+			<td>{{ error['date'] }}</td>
+			<td>{{ error['type'] }}</td>
+			<td>{{ error['message'] }}</td>
+			<td>{{ error['file'] }} ({{ error['line'] }})</td>
+			<td>{{ error['url'] }}</td>
+			<td>{{ error['referer'] }}</td>
+			<td>
+				<pre>{{ error['trace'] }}</pre>
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+</body>
+</html>
