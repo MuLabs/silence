@@ -26,8 +26,7 @@ abstract class Core extends Kernel\Core
                 /** @var Bundle\Queue\Model\Entity\QueueMessage $queueMessage */
                 $queueMessage   = $param['queue'];
                 $jsonSerialize  = $queueMessage->jsonSerialize();
-                $row =  'x' . $jsonSerialize['id'] . ' job PROGRESS : ' . $jsonSerialize['processor'] . ', function : ' . $jsonSerialize['content']['function'] .
-                    ' with parameters : ' . $this->getApp()->getToolbox()->arrayWithKeyToString($jsonSerialize['content']['parameters']);
+                $row =  'x' . $jsonSerialize['id'] . ' job PROGRESS : ' . $jsonSerialize['processor'] . ', function : ' . $jsonSerialize['content']['function'];
                 break;
             case Bundle\Queue\Model\Manager\QueueMessage::ERROR:
                 $row = 'job ERROR : ' . $param['msg'];
