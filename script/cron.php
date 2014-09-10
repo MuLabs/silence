@@ -50,9 +50,9 @@ abstract class Cron extends Core
         return $result->fetchValue();
     }
 
-    function exceptionsErrorHandler($severity, $message, $filename, $lineno)
+    function exceptionsFatalError()
     {
         $this->releaseLock();
-        parent::exceptionsErrorHandler($severity, $message, $filename, $lineno);
+        parent::exceptionsFatalError();
     }
 }
