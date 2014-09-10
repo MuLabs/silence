@@ -9,7 +9,7 @@ abstract class Core extends Kernel\Core
 {
     public function __realConstruct()
     {
-        set_error_handler(array($this, 'exceptionsErrorHandler'));
+        register_shutdown_function(array($this, 'exceptionsFatalError'));
     }
 
     public function __destruct() {}
@@ -48,13 +48,17 @@ abstract class Core extends Kernel\Core
         echo $date->format('Y/m/d H:i:s') . ' ' . $row, PHP_EOL;
     }
 
-    function exceptionsErrorHandler($severity, $message, $filename, $lineno)
+    function exceptionsFatalError()
     {
-        if (error_reporting() == 0) {
-            return;
+        if ($error = error_get_last()) {
+            switch ($error['type']) {
+                case E_ERROR:
+                case E_CORE_ERROR:
+                case E_COMPILE_ERROR:
+                case E_USER_ERROR:
+                    throw new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+            }
         }
-        if (error_reporting() & $severity) {
-            throw new \ErrorException($message, 0, $severity, $filename, $lineno);
-        }
+        return;
     }
 }
