@@ -81,12 +81,12 @@ class Handler extends Kernel\Db\Handler
 	{
 		switch ($type) {
             case self::PARAM_INT:
-            case self::PARAM_FLOAT:
 				$value = \PDO::PARAM_INT;
 				break;
 			default:
 			case self::PARAM_STR:
-				$value = \PDO::PARAM_STR;
+            case self::PARAM_FLOAT:
+            $value = \PDO::PARAM_STR;
 				break;
 			case self::PARAM_BOOL:
 				$value = \PDO::PARAM_BOOL;
