@@ -320,7 +320,7 @@ class Service extends Kernel\Service\Core
                             :trace = ?
                         WHERE :id = ?', array($url, $referer, $trace, $id), $this);
                 $dbhw->sendQuery($query);
-                $this->done[$id];
+                $this->done[$id] = true;
             }
         } else {
             $query = new Kernel\Db\Query('
