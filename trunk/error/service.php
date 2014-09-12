@@ -306,11 +306,12 @@ class Service extends Kernel\Service\Core
         if ($result->numRows() > 0) {
             list($id, $count) = $result->fetchRow();
         } else {
-            $id = $count = 0;
+            $id = 0;
+            $count = 1;
         }
 
         if ($id) {
-            if (!$this->done[$id] && $count < 65000) {
+            if (!isset($this->done[$id]) && $count < 65000) {
                 $query = new Kernel\Db\Query('
                     UPDATE @
                         SET :count = :count + 1,
