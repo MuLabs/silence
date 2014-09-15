@@ -901,7 +901,7 @@ class Toolbox extends Service\Core
     /**
      * Remove php memory and time limits
      */
-    public function removeLimits()
+    public function removeMemoryLimits()
     {
         set_time_limit(0);
         ini_set('memory_limit', '1500M');

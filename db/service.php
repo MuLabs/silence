@@ -123,7 +123,7 @@ abstract class Service extends Kernel\Service\Core
 	 */
 	public function defaultUpdate($stdOut, $exec = true)
 	{
-		$this->getApp()->getToolbox()->removeLimits();
+		$this->getApp()->getToolbox()->removeMemoryLimits();
 
 		$updatePath = array(
 			'main' => APP_UPDATE_PATH
