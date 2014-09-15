@@ -188,7 +188,8 @@ class Form extends Kernel\Service\Core
      */
     public function getField($object, $field, $group = null, $lang = null)
     {
-        $return = reset($this->getFields($object, [$field], $group, $lang));
+        $fields = $this->getFields($object, [$field], $group, $lang);
+        $return = reset($fields);
         return $return;
     }
 
