@@ -23,9 +23,14 @@ abstract class Cron extends Core
         $this->releaseLock();
     }
 
+    private function getLockName()
+    {
+        return substr(get_called_class(), strrpos(get_called_class(), '/') + 1);
+    }
+
     public function getLock()
     {
-        $nameLock = 'a';
+        $nameLock = $this->getLockName();
         $handler = $this->getApp()->getDatabase()->getHandler('writeFront');
 
         $sql   = 'SELECT IS_FREE_LOCK("'.$nameLock.'");';
@@ -42,10 +47,9 @@ abstract class Cron extends Core
 
     public function releaseLock()
     {
-        $nameLock = 'a';
         $handler = $this->getApp()->getDatabase()->getHandler('writeFront');
 
-        $sql   = 'SELECT RELEASE_LOCK("'.$nameLock.'");';
+        $sql = 'SELECT RELEASE_LOCK("' . $this->getLockName() . '");';
         $result = $handler->query($sql);
         return $result->fetchValue();
     }
