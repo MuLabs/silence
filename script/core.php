@@ -14,41 +14,24 @@ abstract class Core extends Kernel\Core
 
     public function __destruct() {}
 
-    abstract function execute(array $params);
+    abstract public function execute(array $params);
 
-    function writeLine(array $param)
+    protected function getStatusMessage($param)
     {
-        $date   = new \DateTime();
-        $row    = '';
-
-        switch($param['status']) {
-            case Bundle\Queue\Model\Manager\QueueMessage::PROGRESS:
-                /** @var Bundle\Queue\Model\Entity\QueueMessage $queueMessage */
-                $queueMessage   = $param['queue'];
-                $jsonSerialize  = $queueMessage->jsonSerialize();
-                $row =  'x' . $jsonSerialize['id'] . ' job PROGRESS : ' . $jsonSerialize['processor'] . ', function : ' . $jsonSerialize['content']['function'];
-                break;
-            case Bundle\Queue\Model\Manager\QueueMessage::ERROR:
-                $row = 'job ERROR : ' . $param['msg'];
-                break;
-            case Bundle\Queue\Model\Manager\QueueMessage::FATAL:
-                $row = 'FATAL ERROR : ' . $param['msg'];
-                break;
-            case Bundle\Queue\Model\Manager\QueueMessage::SUCCESS:
-                $row = 'job DONE';
-                break;
-            case 'wait4it':
-                $row = 'A queue process is still in progress';
-                break;
-            case 'finish':
-                $row = 'no more job in queue';
-                break;
-        }
-
-        echo $date->format('Y/m/d H:i:s') . ' ' . $row, PHP_EOL;
+        return '';
     }
 
-    function exceptionsFatalError()
+    public function writeLine(array $param)
+    {
+        $date = new \DateTime();
+        $row = $this->getStatusMessage($param);
+
+        if ($row) {
+            echo $date->format('Y/m/d H:i:s') . ' ' . $row, PHP_EOL;
+        }
+    }
+
+    public function exceptionsFatalError()
     {
         if ($error = error_get_last()) {
             switch ($error['type']) {
