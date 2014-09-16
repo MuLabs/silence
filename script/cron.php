@@ -65,7 +65,7 @@ abstract class Cron extends Core
         return $result->fetchValue();
     }
 
-    function exceptionsFatalError()
+    public function exceptionsFatalError()
     {
         $this->releaseLock();
         parent::exceptionsFatalError();
