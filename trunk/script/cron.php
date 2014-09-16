@@ -17,6 +17,17 @@ abstract class Cron extends Core
         }
     }
 
+    protected function getStatusMessage(array $param)
+    {
+        switch ($param['status']) {
+            case 'wait4it':
+                return 'A queue process is still in progress';
+                break;
+            default:
+                return parent::getStatusMessage($param);
+        }
+    }
+
     public function __destruct() {
         parent::__destruct();
 
