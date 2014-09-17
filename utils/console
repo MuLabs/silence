@@ -87,16 +87,19 @@ try {
 			}
 			break;
         case 'config':
-            $extensions       = get_loaded_extensions();
-            $extensionsNeeded = array('curl', 'date', 'gettext', 'imagick', 'json', 'mcrypt', 'redis', 'igbinary', 'xhprof', 'PDO', 'pdo_mysql', 'Zend OPcache', 'libxml', 'openssl', 'SPL');
-            $phpVersion       = array(PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
+            $extensions         = get_loaded_extensions();
+            $extensionsNeeded   = array('curl', 'date', 'gettext', 'imagick', 'json', 'mcrypt', 'redis', 'igbinary', 'xhprof', 'PDO', 'pdo_mysql', 'Zend OPcache', 'libxml', 'openssl', 'SPL');
+            $phpVersion         = array(PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
+            $handler            = $app->getDatabase()->getHandler('readFront');
+            $result             = $handler->query('SELECT VERSION()');
+            list($versionMySql) = $result->fetchRow();
 
             display('PHP Version :');
             display(implode('.',$phpVersion));
             display();
 
             display('MySQL Version :');
-            display(mysql_get_server_info());
+            display($versionMySql);
             display();
 
             display('Extensions Loaded :');
