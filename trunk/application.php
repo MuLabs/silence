@@ -144,20 +144,20 @@ abstract class Application
     /**
      * @return array
      */
-    protected function checkExtensions()
+    public function checkExtensions()
     {
         $extensions = $this->getExtensions();
         $extensionsLoaded = get_loaded_extensions();
 
-        $status = array();
         natcasesort($extensions);
+        natcasesort($extensionsLoaded);
+        $status = array();
         foreach($extensions as $extension) {
             $status[$extension] = (in_array($extension, $extensionsLoaded)) ? true : false;
         }
 
         return $status;
     }
-
 
     /************************************************************************************
      **  GETTERS                                                                       **
