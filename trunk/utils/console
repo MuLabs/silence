@@ -89,9 +89,10 @@ try {
         case 'config':
             $extensions = get_loaded_extensions();
             $extensionsNeeded = array('curl', 'gd', 'gettext', 'imagick', 'json', 'mbstring', 'mcrypt', 'redis', 'foo');
+            $phpVersion = array(PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
 
             display('PHP Version :');
-            display(PHP_VERSION);
+            display(implode('.',$phpVersion));
             display();
 
             display('MySQL Version :');
@@ -134,7 +135,7 @@ function ask($message)
 
 function display($message = null)
 {
-	echo "\n" . $message;
+	echo PHP_EOL . $message;
 	ob_flush();
 	flush();
 }
