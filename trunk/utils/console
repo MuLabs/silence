@@ -86,10 +86,41 @@ try {
 				display('Action cancelled');
 			}
 			break;
+        case 'config':
+            $extensions = get_loaded_extensions();
+            $extensionsNeeded = array('curl', 'gd', 'gettext', 'imagick', 'json', 'mbstring', 'mcrypt', 'redis', 'foo');
+
+            display('PHP Version :');
+            display(PHP_VERSION);
+            display();
+
+            display('MySQL Version :');
+            display(mysql_get_server_info());
+            display();
+
+            display('Extensions Loaded :');
+            display();
+
+            natcasesort($extensionsNeeded);
+            foreach($extensionsNeeded as $extension)
+            {
+                if(in_array($extension, $extensions)) {
+                    $status = "\033[32m" . 'OK' . "\033[0m";
+                } else {
+                    $status = "\033[31m" . 'FAIL' . "\033[0m";
+                }
+
+                printf("%15s", $status);
+                printf("    %-30s", $extension);
+
+                display();
+            }
+            break;
 		default:
 			throw new Kernel\Exception($action, Kernel\Exception::UNDEFINED_ACTION);
 			break;
 	}
+
 	#endregion
 } catch (Kernel\EndException $e) {
 	// Normal exception (end of execution)
@@ -101,7 +132,7 @@ function ask($message)
 	return trim(fgets(STDIN));
 }
 
-function display($message)
+function display($message = null)
 {
 	echo "\n" . $message;
 	ob_flush();
