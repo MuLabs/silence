@@ -21,6 +21,7 @@ abstract class Application
     protected $siteUrl;
     protected $projectName;
     protected $cookycryptKey = 'murloc';
+    protected $extensions = array();
 
     /************************************************************************************
      **  INITIALISATION                                                                **
@@ -34,6 +35,8 @@ abstract class Application
                 \xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
             }
             $this->initialize();
+
+            $this->setExtensions(array('SPL', 'xhprof', 'redis', 'igbinary', 'Zend OPcache'));
 
             #region Register Servicer
             $servicer = new Service\Servicer();
@@ -138,6 +141,23 @@ abstract class Application
         $this->getToolbox()->registerAutoload($autoload);
     }
 
+    /**
+     * @return array
+     */
+    protected function checkExtensions()
+    {
+        $extensions = $this->getExtensions();
+        $extensionsLoaded = get_loaded_extensions();
+
+        $status = array();
+        natcasesort($extensions);
+        foreach($extensions as $extension) {
+            $status[$extension] = (in_array($extension, $extensionsLoaded)) ? true : false;
+        }
+
+        return $status;
+    }
+
 
     /************************************************************************************
      **  GETTERS                                                                       **
@@ -183,14 +203,6 @@ abstract class Application
     }
 
     /**
-     * @param string $projectName
-     */
-    public function setProjectName($projectName)
-    {
-        $this->projectName = $projectName;
-    }
-
-    /**
      * @throws Config\Exception
      * @return string
      */
@@ -211,35 +223,11 @@ abstract class Application
     }
 
     /**
-     * @param string $db
-     */
-    public function setDefaultDatabase($db)
-    {
-        $this->defaultDatabase = $db;
-    }
-
-    /**
      * @return string
      */
     public function getDefaultDbContext()
     {
         return $this->defaultDbContext;
-    }
-
-    /**
-     * @param string $context
-     */
-    public function setDefaultDbContext($context)
-    {
-        $this->defaultDbContext = $context;
-    }
-
-    /**
-     * @param int $time
-     */
-    public function setStartTime($time)
-    {
-        $this->startMicrotime = (int)$time;
     }
 
     /**
@@ -283,27 +271,11 @@ abstract class Application
     }
 
     /**
-     * @param Service\Servicer $sm
-     */
-    protected function setServicer(Service\Servicer $sm)
-    {
-        $this->servicer = $sm;
-    }
-
-    /**
      * @return Bundle\Bundler
      */
     public function getBundler()
     {
         return $this->bundler;
-    }
-
-    /**
-     * @param Bundle\Bundler $bm
-     */
-    protected function setBundler(Bundle\Bundler $bm)
-    {
-        $this->bundler = $bm;
     }
 
     /**
@@ -481,6 +453,68 @@ abstract class Application
         } else {
             return '\\Mu\\App\\Controller\\' . $this->getRoute()->getControllerName();
         }
+    }
+
+    public function getExtensions()
+    {
+        return $this->extensions;
+    }
+
+    /************************************************************************************
+     **  SETTERS                                                                       **
+     ************************************************************************************/
+
+    /**
+     * @param string $projectName
+     */
+    public function setProjectName($projectName)
+    {
+        $this->projectName = $projectName;
+    }
+
+    /**
+     * @param string $db
+     */
+    public function setDefaultDatabase($db)
+    {
+        $this->defaultDatabase = $db;
+    }
+
+    /**
+     * @param string $context
+     */
+    public function setDefaultDbContext($context)
+    {
+        $this->defaultDbContext = $context;
+    }
+
+    /**
+     * @param int $time
+     */
+    public function setStartTime($time)
+    {
+        $this->startMicrotime = (int)$time;
+    }
+
+    /**
+     * @param Service\Servicer $sm
+     */
+    protected function setServicer(Service\Servicer $sm)
+    {
+        $this->servicer = $sm;
+    }
+
+    /**
+     * @param Bundle\Bundler $bm
+     */
+    protected function setBundler(Bundle\Bundler $bm)
+    {
+        $this->bundler = $bm;
+    }
+
+    public function setExtensions(array $extensions)
+    {
+        $this->extensions = $extensions;
     }
 
     /************************************************************************************
