@@ -448,6 +448,39 @@ class Toolbox extends Service\Core
         return (int)(($value / $base) * 10000);
     }
 
+    /**
+     * Return the query part to select a distance compute between 2 points
+     * @param int $latitude
+     * @param int $longitude
+     * @param string $fieldLat
+     * @param string $fieldLon
+     * @param bool $bRound
+     * @param bool $bKm
+     * @return string
+     */
+    public function getDistanceBetweenQuery($latitude = 0, $longitude = 0, $fieldLat = ':latitude', $fieldLon = ':longitude', $bRound = false, $bKm = false)
+    {
+        // Compute distance reference:
+        $meters= 6353000;
+        if ($bKm) {
+            $meters/= 1000;
+        }
+
+        // Set query:
+        $query = "$meters * 2 * ASIN( SQRT(
+            POWER(SIN(($latitude - abs($fieldLat)) * pi()/180 / 2),2) + COS($latitude * pi()/180) *
+            COS(abs($fieldLat) *  pi()/180) * POWER(SIN(($longitude - $fieldLon) *  pi()/180 / 2), 2)
+        ) )";
+
+        // Round value:
+        if ($bRound) {
+            $query = "ROUND($query, 2)";
+        }
+
+        // Return query string:
+        return "($query)";
+    }
+
     #endregion
 
     /************************************************************************************
