@@ -6,7 +6,8 @@ use Mu\Kernel;
 class Service extends Kernel\Service\Core
 {
 	protected $routes = array();
-	protected $currentRoute;
+    protected $transferedParameters = array();
+    protected $currentRoute;
 
 	const ROUTE_RULE_FILE = 'route.php';
 	const FRAGMENT_PARAM = '__fg';
@@ -27,7 +28,23 @@ class Service extends Kernel\Service\Core
 		return $this->currentRoute;
 	}
 
-	/**
+    /**
+     * @param string $name
+     */
+    public function addTransferedParameter($name)
+    {
+        $this->transferedParameters[$name] = true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTransferedParameters()
+    {
+        return $this->transferedParameters;
+    }
+
+    /**
 	 * @return Route
 	 */
 	public function selectRoute()

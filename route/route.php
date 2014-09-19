@@ -201,7 +201,18 @@ class Route extends Kernel\Core
 	 */
 	public function getUrl(array $parameters = array())
 	{
-		$paramString = array();
+        foreach ($this->getApp()->getRouteManager()->getTransferedParameters() as $varName => $unused) {
+            $varValue = $this->getApp()->getHttp()->getRequest()->getParameters(
+                $varName,
+                Kernel\Http\Request::PARAM_TYPE_REQUEST,
+                null
+            );
+            if (!isset($parameters[$varName]) && $varValue !== null) {
+                $parameters[$varName] = $varValue;
+            }
+        }
+
+        $paramString = array();
 		$pattern = $this->getPattern();
 		$dash = '';
 
