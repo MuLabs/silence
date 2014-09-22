@@ -7,12 +7,13 @@ use Mu\Bundle;
 
 abstract class Cron extends Core
 {
-    public function __realConstruct() {
+    public function __realConstruct()
+    {
         parent::__realConstruct();
 
         if (!$this->getLock()) {
-            $param = array('status'=>'wait4it');
-            $this->writeLine($param);
+            $param = array('status' => 'wait4it');
+            $this->writeStatus($param);
             exit;
         }
     }
@@ -28,7 +29,8 @@ abstract class Cron extends Core
         }
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         parent::__destruct();
 
         $this->releaseLock();
@@ -44,14 +46,14 @@ abstract class Cron extends Core
         $nameLock = $this->getLockName();
         $handler = $this->getApp()->getDatabase()->getHandler('writeFront');
 
-        $sql   = 'SELECT IS_FREE_LOCK("'.$nameLock.'");';
+        $sql = 'SELECT IS_FREE_LOCK("' . $nameLock . '");';
         $result = $handler->query($sql);
 
         if (!$result->fetchValue()) {
             return false;
         }
 
-        $sql   = 'SELECT GET_LOCK("'.$nameLock.'", 0);';
+        $sql = 'SELECT GET_LOCK("' . $nameLock . '", 0);';
         $result = $handler->query($sql);
         return $result->fetchValue();
     }
