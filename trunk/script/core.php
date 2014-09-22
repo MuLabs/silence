@@ -7,12 +7,20 @@ use Mu\Bundle;
 
 abstract class Core extends Kernel\Core
 {
+    public function __construct()
+    {
+        $this->log('Start script');
+    }
+
     public function __realConstruct()
     {
         register_shutdown_function(array($this, 'exceptionsFatalError'));
     }
 
-    public function __destruct() {}
+    public function __destruct()
+    {
+        $this->log('End script');
+    }
 
     abstract public function execute(array $params);
 
@@ -21,14 +29,15 @@ abstract class Core extends Kernel\Core
         return '';
     }
 
-    public function writeLine(array $param)
+    public function writeStatus(array $param)
+    {
+        $this->log($this->getStatusMessage($param));
+    }
+
+    public function log($message)
     {
         $date = new \DateTime();
-        $row = $this->getStatusMessage($param);
-
-        if ($row) {
-            echo $date->format('Y/m/d H:i:s') . ' ' . $row, PHP_EOL;
-        }
+        error_log($date->format('Y/m/d H:i:s') . ' ' . $message);
     }
 
     public function exceptionsFatalError()
