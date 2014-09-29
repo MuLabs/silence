@@ -55,22 +55,28 @@ class Service extends Kernel\Db\Service
 	 */
 	private function connect(Kernel\Db\Context $context)
 	{
-		@$handler = new Handler($context->getParameter('dsn'), $context->getParameter(
-			'username'
-		), $context->getParameter('password'));
+        $key = sha1(
+            $context->getParameter('dsn') . '|' . $context->getParameter('username') . '|' . $context->getParameter(
+                'password'
+            )
+        );
 
-		if ($handler && $handler->hasError()) {
-			echo 'Failed to connect to DBR : ' . $handler->getErrors();
-			exit;
-		}
+        if (!isset($this->handlers[$key])) {
+            @$handler = new Handler($context->getParameter('dsn'), $context->getParameter(
+                'username'
+            ), $context->getParameter('password'));
 
-		$handler->setApp($this->getApp());
+            if ($handler && $handler->hasError()) {
+                echo 'Failed to connect to DBR : ' . $handler->getErrors();
+                exit;
+            }
 
-		if ($context->isReadOnly()) {
-			$handler->query('SET GLOBAL read_only=true');
-		}
-		$handler->query('SET NAMES UTF8');
+            $handler->setApp($this->getApp());
+            $handler->query('SET NAMES UTF8');
 
-		return $handler;
-	}
+            $this->handlers[$key] = $handler;
+        }
+
+        return $this->handlers[$key];
+    }
 }
