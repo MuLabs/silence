@@ -62,8 +62,8 @@ class Service extends Kernel\Db\Service
         );
 
         if (!isset($this->handlers[$key])) {
-            @$handler = new Handler($context->getParameter('dsn'), $context->getParameter(
-                'username'
+            @$handler = new Handler($context->getParameter('dsn') . ';charset=UTF8', $context->getParameter(
+            'username'
             ), $context->getParameter('password'));
 
             if ($handler && $handler->hasError()) {
@@ -72,8 +72,6 @@ class Service extends Kernel\Db\Service
             }
 
             $handler->setApp($this->getApp());
-            $handler->query('SET NAMES UTF8');
-
             $this->handlers[$key] = $handler;
         }
 
