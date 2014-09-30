@@ -69,8 +69,8 @@ abstract class Handler extends Kernel\Core
 	 */
 	public function setLink($link)
 	{
-		$this->link = $link;
-	}
+        $this->link = $link;
+    }
 
 
 	/**
