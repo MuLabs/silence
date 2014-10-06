@@ -97,7 +97,7 @@ abstract class Controller extends Kernel\Core
      */
     protected function getMessageFromCode($code = null)
     {
-        return (!isset($this->messageCodes[$code])) ? '' : $this->messageCodes[$code];
+        return (!isset($this->messageCodes[$code])) ? '' : gettext($this->messageCodes[$code]);
     }
 
 	/************************************************************************************
@@ -170,7 +170,8 @@ abstract class Controller extends Kernel\Core
 		$data = $view->getVar($type . self::REPORT_KEY, array());
 
 		// Append message to the current ones:
-		if (is_array($message)) {
+        // Use gettext translation
+        if (is_array($message)) {
 			$data = array_merge($data, $message);
 		} else {
 			$data[] = $message;
