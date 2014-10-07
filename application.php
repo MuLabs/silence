@@ -423,7 +423,11 @@ abstract class Application
      */
     public function getLocalizationService()
     {
-        return $this->getServicer()->get('localization');
+        try {
+            return $this->getServicer()->get('localization');
+        } catch (Service\Exception $e) {
+            return null;
+        }
     }
 
     /**
