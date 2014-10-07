@@ -15,6 +15,12 @@ abstract class Core extends Kernel\Core
     public function __realConstruct()
     {
         register_shutdown_function(array($this, 'exceptionsFatalError'));
+
+        $siteService = $this->getApp()->getSiteService();
+        $siteService->loadSiteUrl();
+        $siteList = $siteService->getSites();
+        $site = reset($siteList);
+        $siteService->setCurrentSite($site);
     }
 
     public function __destruct()
