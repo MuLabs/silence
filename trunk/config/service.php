@@ -57,15 +57,17 @@ class Service extends Kernel\Service\Core
 	 */
 	public function loadIniFile($file)
 	{
-		if (!file_exists($file)) {
-			$dir = dirname($file);
+        $path = APP_CONFIGURATION_PATH.'/'.$this->getApp()->getEnvironment();
+        $filePath = $path.'/'.$file;
+		if (!file_exists($filePath)) {
+			$dir = dirname($filePath);
 			@mkdir($dir, 0755, true);
-			touch($file);
+			touch($filePath);
 
 			return;
 		}
 
-		$datas = parse_ini_file($file, true, INI_SCANNER_RAW);
+		$datas = parse_ini_file($filePath, true, INI_SCANNER_RAW);
 		$this->datas = $this->mergeDatas($this->datas, $datas);
 	}
 
