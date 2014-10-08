@@ -559,7 +559,9 @@ abstract class Application
     {
         if ($forceRedirection) {
             $url = $this->getRouteManager()->getUrl($routeName, $parameters);
-            $this->getHttp()->getResponse()->getHeader()->setLocation($url);
+            $response = $this->getHttp()->getResponse();
+            $response->getHeader()->setLocation($url);
+            $response->getHeader()->setCode(301);
             $this->getHttp()->getResponse()->send();
         }
 
