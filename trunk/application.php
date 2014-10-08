@@ -171,7 +171,7 @@ abstract class Application
      */
     public function getEnvironment()
     {
-        $environment = $this->getHttp()->getRequest()->getParameters('MU_ENVIRONMENT', Kernel\Http\Request::PARAM_TYPE_SERVER, self::ENVIRONMENT_LOCAL);
+        $environment = ini_get('docref_root');
         switch ($environment) {
             default:
                 return self::ENVIRONMENT_LOCAL;
