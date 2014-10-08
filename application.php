@@ -23,6 +23,10 @@ abstract class Application
     protected $cookycryptKey = 'murloc';
     protected $extensions = array();
 
+    const ENVIRONMENT_LOCAL     = 'local';
+    const ENVIRONMENT_PREPROD   = 'preprod';
+    const ENVIRONMENT_PROD      = 'prod';
+
     /************************************************************************************
      **  INITIALISATION                                                                **
      ************************************************************************************/
@@ -165,9 +169,19 @@ abstract class Application
     /**
      * @return bool
      */
-    public function isProduction()
+    public function getEnvironment()
     {
-        return $this->production;
+        $environment = $this->getHttp()->getRequest()->getParameters('MU_ENVIRONMENT', Kernel\Http\Request::PARAM_TYPE_SERVER, self::ENVIRONMENT_LOCAL);
+        switch ($environment) {
+            default:
+                return self::ENVIRONMENT_LOCAL;
+                break;
+            case self::ENVIRONMENT_LOCAL:
+            case self::ENVIRONMENT_PREPROD:
+            case self::ENVIRONMENT_PROD:
+                return $environment;
+                break;
+        }
     }
 
     /**
