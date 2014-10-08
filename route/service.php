@@ -61,7 +61,35 @@ class Service extends Kernel\Service\Core
 						$httpRequest->setParameter($key, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 					}
 				}
-				return $route;
+
+                $parameters = $httpRequest->getAllParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+                if ($httpRequest->getMethod(
+                    ) == Kernel\Http\Request::METHOD_GET && !isset($parameters[self::FRAGMENT_PARAM])
+                ) {
+                    unset($parameters['rn']);
+                    $url = $this->getUrl($route->getName(), $parameters);
+                    $endUri = strpos($url, '?');
+                    $url = substr($url, 0, $endUri ? $endUri : strlen($url));
+
+                    $endUri = strpos($httpRequest->getRequestUri(), '?');
+                    $currentUrl = substr(
+                        $httpRequest->getRequestUri(),
+                        0,
+                        $endUri ? $endUri : strlen($httpRequest->getRequestUri())
+                    );
+
+                    $localization = $this->getApp()->getLocalizationService();
+                    if ($localization && $localization->isUrlLocaleEnabled()) {
+                        if ($localization->isLocaleFromUrl()) {
+                            $currentUrl = '/' . $localization->getCurrentLanguage() . $currentUrl;
+                        }
+                    }
+
+                    if (str_replace($this->getApp()->getUrl(), '', $url) !== $currentUrl) {
+                        $this->getApp()->redirect($route->getName(), $parameters, true);
+                    }
+                }
+                return $route;
 			}
 		}
 
