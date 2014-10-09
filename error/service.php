@@ -138,7 +138,7 @@ class Service extends Kernel\Service\Core
      */
     public function error404($message = 'Not found')
     {
-        if (!$this->getApp()->isProduction()) {
+        if (!$this->getApp()->getEnvironment() == $this->getApp()->getConstant('ENVIRONMENT_PROD')) {
             exit('ERROR 404 : ' . $message);
         }
         $response = $this->getApp()->getHttp()->getResponse();
