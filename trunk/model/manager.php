@@ -125,7 +125,6 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 
 	/**
 	 * @param mixed $id
-	 * @param bool $force
 	 * @return Entity
 	 */
 	public function get($id)
@@ -136,9 +135,9 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 
 		$force = $this->getForceGet();
 		$key = $this->getCacheKey($id);
-		if (isset($this->entities[$key]) && !$force) {
-			return $this->entities[$key];
-		}
+        if (isset($this->entities[$id]) && !$force) {
+            return $this->entities[$id];
+        }
 
 		$entity = false;
 		$entityCache = $this->getApp()->getEntityCache();
@@ -171,9 +170,9 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 		if ($entityCache && $entity) {
 			$entityCache->set($entity, $this->getDefaultScope());
 		}
-		$this->entities[$key] = $entity;
+        $this->entities[$id] = $entity;
 
-		return $entity;
+        return $entity;
 	}
 
 	/**
