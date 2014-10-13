@@ -279,8 +279,10 @@ class Service extends Kernel\Service\Core
             $trace = $this->processTrace($trace);
         }
 
-        //$data = array($type, $priority, $message, $file.':'.$line, $trace);
-        //echo "<br />Error(".implode(', ', $data).")\n";
+        if ($this->getApp()->getEnvironment() == Kernel\Application::ENVIRONMENT_LOCAL) {
+            $data = array($type, $priority, $message, $file . ':' . $line, $trace);
+            echo "<br />Error(" . implode(', ', $data) . ")\n";
+        }
 
         $priority = (int)$priority;
         $line = (int)$line;
