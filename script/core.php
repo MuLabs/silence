@@ -40,6 +40,12 @@ abstract class Core extends Kernel\Core
         $this->log($this->getStatusMessage($param));
     }
 
+    public function ask($message)
+    {
+        $this->log($message);
+        return trim(fgets(STDIN));
+    }
+
     public function log($message)
     {
         $date = new \DateTime();
