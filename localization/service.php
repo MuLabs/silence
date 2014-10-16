@@ -254,13 +254,15 @@ class Service extends Kernel\Service\Core
 		$handler = $this->getApp()->getDatabase()->getHandler($this->getApp()->getDefaultDbContext());
 		$sql = 'REPLACE INTO @ (:idObject, :objectType, :lang, :property, :value) VALUES (?, ?, ?, ?, ?)';
 
-		$query = new Kernel\Db\Query($sql, array(
-			$entity->getId(),
-			$entity->getEntityType(),
-			$lang,
-			$property,
-			$value
-		), $this);
+        $aDatas = array(
+            $entity->getId(),
+            $entity->getEntityType(),
+            $lang,
+            $property,
+            $value
+        );
+
+		$query = new Kernel\Db\Query($sql, $aDatas, $this);
 		$handler->sendQuery($query);
 
 		$cacheKey = $entity->getCacheKey();
