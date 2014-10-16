@@ -70,7 +70,6 @@ abstract class Handler extends Kernel\Core
 	{
 		$strQuery = $query->getQuery();
         $hashQuery = sha1($strQuery);
-        if (!isset($this->cacheQuery[$hashQuery])) {
             $checkValue = in_array($query->getType(), $this->typeCheckValues);
 
             #region value check analysis
@@ -148,6 +147,7 @@ abstract class Handler extends Kernel\Core
             $query->setValues($values);
             #endregion
 
+        if (!isset($this->cacheQuery[$hashQuery])) {
             $requestReplaceList = $this->getReplaceList($defaultRequestable, $requestableList);
 
             $this->cacheQuery[$hashQuery] = preg_replace(
