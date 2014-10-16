@@ -34,7 +34,8 @@ abstract class Handler extends Kernel\Core
 		Query::TYPE_UPDATE,
 	);
 
-	protected $link;
+    protected $cacheQuery = array();
+    protected $link;
 
 	/**
 	 * @return mixed
@@ -68,86 +69,108 @@ abstract class Handler extends Kernel\Core
 	protected function checkQuery(Query $query)
 	{
 		$strQuery = $query->getQuery();
-		$checkValue = in_array($query->getType(), $this->typeCheckValues);
+        $hashQuery = sha1($strQuery);
+        if (!isset($this->cacheQuery[$hashQuery])) {
+            $checkValue = in_array($query->getType(), $this->typeCheckValues);
 
-		#region value check analysis
-		$values = $query->getValues();
-		$valuesOffset = count($values) - 1;
-		$lastFound = strrpos($strQuery, '?');
-		$subQuery = $strQuery;
-        $requestableList = $query->getRequestableList();
-        $defaultRequestable = $requestableList['default'];
-        $defaultGroup = $defaultRequestable->getDefaultGroup();
+            #region value check analysis
+            $values = $query->getValues();
+            $valuesOffset = count($values) - 1;
+            $lastFound = strrpos($strQuery, '?');
+            $subQuery = $strQuery;
+            $requestableList = $query->getRequestableList();
+            $defaultRequestable = $requestableList['default'];
+            $defaultGroup = $defaultRequestable->getDefaultGroup();
 
-        while ($lastFound !== false) {
-			$subQuery = substr($subQuery, 0, $lastFound);
-			$subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
-			$posT = strpos($subPropQuery, "\t");
-			$pos = strlen($subPropQuery);
-			if ($posT !== false) {
-				$pos = $posT;
-			}
-			$posS = strpos($subPropQuery, ' ');
-			if ($posS !== false) {
-				$pos = min($pos, $posS);
-			}
-			$posN = strpos($subPropQuery, "\n");
-			if ($posN !== false) {
-				$pos = min($pos, $posN);
-			}
+            while ($lastFound !== false) {
+                $subQuery = substr($subQuery, 0, $lastFound);
+                $subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
+                $posT = strpos($subPropQuery, "\t");
+                $pos = strlen($subPropQuery);
+                if ($posT !== false) {
+                    $pos = $posT;
+                }
+                $posS = strpos($subPropQuery, ' ');
+                if ($posS !== false) {
+                    $pos = min($pos, $posS);
+                }
+                $posN = strpos($subPropQuery, "\n");
+                if ($posN !== false) {
+                    $pos = min($pos, $posN);
+                }
 
-			$subPropQuery = substr($subPropQuery, 0, $pos);
-			if (!$subPropQuery) {
-				throw new exception($subQuery, Exception::INVALID_SUB_PROP_QUERY);
-			}
-			$subPropQuery = str_replace(
-				array(')', ',', ';', '(', '/', '\\'),
-				'',
-				$subPropQuery
-			);
+                $subPropQuery = substr($subPropQuery, 0, $pos);
+                if (!$subPropQuery) {
+                    throw new exception($subQuery, Exception::INVALID_SUB_PROP_QUERY);
+                }
+                $subPropQuery = str_replace(
+                    array(')', ',', ';', '(', '/', '\\'),
+                    '',
+                    $subPropQuery
+                );
 
-			$property = explode('.', $subPropQuery);
-			$propertyCount = count($property);
-			if ($propertyCount === 3) {
-				$property = array(
-					'manager' => $property[0],
-					'group' => $property[1],
-					'property' => $property[2],
-				);
-				$property['manager'] = $this->getManager($property);
+                $property = explode('.', $subPropQuery);
+                $propertyCount = count($property);
+                if ($propertyCount === 3) {
+                    $property = array(
+                        'manager' => $property[0],
+                        'group' => $property[1],
+                        'property' => $property[2],
+                    );
+                    $property['manager'] = $this->getManager($property);
 
-			} elseif ($propertyCount === 2) {
-                $property['manager'] = $defaultRequestable;
-                $property['group'] = reset($property);
-				$property['property'] = next($property);
-			} elseif ($propertyCount === 1) {
-                $property['manager'] = $defaultRequestable;
-                $property['group'] = $defaultGroup;
-				$property['property'] = reset($property);
-			} else {
-				throw new exception(array(
-					'query' => $strQuery,
-					'property' => $property
-				), exception::INVALID_PROPERTY_COUNT);
-			}
-			$property = $property['manager']->getProperty($property['group'], $property['property']);
-			$propertyType = $this->knowActions[$property['type']];
-			$values[$valuesOffset] = array(
-				'type' => $propertyType,
-				'value' => ($checkValue ? $this->checkProperty(
-						$values[$valuesOffset],
-						$this->knowActions[$property['type']]
-					) : $values[$valuesOffset])
-			);
-			$lastFound = strrpos($subQuery, '?');
-			--$valuesOffset;
-		}
-		$query->setValues($values);
-		#endregion
+                } elseif ($propertyCount === 2) {
+                    $property['manager'] = $defaultRequestable;
+                    $property['group'] = reset($property);
+                    $property['property'] = next($property);
+                } elseif ($propertyCount === 1) {
+                    $property['manager'] = $defaultRequestable;
+                    $property['group'] = $defaultGroup;
+                    $property['property'] = reset($property);
+                } else {
+                    throw new exception(array(
+                        'query' => $strQuery,
+                        'property' => $property
+                    ), exception::INVALID_PROPERTY_COUNT);
+                }
+                $property = $property['manager']->getProperty($property['group'], $property['property']);
+                $propertyType = $this->knowActions[$property['type']];
+                $values[$valuesOffset] = array(
+                    'type' => $propertyType,
+                    'value' => ($checkValue ? $this->checkProperty(
+                            $values[$valuesOffset],
+                            $this->knowActions[$property['type']]
+                        ) : $values[$valuesOffset])
+                );
+                $lastFound = strrpos($subQuery, '?');
+                --$valuesOffset;
+            }
+            $query->setValues($values);
+            #endregion
 
+            $requestReplaceList = $this->getReplaceList($defaultRequestable, $requestableList);
+
+            $this->cacheQuery[$hashQuery] = preg_replace(
+                array_keys($requestReplaceList),
+                array_values($requestReplaceList),
+                $strQuery
+            );
+        }
+
+        $query->setQuery($this->cacheQuery[$hashQuery]);
+    }
+
+    /**
+     * @param Interfaces\Requestable $defaultRequestable
+     * @param Interfaces\Requestable[] $requestableList
+     * @return array
+     */
+    private function getReplaceList(Kernel\Db\Interfaces\Requestable $defaultRequestable, array $requestableList)
+    {
         $requestReplaceList = array();
         $startPattern = '#';
         $endPattern = '([^\w]|$)#i';
+        $defaultGroup = $defaultRequestable->getDefaultGroup();
         foreach ($requestableList as $requestableLabel => $oneRequestable) {
             $isDefault = ($oneRequestable == $defaultRequestable);
             $newReplaceList = $oneRequestable->getRequestReplaceList($isDefault);
@@ -174,11 +197,10 @@ abstract class Handler extends Kernel\Core
             }
         }
 
-        $strQuery = preg_replace(array_keys($requestReplaceList), array_values($requestReplaceList), $strQuery);
-        $query->setQuery($strQuery);
-	}
+        return $requestReplaceList;
+    }
 
-	/**
+    /**
 	 * @param mixed $value
 	 * @param int $type
 	 * @return int|string
