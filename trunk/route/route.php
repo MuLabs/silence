@@ -201,9 +201,10 @@ class Route extends Kernel\Core
 	 */
 	public function getUrl(array $parameters = array())
 	{
-        foreach ($this->getApp()->getRouteManager()->getTransferedParameters() as $varName => $unused) {
-            $varValue = $this->getApp()->getHttp()->getRequest()->getParameters(
-                $varName,
+        $app = $this->getApp();
+        foreach ($app->getRouteManager()->getTransferedParameters() as $varName => $unused) {
+            $varValue = $app->getHttp()->getRequest()->getParameters(
+            $varName,
                 Kernel\Http\Request::PARAM_TYPE_REQUEST,
                 null
             );
@@ -261,16 +262,16 @@ class Route extends Kernel\Core
 			$paramString = '';
 		}
 
-		$localization = $this->getApp()->getLocalizationService();
-		if ($localization && $localization->isUrlLocaleEnabled()) {
+        $localization = $app->getLocalizationService();
+        if ($localization && $localization->isUrlLocaleEnabled()) {
 			$pattern = '/' . $localization->getCurrentLanguage() . $pattern;
 		}
 
 		while (strpos($pattern, '//') !== false) {
 			$pattern = str_replace('//', '/', $pattern);
 		}
-		return $this->getApp()->getUrl() . $pattern . $paramString . $dash;
-	}
+        return $app->getUrl() . $pattern . $paramString . $dash;
+    }
 
 	/**
 	 * @return string
