@@ -5,9 +5,6 @@ use Mu\Kernel;
 
 class Handler extends Kernel\Db\Handler
 {
-	// Query minimal time for log (in ms)
-	const QUERY_LOG_LIMIT = 10;
-
 	protected $typeToSQL = array(
 		'tinyint' => 'TINYINT',
 		'smallint' => 'SMALLINT',
@@ -48,27 +45,10 @@ class Handler extends Kernel\Db\Handler
 			$statement->bindValue($offset + 1, $value['value'], $type);
 		}
 
-		if ($this->hasLogs()) {
-			$time_a = microtime(true);
-			$result = $statement->execute();
-			$time = (microtime(true) - $time_a) * 1000;
-			if ($time > self::QUERY_LOG_LIMIT) {
-				$this->log(
-					__CLASS__,
-					array(
-						'query' => $query->getQuery(),
-						'time' => $time . ' ms',
-					)
-				);
-			}
-		} else {
-			$result = $statement->execute();
-		}
-
-		if (!$result) {
+        $result = $statement->execute();
+        if (!$result) {
 			throw new Exception(print_r($statement->errorInfo(), true), Exception::QUERY_FAIL);
 		}
-
 
 		return new Result($this, $statement);
 	}
@@ -110,24 +90,8 @@ class Handler extends Kernel\Db\Handler
 	public function query($query)
 	{
 		try {
-			if ($this->hasLogs()) {
-				$time_a = microtime(true);
-				$statement = $this->getLink()->query($query);
-				$time = (microtime(true) - $time_a) * 1000;
-				if ($time > self::QUERY_LOG_LIMIT) {
-					$this->log(
-						__CLASS__,
-						array(
-							'query' => $query,
-							'time' => $time . ' ms',
-						)
-					);
-				}
-			} else {
-				$statement = $this->getLink()->query($query);
-			}
-
-			if (!$statement) {
+            $statement = $this->getLink()->query($query);
+            if (!$statement) {
 				throw new \PDOException();
 			}
 

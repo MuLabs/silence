@@ -35,26 +35,6 @@ abstract class Handler extends Kernel\Core
 	);
 
 	protected $link;
-	protected $hasLog;
-
-
-	public function enableLogs()
-	{
-		$this->hasLog = true;
-	}
-
-	public function disableLogs()
-	{
-		$this->hasLog = false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function hasLogs()
-	{
-		return $this->hasLog;
-	}
 
 	/**
 	 * @return mixed
@@ -71,7 +51,6 @@ abstract class Handler extends Kernel\Core
 	{
         $this->link = $link;
     }
-
 
 	/**
 	 * @param string $string
@@ -96,10 +75,11 @@ abstract class Handler extends Kernel\Core
 		$valuesOffset = count($values) - 1;
 		$lastFound = strrpos($strQuery, '?');
 		$subQuery = $strQuery;
-		$defaultManager = $query->getDefaultRequestable();
-		$defaultGroup = $defaultManager->getDefaultGroup();
-		$isShortMode = $query->isShortMode();
-		while ($lastFound !== false) {
+        $requestableList = $query->getRequestableList();
+        $defaultRequestable = $requestableList['default'];
+        $defaultGroup = $defaultRequestable->getDefaultGroup();
+
+        while ($lastFound !== false) {
 			$subQuery = substr($subQuery, 0, $lastFound);
 			$subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
 			$posT = strpos($subPropQuery, "\t");
@@ -137,12 +117,12 @@ abstract class Handler extends Kernel\Core
 				$property['manager'] = $this->getManager($property);
 
 			} elseif ($propertyCount === 2) {
-				$property['manager'] = $defaultManager;
-				$property['group'] = reset($property);
+                $property['manager'] = $defaultRequestable;
+                $property['group'] = reset($property);
 				$property['property'] = next($property);
 			} elseif ($propertyCount === 1) {
-				$property['manager'] = $defaultManager;
-				$property['group'] = $defaultGroup;
+                $property['manager'] = $defaultRequestable;
+                $property['group'] = $defaultGroup;
 				$property['property'] = reset($property);
 			} else {
 				throw new exception(array(
@@ -165,108 +145,37 @@ abstract class Handler extends Kernel\Core
 		$query->setValues($values);
 		#endregion
 
-		$propertyPattern = '(?<property>[\w]+)';
-		$groupPattern = '(?<group>[\w]+)';
-		$managerPattern = '(?<manager>[\w]+)';
-		// replace all properties by their real name
-		#region :manager.group.property
-		while (preg_match(
-			'#:' . $managerPattern . '\.' . $groupPattern . '\.' . $propertyPattern . '#i',
-			$strQuery,
-			$property
-		)) {
-			$strQuery = preg_replace(
-				'#:' . $property['manager'] . '\.' . $property['group'] . '\.' . $property['property'] . '([^\w\-]|$)#i',
-				$this->getManager($property)->getPropertyForDb(
-					$property['group'],
-					$property['property'],
-					$isShortMode
-				) . '$1',
-				$strQuery,
-				1
-			);
-		}
-		#endregion
+        $requestReplaceList = array();
+        $startPattern = '#';
+        $endPattern = '([^\w]|$)#i';
+        foreach ($requestableList as $requestableLabel => $oneRequestable) {
+            $isDefault = ($oneRequestable == $defaultRequestable);
+            $newReplaceList = $oneRequestable->getRequestReplaceList($isDefault);
+            foreach ($newReplaceList['group'] as $key => $value) {
+                if ($isDefault) {
+                    if ($key == $defaultGroup) {
+                        $key = '@';
+                    } else {
+                        $key = '@' . $key;
+                    }
+                } else {
+                    $key = '@' . $requestableLabel . '.' . $key;
+                }
+                $requestReplaceList[$startPattern . $key . $endPattern] = $value . '$1';
+            }
 
-		#region :group.property
-		while (preg_match(
-			'#:' . $groupPattern . '\.' . $propertyPattern . '#i',
-			$strQuery,
-			$property
-		)) {
-			$property['manager'] = $defaultManager;
-			$strQuery = preg_replace(
-				'#:' . $property['group'] . '\.' . $property['property'] . '([^\w\-]|$)#i',
-				$property['manager']->getPropertyForDb(
-					$property['group'],
-					$property['property'],
-					$isShortMode
-				) . '$1',
-				$strQuery,
-				1
-			);
-		}
-		#endregion
+            foreach ($newReplaceList['property'] as $key => $value) {
+                if ($isDefault) {
+                    $key = ':' . $key;
+                } else {
+                    $key = ':' . $requestableLabel . '.' . $key;
+                }
+                $requestReplaceList[$startPattern . $key . $endPattern] = $value . '$1';
+            }
+        }
 
-		#region :property
-		while (preg_match(
-			'#:' . $propertyPattern . '#i',
-			$strQuery,
-			$property
-		)) {
-			$property['manager'] = $defaultManager;
-			$property['group'] = $defaultGroup;
-			$strQuery = preg_replace(
-				'#:' . $property['property'] . '([^\w\-]|$)#i',
-				$property['manager']->getPropertyForDb(
-					$property['group'],
-					$property['property'],
-					$isShortMode
-				) . '$1',
-				$strQuery,
-				1
-			);
-		}
-		#endregion
-
-		#region @manager.group
-		while (preg_match('#@' . $managerPattern . '\.' . $groupPattern . '#i', $strQuery, $property)) {
-
-			$strQuery = preg_replace(
-				'#@' . $property['manager'] . '\.' . $property['group'] . '([^\w\-]|$)#i',
-				$this->getManager($property)->getGroupForDb($property['group']) . '$1',
-				$strQuery,
-				1
-			);
-		}
-		#endregion
-
-		#region @group
-		while (preg_match('#@' . $groupPattern . '#i', $strQuery, $property)) {
-			$property['manager'] = $defaultManager;
-			$strQuery = preg_replace(
-				'#@' . $property['group'] . '([^\w\-]|$)#i',
-				$property['manager']->getGroupForDb($property['group']) . '$1',
-				$strQuery,
-				1
-			);
-		}
-		#endregion
-
-		#region @
-		while (preg_match('#@#i', $strQuery, $property)) {
-			$property['manager'] = $defaultManager;
-			$property['group'] = $defaultGroup;
-			$strQuery = preg_replace(
-				'#@([^\w\-]|$)#i',
-				$property['manager']->getGroupForDb($property['group'], $isShortMode) . '$1',
-				$strQuery,
-				1
-			);
-		}
-		#endregion
-
-		$query->setQuery($strQuery);
+        $strQuery = preg_replace(array_keys($requestReplaceList), array_values($requestReplaceList), $strQuery);
+        $query->setQuery($strQuery);
 	}
 
 	/**
