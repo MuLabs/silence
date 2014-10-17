@@ -11,9 +11,10 @@ trait Requestable
 
     /**
      * @param bool $default
+     * @param bool $isShortMode
      * @return array
      */
-    public function getRequestReplaceList($default = false)
+    public function getRequestReplaceList($default = false, $isShortMode = false)
     {
         if (empty($this->requestReplaceList[$default])) {
             foreach ($this->properties as $group => $oneGroupInfos) {
@@ -33,12 +34,14 @@ trait Requestable
                     if ($group == $this->getDefaultGroup()) {
                         $this->requestReplaceList[$default]['property'][$tableKey . $label] = $this->getPropertyForDb(
                             $group,
-                            $label
+                            $label,
+                            $isShortMode
                         );
                     } else {
                         $this->requestReplaceList[$default]['property'][$group . '.' . $label] = $this->getPropertyForDb(
                             $group,
-                            $label
+                            $label,
+                            $isShortMode
                         );
                     }
                 }
@@ -66,7 +69,13 @@ trait Requestable
         call_user_func($stdOut, 'Start creating structure for ' . get_called_class());
         foreach ($this->properties as $table => $oneTableInfos) {
             $properties = array();
-            $tableToken = '@' . $table;
+
+            $isDefault = $table == $this->getDefaultGroup();
+            if ($isDefault) {
+                $tableToken = '@';
+            } else {
+                $tableToken = '@' . $table;
+            }
             call_user_func($stdOut, 'Start creating structure for table ' . $tableToken);
 
             // Generate properties
@@ -75,7 +84,12 @@ trait Requestable
                     continue;
                 }
 
-                $propToken = str_replace('@', ':', $tableToken) . '.' . $label;
+                if ($isDefault) {
+                    $propToken = ':' . $label;
+                } else {
+                    $propToken = str_replace('@', ':', $tableToken) . '.' . $label;
+                }
+
                 call_user_func($stdOut, 'Generating property ' . $propToken);
 
                 $propDatas = $handler->getStructureFromProperty($oneProperty);

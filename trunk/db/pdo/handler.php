@@ -200,8 +200,13 @@ class Handler extends Kernel\Db\Handler
 
 		$keyProperties = array();
 		foreach ($key['properties'] as $oneKeyProp) {
-			$keyProperties[] = $tableToken . '.' . $oneKeyProp;
-		}
+            if ($tableToken == ':') {
+                $keyProperties[] = $tableToken . $oneKeyProp;
+            } else {
+                $keyProperties[] = $tableToken . '.' . $oneKeyProp;
+            }
+
+        }
 		return $keyType . ' `' . $keyName . '` (' . implode(', ', $keyProperties) . ')';
 	}
 

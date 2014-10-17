@@ -12,9 +12,10 @@ interface Requestable
 
     /**
      * @param bool $default
+     * @param bool $isShortMode
      * @return array
      */
-    public function getRequestReplaceList($default = false);
+    public function getRequestReplaceList($default = false, $isShortMode = false);
 
     /**
      * @param string $stdOut
