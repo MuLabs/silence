@@ -112,12 +112,10 @@ abstract class Handler extends Kernel\Core
                 $propertyCount = count($property);
                 if ($propertyCount === 3) {
                     $property = array(
-                        'manager' => $property[0],
+                        'manager' => $requestableList[$property[0]],
                         'group' => $property[1],
                         'property' => $property[2],
                     );
-                    $property['manager'] = $this->getManager($property);
-
                 } elseif ($propertyCount === 2) {
                     $property['manager'] = $defaultRequestable;
                     $property['group'] = reset($property);
