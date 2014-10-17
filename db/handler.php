@@ -172,7 +172,7 @@ abstract class Handler extends Kernel\Core
     ) {
         $requestReplaceList = array();
         $startPattern = '#';
-        $endPattern = '([^\w]|$)#i';
+        $endPattern = '([^\w\.]|$)#i';
         $defaultGroup = $defaultRequestable->getDefaultGroup();
         foreach ($requestableList as $requestableLabel => $oneRequestable) {
             $isDefault = ($oneRequestable == $defaultRequestable);
