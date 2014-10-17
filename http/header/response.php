@@ -97,7 +97,7 @@ class Response
 	}
 
 	/**
-	 * @param int $type
+	 * @param string $type
 	 */
 	public function setContentType($type)
 	{

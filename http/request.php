@@ -32,6 +32,8 @@ class Request
 	protected $requestUri;
 	protected $pathInfo;
 	protected $origPathInfo;
+    protected $accepts;
+    protected $contentType;
 
 	protected $phpAuthDigest;
 	protected $phpAuthUser;
@@ -53,7 +55,7 @@ class Request
 	protected $requestHeader;
 
 	/********************/
-	/**    STANDART    **/
+	/*     STANDARD     */
 	/********************/
 	public function __construct()
 	{
@@ -68,8 +70,24 @@ class Request
 	}
 
 	/********************/
-	/**     SETTER     **/
+	/*     SETTER       */
 	/********************/
+    /**
+     * @param string $accept
+     */
+    public function setHttpAccept($accept = '')
+    {
+        $this->accepts = (string)$accept;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContentType($content = '')
+    {
+        $this->contentType = (string)$content;
+    }
+
 	/**
 	 * @param Header\Request $header
 	 */
@@ -109,8 +127,24 @@ class Request
 	}
 
 	/********************/
-	/**     GETTER     **/
+	/*    GETTER        */
 	/********************/
+    /**
+     * @return string
+     */
+    public function getHttpAccept()
+    {
+        return $this->accepts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
 	/**
 	 * @param string $label
 	 * @param int $type

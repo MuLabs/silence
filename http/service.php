@@ -28,6 +28,12 @@ class Service extends Kernel\Service\Core
 		if (isset($_SERVER['REQUEST_URI'])) {
 			$request->setRequestUri($_SERVER['REQUEST_URI']);
 		}
+        if (isset($_SERVER['HTTP_ACCEPT'])) {
+            $request->setHttpAccept($_SERVER['HTTP_ACCEPT']);
+        }
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            $request->setContentType($_SERVER['CONTENT_TYPE']);
+        }
 
 		$this->httpRequest = $request;
 	}

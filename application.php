@@ -48,6 +48,7 @@ abstract class Application
             $this->setServicer($servicer);
             $this->loadConfiguration();
             $this->initConfiguration();
+            $this->registerDefaultServices($servicer);
             $this->registerCustomServices();
             #endregion
 
@@ -143,6 +144,14 @@ abstract class Application
     protected function registerAutoload($autoload)
     {
         $this->getToolbox()->registerAutoload($autoload);
+    }
+
+    /**
+     * @param Service\Servicer $servicer
+     */
+    protected function registerDefaultServices(Service\Servicer $servicer)
+    {
+        $servicer->register('renderer', '\\Mu\\Kernel\\Renderer\\Service');
     }
 
     /**
@@ -354,6 +363,14 @@ abstract class Application
     public function getViewManager()
     {
         return $this->getServicer()->get('view');
+    }
+
+    /**
+     * @return Renderer\Service
+     */
+    public function getRendererManager()
+    {
+        return $this->getServicer()->get('renderer');
     }
 
     /**
@@ -574,8 +591,11 @@ abstract class Application
         if ($forceRedirection) {
             $url = $this->getRouteManager()->getUrl($routeName, $parameters);
             $response = $this->getHttp()->getResponse();
-            $response->getHeader()->setLocation($url);
-            $response->getHeader()->setCode(301);
+            $header   = $response->getHeader();
+            $header->setLocation($url);
+            $header->setCode(301);
+
+            // Send redirection:
             $this->getHttp()->getResponse()->send();
         }
 
@@ -585,11 +605,6 @@ abstract class Application
         }
         $request->setParameter('rn', Kernel\Http\Request::PARAM_TYPE_GET, $routeName);
         $this->route = $this->getRouteManager()->selectRoute();
-
-        // Force format if there is a difference between parameter and post:
-        if (isset($parameters['format'])) {
-            $request->removeParameter('format', Kernel\Http\Request::PARAM_TYPE_POST);
-        }
 
         return $this->dispatch($sendData);
     }
@@ -602,10 +617,7 @@ abstract class Application
      */
     public function fragmentRedirect($controllerName, $fragmentName, array $parameters = array())
     {
-        // Force HTML format
-        $parameters['format'] = '';
         $parameters[Kernel\Route\Service::FRAGMENT_PARAM] = $fragmentName;
-
         return $this->redirect($controllerName, $parameters, false, false);
     }
 
@@ -623,51 +635,77 @@ abstract class Application
             $this->getHttp()->getResponse()->setCode(301);
         }
 
-        $response = $this->getHttp()->getResponse();
-        $content = $this->fetch();
+        // Get HTTP objects:
+        $http     = $this->getHttp();
+        $response = $http->getResponse();
+
+        // Get the renderer and fetch view content:
+        $renderer = $this->getRendererManager()->getHandler();
+        $content  = $this->fetch($renderer);
 
         if (!$sendData) {
             return $content;
         }
 
+        // Set response header and content:
+        $header = $response->getHeader();
+        $header->setContentType($renderer->getContentType());
         $response->setContent($content);
         $response->send();
+        return true;
     }
 
     /**
+     * @param Kernel\Renderer\Handler $renderer
      * @return string
      */
-    private function fetch()
+    private function fetch(Kernel\Renderer\Handler $renderer)
     {
-        $error = $this->getController()->initialize();
-
         // If initialize return content, it's an error
+        $error = $this->getController()->initialize();
         if ($error) {
             return $error;
         }
 
         // Fetch fragment and skip controller if request is only for fragment
-        $fragmentContent = $this->getController()->fetchFragment();
-        if (is_string($fragmentContent)) {
-            return $fragmentContent;
+        $fragmentView = $this->getController()->fetchFragment();
+        if ($fragmentView) {
+            $renderer = $this->getRendererManager()->getHtmlHandler();  // Force HTML renderer for fragments
+            $content  = $renderer->render($fragmentView);
+            return $content;
         }
 
         $cacheManager = $this->getPageCache();
-        if ($cacheManager
-            && $this->getController()->hasCache()
-        ) {
-            try {
-                $cacheKey = $this->getController()->getCacheKey();
+        if ($cacheManager && $this->getController()->hasCache()) {
+            $cacheKey = $this->getController()->getCacheKey($renderer->getName());
 
+            try {
                 return $cacheManager->get($cacheKey, $this->getController()->getCacheTtl());
             } catch (Cache\Exception $e) {
-                $content = $this->getController()->fetch();
+                $content = $this->render($renderer);
                 $cacheManager->set($cacheKey, $content);
                 return $content;
             }
         } else {
-            return $this->getController()->fetch();
+            return $this->render($renderer);
         }
+    }
+
+    /**
+     * Transform view content into correct rendering string
+     * @param Kernel\Renderer\Handler $renderer
+     * @return mixed
+     */
+    private function render(Kernel\Renderer\Handler $renderer)
+    {
+        $controller = $this->getController();
+        $view       = $controller->fetch();
+        if (!$view) {
+            return '';
+        }
+
+        $content = $renderer->render($view);
+        return $content;
     }
 
 
@@ -849,35 +887,6 @@ abstract class Application
     public function registerStatic($url)
     {
         $this->statics[] = $url;
-    }
-
-    /**
-     * Automatically load a JSON View
-     * @return Kernel\View\Json\View
-     */
-    public function getJsonView()
-    {
-        return $this->getViewByFormat(Kernel\Route\Route::FORMAT_JSON);
-    }
-
-    /**
-     * Automatically load a View by its format
-     * @param string $format
-     * @return Kernel\View\View
-     */
-    public function getViewByFormat($format = Kernel\Route\Route::FORMAT_HTML)
-    {
-        // Try to return json view or initialize it:
-        try {
-            $service = $this->getServicer()->get($format);
-        } catch (Kernel\Service\Exception $e) {
-            $class = '\\Mu\\Kernel\\View\\' . ucfirst($format) . '\\Service';
-            $this->getServicer()->register($format, $class);
-            $service = $this->getServicer()->get($format);
-        }
-
-        // Return view object:
-        return $service->getView();
     }
 
     /**

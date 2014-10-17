@@ -16,7 +16,7 @@ class Apache extends Kernel\Route\Dumper
 			$infos = $this->prepareRuleVars($route);
 			$content .= 'RewriteRule ' . $infos['pattern'] . ' ' . $infos['dest'] . " [L,QSA]\n";
 		}*/
-		$content .= "RewriteRule ^.*\\.?(html|json)?$ index.php?format=$1 [L,QSA]";
+		$content .= "RewriteRule ^.*\\.?(html|json)?$ index.php [L,QSA]";
 
 		file_put_contents(PUBLIC_PATH . '/.htaccess', $content);
 	}

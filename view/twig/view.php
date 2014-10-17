@@ -54,17 +54,15 @@ class View extends Kernel\View\View
 	}
 
 	/**
-	 * @param string $target
-	 * @param null|string $fragment
-	 * @return string
+	 * @inheritdoc
 	 */
-	public function fetch($target, $fragment = null)
+	public function render()
 	{
-		if ($fragment === null) {
-			return $this->getTwig()->render($target . '.twig', $this->getVars());
+		if ($this->fragment === null) {
+			return $this->getTwig()->render($this->template . '.twig', $this->getVars());
 		}
 		return $this->getTwig()->render(
-			'/fragment/' . $target . '/' . $fragment . '.twig',
+			'/fragment/' . $this->template . '/' . $this->fragment . '.twig',
 			$this->getVars()
 		);
 	}
