@@ -19,7 +19,7 @@ class Nginx extends Kernel\Route\Dumper
 		}*/
 
 		$content .= "\trewrite ^/favicon\\.ico$ /favicon.ico break;\n";
-		$content .= "\trewrite ^.*\\.?(html|json)?$ /index.php?format=$1 break;\n\n";
+		$content .= "\trewrite ^.*\\.?(html|json)?$ /index.php break;\n\n";
 		$content .= "\tfastcgi_pass   127.0.0.1:9001;\n";
 		$content .= "\tfastcgi_index  index.php;\n";
 		$content .= "\t" . 'fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;' . "\n";

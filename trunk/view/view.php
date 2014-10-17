@@ -5,15 +5,17 @@ use Mu\Kernel;
 
 abstract class View extends Kernel\Core
 {
+    protected $template;
+    protected $fragment;
 	protected $service;
 	protected $compileDir;
 	protected $vars = array();
 	protected $extension;
 
-	public function __construct()
-	{
-
-	}
+    /**
+     * @return string
+     */
+    abstract public function render();
 
 	/**
 	 * @return string
@@ -138,13 +140,18 @@ abstract class View extends Kernel\Core
 		);
 	}
 
+    /**
+     * @param string $target
+     * @param null $fragment
+     * @return $this
+     */
+    public function fetch($target = '', $fragment = null)
+    {
+        $this->template = $target;
+        $this->fragment = $fragment;
 
-	/**
-	 * @param string $target
-	 * @param null|string $fragment
-	 * @return string
-	 */
-	abstract public function fetch($target, $fragment = null);
+        return $this;
+    }
 
 	/**
 	 * @param string $target

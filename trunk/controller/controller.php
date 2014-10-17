@@ -54,9 +54,10 @@ abstract class Controller extends Kernel\Core
 	}
 
 	/**
+     * @param string $renderer
 	 * @return string
 	 */
-	public function getCacheKey()
+	public function getCacheKey($renderer = 'html')
 	{
 		$cacheElements = $this->getCacheKeyElements();
 
@@ -76,7 +77,7 @@ abstract class Controller extends Kernel\Core
 		}
 
 		$trail = implode('|', $cacheElements);
-		return get_called_class() . '|' . $trail;
+		return $renderer . '|' . get_called_class() . '|' . $trail;
 	}
 
 	/**
@@ -105,7 +106,7 @@ abstract class Controller extends Kernel\Core
 	 ************************************************************************************/
 
 	/**
-	 * @return string
+	 * @return Kernel\View\View
 	 */
 	abstract public function fetch();
 
@@ -117,16 +118,17 @@ abstract class Controller extends Kernel\Core
         // Test success and error codes:
         $this->reportSuccess($this->getMessageFromCode($this->request('success')));
         $this->reportError($this->getMessageFromCode($this->request('error')));
+
+        return false;
 	}
 
 	/**
 	 * @throws Exception
-	 * @return string
+	 * @return Kernel\View\View
 	 */
 	public function fetchFragment()
 	{
 		$fragmentName = $this->getFragmentName();
-
 		if (!is_string($fragmentName)) {
 			return false;
 		}
@@ -212,24 +214,38 @@ abstract class Controller extends Kernel\Core
 	public function getView($bNew = false)
 	{
 		if (!isset($this->view) || $bNew) {
-			$route = $this->getApp()->getRoute();
-			$format = $this->request('format');
-			$this->view = ($route->isAllowedFormat($format))
-				? $this->getApp()->getViewByFormat($format)
-				: $this->getApp()->getViewManager()->getView();
+			$this->view = $this->getApp()->getViewManager()->getView();
 
 			// Initialize reports:
 			foreach ($this->messageTypes as $type) {
 				$this->view->setVar($type . self::REPORT_KEY, []);
 			}
+
             // Initialize redirect link:
-            if ($format == Kernel\Route\Route::FORMAT_JSON) {
-                $this->view->setVar('redirect', $this->request('redirect', ''));
+            $redirect = $this->request('redirect', '');
+            if ($redirect!='') {
+                $this->view->setVar('redirect', $redirect);
             }
 		}
 
 		return $this->view;
 	}
+
+    /**
+     * @return string
+     */
+    public function getCurrentRenderer()
+    {
+        return $this->getApp()->getRendererManager()->getCurrentRender();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHtmlRendering()
+    {
+        return ($this->getCurrentRenderer() == $this->getApp()->getRendererManager()->getConstant('HANDLER_HTML'));
+    }
 
 	/**
 	 * @param string $routeName
@@ -243,20 +259,14 @@ abstract class Controller extends Kernel\Core
 
     /**
      * @param bool   $bEncode
-     * @param string $format
      * @return string
      */
-    protected function getCurrentUrl($bEncode = false, $format = Kernel\Route\Route::FORMAT_HTML)
+    protected function getCurrentUrl($bEncode = false)
     {
         $params = $this->getApp()->getHttp()->getRequest()->getAllParameters(
             Kernel\Http\Request::PARAM_TYPE_REQUEST
         );
 
-        // Overload format:
-        $params['format'] = $format;
-        if ($format == Kernel\Route\Route::FORMAT_HTML) {
-            unset($params['format']);
-        }
         // Remove redirect link:
         unset($params['redirect']);
 
@@ -342,15 +352,12 @@ abstract class Controller extends Kernel\Core
 		}
 
         // Transfer format and redirection link:
-        if (in_array($this->request('format'), array('json','ajax'))) {
-            $parameters['format'] = $this->request('format');
-
+        if (!$this->isHtmlRendering()) {
             // Update redirection link or generate it:
             if (isset($parameters['redirect'])) {
                 $parameters['redirect'] = $this->getCurrentUrl(true);
             } else {
                 $params = $parameters;
-                unset($params['format']);
                 $parameters['redirect'] = base64_encode($this->getApp()->getRouteManager()->getUrl($routeName, $params, $forceRedirection, $sendData));
             }
         }
