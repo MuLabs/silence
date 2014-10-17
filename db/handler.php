@@ -69,7 +69,8 @@ abstract class Handler extends Kernel\Core
 	protected function checkQuery(Query $query)
 	{
 		$strQuery = $query->getQuery();
-        $hashQuery = sha1($strQuery);
+        $isShortMode = $query->isShortMode();
+        $hashQuery = sha1($strQuery) . '|' . ((int)$isShortMode);
         $checkValue = in_array($query->getType(), $this->typeCheckValues);
 
         #region value check analysis
@@ -146,7 +147,7 @@ abstract class Handler extends Kernel\Core
         #endregion
 
         if (!isset($this->cacheQuery[$hashQuery])) {
-            $requestReplaceList = $this->getReplaceList($defaultRequestable, $requestableList);
+            $requestReplaceList = $this->getReplaceList($defaultRequestable, $requestableList, $isShortMode);
 
             $this->cacheQuery[$hashQuery] = preg_replace(
                 array_keys($requestReplaceList),
@@ -161,17 +162,21 @@ abstract class Handler extends Kernel\Core
     /**
      * @param Interfaces\Requestable $defaultRequestable
      * @param Interfaces\Requestable[] $requestableList
+     * @param bool $isShortMode
      * @return array
      */
-    private function getReplaceList(Kernel\Db\Interfaces\Requestable $defaultRequestable, array $requestableList)
-    {
+    private function getReplaceList(
+        Kernel\Db\Interfaces\Requestable $defaultRequestable,
+        array $requestableList,
+        $isShortMode = false
+    ) {
         $requestReplaceList = array();
         $startPattern = '#';
         $endPattern = '([^\w]|$)#i';
         $defaultGroup = $defaultRequestable->getDefaultGroup();
         foreach ($requestableList as $requestableLabel => $oneRequestable) {
             $isDefault = ($oneRequestable == $defaultRequestable);
-            $newReplaceList = $oneRequestable->getRequestReplaceList($isDefault);
+            $newReplaceList = $oneRequestable->getRequestReplaceList($isDefault, $isShortMode);
             foreach ($newReplaceList['group'] as $key => $value) {
                 if ($isDefault) {
                     if ($key == $defaultGroup) {
