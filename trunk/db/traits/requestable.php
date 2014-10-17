@@ -16,9 +16,10 @@ trait Requestable
      */
     public function getRequestReplaceList($default = false, $isShortMode = false)
     {
-        if (empty($this->requestReplaceList[$default])) {
+        $cacheKey = $default . '|' . $isShortMode;
+        if (empty($this->requestReplaceList[$cacheKey])) {
             foreach ($this->properties as $group => $oneGroupInfos) {
-                $this->requestReplaceList[$default]['group'][$group] = $this->getGroupForDb($group);
+                $this->requestReplaceList[$cacheKey]['group'][$group] = $this->getGroupForDb($group);
 
                 // Generate properties
                 foreach ($oneGroupInfos['properties'] as $label => $oneProperty) {
@@ -26,20 +27,20 @@ trait Requestable
                         continue;
                     }
 
-                    $tableKey = '';
+                    $groupKey = '';
                     if (!$default) {
-                        $tableKey = $group . '.';
+                        $groupKey = $group . '.';
                     }
 
                     if ($group == $this->getDefaultGroup()) {
-                        $this->requestReplaceList[$default]['property'][$tableKey . $label] = $this->getPropertyForDb(
-                            $group,
+                        $this->requestReplaceList[$cacheKey]['property'][$groupKey . $label] = $this->getPropertyForDb(
+                        $group,
                             $label,
                             $isShortMode
                         );
                     } else {
-                        $this->requestReplaceList[$default]['property'][$group . '.' . $label] = $this->getPropertyForDb(
-                            $group,
+                        $this->requestReplaceList[$cacheKey]['property'][$group . '.' . $label] = $this->getPropertyForDb(
+                        $group,
                             $label,
                             $isShortMode
                         );
@@ -48,7 +49,7 @@ trait Requestable
             }
         }
 
-        return $this->requestReplaceList[$default];
+        return $this->requestReplaceList[$cacheKey];
     }
 
     /**
