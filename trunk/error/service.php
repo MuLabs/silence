@@ -170,7 +170,7 @@ class Service extends Kernel\Service\Core
                 case E_COMPILE_ERROR:
                 case E_USER_ERROR:
                     $this->create('php', $error['type'], $error['message'], $error['file'], $error['line']);
-                    return true;
+                return false;
             }
         }
         return false;
@@ -254,9 +254,9 @@ class Service extends Kernel\Service\Core
 
         $trace = debug_backtrace(true);
         $trace = $this->processTrace($trace);
-        $result = $this->create('php', $errno, $message, $file, $line, $trace);
+        $this->create('php', $errno, $message, $file, $line, $trace);
 
-        return $result;
+        return false;
     }
 
     /**
