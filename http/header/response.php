@@ -3,7 +3,7 @@ namespace Mu\Kernel\Http\Header;
 
 use Mu\Kernel;
 
-class Response
+class Response extends Kernel\Core
 {
 	const MIME_TYPE_TEXT = 'text/plain';
 	const MIME_TYPE_HTML = 'text/html';
