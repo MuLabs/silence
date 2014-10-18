@@ -596,7 +596,7 @@ abstract class Application
             $header->setCode(301);
 
             // Send redirection:
-            $this->getHttp()->getResponse()->send();
+            $response->send();
         }
 
         $request = $this->getHttp()->getRequest();
