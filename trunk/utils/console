@@ -86,40 +86,6 @@ try {
 				display('Action cancelled');
 			}
 			break;
-        case 'config':
-            $extensions         = get_loaded_extensions();
-            $extensionsNeeded   = array('curl', 'date', 'gettext', 'imagick', 'json', 'mcrypt', 'redis', 'igbinary', 'xhprof', 'PDO', 'pdo_mysql', 'Zend OPcache', 'libxml', 'openssl', 'SPL');
-            $phpVersion         = array(PHP_MAJOR_VERSION, PHP_MINOR_VERSION, PHP_RELEASE_VERSION);
-            $handler            = $app->getDatabase()->getHandler('readFront');
-            $result             = $handler->query('SELECT VERSION()');
-            list($versionMySql) = $result->fetchRow();
-
-            display('PHP Version :');
-            display(implode('.',$phpVersion));
-            display();
-
-            display('MySQL Version :');
-            display($versionMySql);
-            display();
-
-            display('Extensions Loaded :');
-            display();
-
-            natcasesort($extensionsNeeded);
-            foreach($extensionsNeeded as $extension)
-            {
-                if(in_array($extension, $extensions)) {
-                    $status = "\033[32m" . 'OK' . "\033[0m";
-                } else {
-                    $status = "\033[31m" . 'FAIL' . "\033[0m";
-                }
-
-                printf("%15s", $status);
-                printf("    %-30s", $extension);
-
-                display();
-            }
-            break;
 		default:
 			throw new Kernel\Exception($action, Kernel\Exception::UNDEFINED_ACTION);
 			break;
