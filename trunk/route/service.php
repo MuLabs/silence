@@ -49,9 +49,10 @@ class Service extends Kernel\Service\Core
 	 */
 	public function selectRoute()
 	{
-		$httpRequest = $this->getApp()->getHttp()->getRequest();
+        $app = $this->getApp();
+        $httpRequest = $app->getHttp()->getRequest();
 
-		foreach ($this->getRoutes() as $route) {
+        foreach ($this->getRoutes() as $route) {
 			if ($route->check($httpRequest)) {
 				$this->setCurrentRoute($route);
 				$params = $route->getParameters();
@@ -78,34 +79,35 @@ class Service extends Kernel\Service\Core
                         $endUri ? $endUri : strlen($httpRequest->getRequestUri())
                     );
 
-                    $localization = $this->getApp()->getLocalizationService();
+                    $localization = $app->getLocalizationService();
                     if ($localization && $localization->isUrlLocaleEnabled()) {
                         if ($localization->isLocaleFromUrl()) {
                             $currentUrl = '/' . $localization->getCurrentLanguage() . $currentUrl;
                         }
                     }
 
-                    if (str_replace($this->getApp()->getUrl(), '', $url) !== $currentUrl) {
-                        $this->getApp()->redirect($route->getName(), $parameters, true);
+                    if (str_replace($app->getUrl(), '', $url) !== $currentUrl) {
+                        $app->redirect($route->getName(), $parameters, true);
                     }
                 }
                 return $route;
 			}
 		}
 
-		return $this->getApp()->getFactory()->getRoute();
-	}
+        return $app->getFactory()->getRoute();
+    }
 
 	public function loadRoutes()
 	{
-		$filepath = APP_PATH . '/' . self::ROUTE_RULE_FILE;
+        $app = $this->getApp();
+        $filepath = APP_PATH . '/' . self::ROUTE_RULE_FILE;
 		if (!file_exists($filepath)) {
 			throw new Exception($filepath, Exception::FILE_NOT_FOUND);
 		}
 
-		$siteService = $this->getApp()->getSiteService();
+        $siteService = $app->getSiteService();
 
-		$routesConfig = require($filepath);
+        $routesConfig = require($filepath);
 		foreach ($routesConfig as $name => $routeConfig) {
 			// Replace route by its alias if needed:
 			$aliasName = null;
@@ -145,8 +147,8 @@ class Service extends Kernel\Service\Core
 			// Initialize route object:
 			$default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
 			$format  = isset($routeConfig['format']) ? $routeConfig['format'] : '';
-			$route = $this->getApp()->getFactory()->getRoute($routeConfig['controller']);
-			$route->setPattern($routeConfig['pattern']);
+            $route = $app->getFactory()->getRoute($routeConfig['controller']);
+            $route->setPattern($routeConfig['pattern']);
 			$route->setDefaultVars($default);
 			$route->setDefaultFormat($format);
 			$route->setName($name);
