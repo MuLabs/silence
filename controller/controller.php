@@ -46,7 +46,8 @@ abstract class Controller extends Kernel\Core
 	public function getCacheKeyElements()
 	{
 		return array(
-			'info' => $this->request('info'),
+            'renderer' => $this->getCurrentRenderer(),
+            'info' => $this->request('info'),
 			'warn' => $this->request('warn'),
 			'success' => $this->request('success'),
 			'error' => $this->request('error'),
@@ -54,11 +55,10 @@ abstract class Controller extends Kernel\Core
 	}
 
 	/**
-     * @param string $renderer
 	 * @return string
 	 */
-	public function getCacheKey($renderer = 'html')
-	{
+    public function getCacheKey()
+    {
 		$cacheElements = $this->getCacheKeyElements();
 
 		if (!is_array($cacheElements)) {
@@ -77,8 +77,8 @@ abstract class Controller extends Kernel\Core
 		}
 
 		$trail = implode('|', $cacheElements);
-		return $renderer . '|' . get_called_class() . '|' . $trail;
-	}
+        return get_called_class() . '|' . $trail;
+    }
 
 	/**
 	 * @return string|null
