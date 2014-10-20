@@ -92,12 +92,17 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Set message content
-	 * @param $message
+	 * @param string|Kernel\View\View $message
 	 * @throws Exception
 	 */
 	public function setContent($message)
 	{
 		try {
+            if (!is_string($message)) {
+                $handler = $this->getApp()->getRendererManager()->getHtmlHandler();
+                $message = $handler->render($message);
+            }
+
 			$this->content = $this->formatContent($message);
 			$this->checkStatus();
 		} catch (Exception $e) {
@@ -247,7 +252,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 	/**
 	 * Format the content, should throw an exception if format is incorrect, else return formated content
-	 * @param $message
+	 * @param string $message
 	 * @return mixed
 	 * @throws Exception
 	 */
