@@ -8,8 +8,9 @@ class Service extends Kernel\Service\Core
     const HANDLER_HTML = 'html';
     const HANDLER_JSON = 'json';
     const HANDLER_HJSON= 'hjson';
+    const HANDLER_PDF  = 'pdf';
 
-    protected $allowedHandlers   = array(self::HANDLER_HJSON, self::HANDLER_JSON, self::HANDLER_HTML);
+    protected $allowedHandlers   = array(self::HANDLER_HJSON, self::HANDLER_JSON, self::HANDLER_HTML, self::HANDLER_PDF);
     protected $supportedHandlers = array();
     protected $currentRender;
     protected $currentHandler;
@@ -18,6 +19,7 @@ class Service extends Kernel\Service\Core
     {
         $this->registerHandler("Mu\\Kernel\\Renderer\\Handler\\Html", self::HANDLER_HTML);
         $this->registerHandler("Mu\\Kernel\\Renderer\\Handler\\Json", self::HANDLER_JSON);
+        $this->registerHandler("Mu\\Kernel\\Renderer\\Handler\\Pdf",  self::HANDLER_PDF);
         $this->registerHandler("Mu\\Kernel\\Renderer\\Handler\\HtmlJson", self::HANDLER_HJSON);
 
         return true;
@@ -43,10 +45,20 @@ class Service extends Kernel\Service\Core
     {
         if (!$this->currentHandler) {
             $type = $this->getCurrentRender();
-            $this->currentHandler = $this->getHandlerByType($type);
+            $this->setHandler($type);
         }
 
         return $this->currentHandler;
+    }
+
+    /**
+     * Force an handler
+     * @param string $type
+     */
+    public function setHandler($type = self::HANDLER_HTML)
+    {
+        $this->currentHandler = $this->getHandlerByType($type);
+        $this->currentRender  = $type;
     }
 
     /**
@@ -75,6 +87,8 @@ class Service extends Kernel\Service\Core
                 $this->currentRender = self::HANDLER_HJSON;
             } else if (preg_match('#application\/json#', $httpAccept)) {
                 $this->currentRender = self::HANDLER_JSON;
+            } else if (preg_match('#application\/pdf#', $httpAccept)) {
+                $this->currentRender = self::HANDLER_PDF;
             } else {
                 $this->currentRender = self::HANDLER_HTML;
             }

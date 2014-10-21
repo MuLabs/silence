@@ -639,16 +639,15 @@ abstract class Application
         $http     = $this->getHttp();
         $response = $http->getResponse();
 
-        // Get the renderer and fetch view content:
-        $renderer = $this->getRendererManager()->getHandler();
-        $content  = $this->fetch($renderer);
-
+        // Fetch view content:
+        $content  = $this->fetch();
         if (!$sendData) {
             return $content;
         }
 
         // Set response header and content:
-        $header = $response->getHeader();
+        $renderer = $this->getRendererManager()->getHandler();
+        $header   = $response->getHeader();
         $header->setContentType($renderer->getContentType());
         $response->setContent($content);
         $response->send();
@@ -656,19 +655,19 @@ abstract class Application
     }
 
     /**
-     * @param Kernel\Renderer\Handler $renderer
      * @return string
      */
-    private function fetch(Kernel\Renderer\Handler $renderer)
+    private function fetch()
     {
         // If initialize return content, it's an error
-        $error = $this->getController()->initialize();
+        $controller = $this->getController();
+        $error      = $controller->initialize();
         if ($error) {
             return $error;
         }
 
         // Fetch fragment and skip controller if request is only for fragment
-        $fragmentView = $this->getController()->fetchFragment();
+        $fragmentView = $controller->fetchFragment();
         if ($fragmentView) {
             $renderer = $this->getRendererManager()->getHtmlHandler();  // Force HTML renderer for fragments
             $content  = $renderer->render($fragmentView);
@@ -676,34 +675,34 @@ abstract class Application
         }
 
         $cacheManager = $this->getPageCache();
-        if ($cacheManager && $this->getController()->hasCache()) {
-            $cacheKey = $this->getController()->getCacheKey($renderer->getName());
+        if ($cacheManager && $controller->hasCache()) {
+            $cacheKey = $controller->getCacheKey();
 
             try {
-                return $cacheManager->get($cacheKey, $this->getController()->getCacheTtl());
+                return $cacheManager->get($cacheKey, $controller->getCacheTtl());
             } catch (Cache\Exception $e) {
-                $content = $this->render($renderer);
+                $content = $this->render($controller);
                 $cacheManager->set($cacheKey, $content);
                 return $content;
             }
         } else {
-            return $this->render($renderer);
+            return $this->render($controller);
         }
     }
 
     /**
      * Transform view content into correct rendering string
-     * @param Kernel\Renderer\Handler $renderer
-     * @return mixed
+     * @param Kernel\Controller\Controller $controller
+     * @return string
      */
-    private function render(Kernel\Renderer\Handler $renderer)
+    private function render(Kernel\Controller\Controller $controller)
     {
-        $controller = $this->getController();
-        $view       = $controller->fetch();
+        $view = $controller->fetch();
         if (!$view) {
             return '';
         }
 
+        $renderer= $controller->getRenderer();
         $content = $renderer->render($view);
         return $content;
     }
