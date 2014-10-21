@@ -27,19 +27,20 @@ class Pdf extends Kernel\Renderer\Handler
 
         // Set fonts if needed:
         $aFonts = $view->getVar('pdfFonts', array());
-        foreach ($aFonts as $key => $values) {
-            if (!isset($values['name'])) {
+        foreach ($aFonts as $font) {
+            if (!isset($font['name'])) {
                 continue;
             }
 
-            if ($key == 'default') {
-                $pdf->setDefaultFont($values['name']);
-            } else {
-                $style = (isset($values['style'])) ? $values['style'] : '';
-                $size  = (isset($values['size']))  ? $values['size']  : 12;
-                $file  = (isset($values['file']))  ? $values['file']  : '';
-                $pdf->pdf->SetFont($values['name'], $style, $size, $file);
-            }
+            $style = (isset($font['style'])) ? $font['style'] : '';
+            $size  = (isset($font['size']))  ? $font['size']  : 12;
+            $file  = (isset($font['file']))  ? $font['file']  : '';
+            $pdf->pdf->SetFont($font['name'], $style, $size, $file);
+        }
+
+        $default = $view->getVar('pdfDefaultFont', '');
+        if (!empty($default)) {
+            $pdf->setDefaultFont($default);
         }
 
         // Set text shadows if needed:
