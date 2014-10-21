@@ -232,6 +232,22 @@ abstract class Controller extends Kernel\Core
 	}
 
     /**
+     * @return Kernel\Renderer\Handler
+     */
+    public function getRenderer()
+    {
+        return $this->getApp()->getRendererManager()->getHandler();
+    }
+
+    /**
+     * @param string
+     */
+    public function setRenderer($type)
+    {
+        $this->getApp()->getRendererManager()->setHandler($type);
+    }
+
+    /**
      * @return string
      */
     public function getCurrentRenderer()
