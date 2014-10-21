@@ -44,9 +44,9 @@ class Pdf extends Kernel\Renderer\Handler
         }
 
         // Set text shadows if needed:
-        $aShadows = $view->getVar('pdfShadows', array());
-        if (!empty($aShadows)) {
-            $pdf->pdf->setTextShadow($aShadows);
+        $shadow = $view->getVar('pdfTextShadow', array());
+        if (!empty($shadow)) {
+            $pdf->pdf->setTextShadow($shadow);
         }
 
         // Render the pdf constant:
