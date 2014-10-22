@@ -19,7 +19,6 @@ abstract class Application
     protected $enableSsi = false;
     protected $defaultDatabase;
     protected $siteUrl;
-    protected $projectName;
     protected $cookycryptKey = 'murloc';
     protected $extensions = array();
 
@@ -97,13 +96,10 @@ abstract class Application
             $this->registerStatic($staticUrl);
         }
 
-        $projectName = $configManager->get('general.projectName', false);
-        if ($projectName) {
-            $this->setProjectName($projectName);
-        }
-
         $this->production = (bool)$this->getConfigManager()->get('general.production', true);
     }
+
+    abstract public function getProjectName();
 
     abstract protected function initialize();
 
@@ -222,19 +218,7 @@ abstract class Application
      */
     public function getName()
     {
-        return $this->projectName;
-    }
-
-    /**
-     * @throws Config\Exception
-     * @return string
-     */
-    public function getProjectName()
-    {
-        if (!$this->projectName) {
-            throw new Kernel\Config\Exception('projectName', Kernel\Config\Exception::MISSING_MANDATORY_CONFIG);
-        }
-        return $this->projectName;
+        return $this->getProjectName();
     }
 
     /**
@@ -498,14 +482,6 @@ abstract class Application
     /************************************************************************************
      **  SETTERS                                                                       **
      ************************************************************************************/
-
-    /**
-     * @param string $projectName
-     */
-    public function setProjectName($projectName)
-    {
-        $this->projectName = $projectName;
-    }
 
     /**
      * @param string $db

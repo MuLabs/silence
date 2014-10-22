@@ -54,11 +54,18 @@ class Service extends Kernel\Service\Core
 
 	/**
 	 * @param string $file
+     * @param string $project
 	 */
-	public function loadIniFile($file)
+    // TODO Remove $project param
+	public function loadIniFile($file, $project = '')
 	{
-        $path = APP_CONFIGURATION_PATH.'/'.$this->getApp()->getEnvironment();
-        $filePath = $path.'/'.$file;
+        if (empty($project)) {
+            $project = $this->getApp()->getProjectName();
+        }
+
+        $path = APP_CONFIGURATION_PATH . '/' . $this->getApp()->getEnvironment();
+        $projPath = $path . '/' . $project;
+        $filePath = ((file_exists($projPath)) ? $projPath : $path) . '/' . $file;
 		if (!file_exists($filePath)) {
 			$dir = dirname($filePath);
 			@mkdir($dir, 0755, true);
@@ -67,8 +74,8 @@ class Service extends Kernel\Service\Core
 			return;
 		}
 
-		$datas = parse_ini_file($filePath, true, INI_SCANNER_RAW);
-		$this->datas = $this->mergeDatas($this->datas, $datas);
+		$data = parse_ini_file($filePath, true, INI_SCANNER_RAW);
+		$this->datas = $this->mergeDatas($this->datas, $data);
 	}
 
 	/**
