@@ -10,8 +10,8 @@ class Pdf extends Kernel\Renderer\Handler
 	 */
 	public function render(Kernel\View\View $view)
 	{
-        require_once(APP_PATH . '/libraries/tcpdf/tcpdf.php');
-        require_once(VENDOR_PATH . '/soqrate/html2pdf/HTML2PDF.php');
+        require_once(KERNEL_LIBS_PATH . '/tcpdf/tcpdf.php');
+        require_once(KERNEL_LIBS_PATH . '/html2pdf/HTML2PDF.php');
 
         // Get variables:
         $display  = $view->getVar('pdfDisplay', 'fullpage');
