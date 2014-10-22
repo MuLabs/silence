@@ -878,7 +878,12 @@ class Toolbox extends Service\Core
 
         $entities = array();
         foreach($objects as $object) {
-            list($type, $id) = explode('|:|', $object);
+            $aObject = explode('|:|', $object);
+
+            if (count($aObject) < 2) {
+                continue;
+            }
+            list($type, $id) = $aObject;
             $entities[] = $this->getApp()->getModelManager()->getEntityFromTypeAndId($type, $id);
         }
 
