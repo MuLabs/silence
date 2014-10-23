@@ -7,6 +7,7 @@ class Service extends Kernel\Service\Core
 {
 	protected $httpRequest;
 	protected $httpResponse;
+    private $bCheck = false;
 
 	public function __construct()
 	{
@@ -50,6 +51,29 @@ class Service extends Kernel\Service\Core
 	 */
 	public function getRequest()
 	{
+        // Call localization service to modify request URI if needed:
+        if (!$this->bCheck) {
+            $this->bCheck = true;
+
+            $localization = $this->getApp()->getLocalizationService();
+            if ($localization) {
+                $uri = $this->httpRequest->getRequestUri();
+                if ($uri[0] == '/') {
+                    $uri = substr($uri, 1);
+                }
+
+                $posFirstSlash = strpos($uri, '/');
+                $firstParam = substr($uri, 0, $posFirstSlash);
+
+                if ($localization->isSupportedLanguage($firstParam)) {
+                    $localization->setCurrentLanguage($firstParam);
+                    $uri = substr($uri, $posFirstSlash);
+                    $this->httpRequest->setRequestUri($uri);
+                    $localization->setLocaleFromUrl(true);
+                }
+            }
+        }
+
 		return $this->httpRequest;
 	}
 

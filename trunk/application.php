@@ -109,7 +109,7 @@ abstract class Application
 
     abstract protected function registerBundles();
 
-    abstract protected function configureService($name, Kernel\Service\Core $service);
+    abstract public function configureService($name, Kernel\Service\Core $service);
 
     protected function defineTriggers()
     {

@@ -1,7 +1,6 @@
 <?php
 namespace Mu\Kernel\Localization;
 
-use Mu\Bundle\Glices\Model\Manager;
 use Mu\Kernel;
 
 class Service extends Kernel\Service\Core
@@ -76,22 +75,6 @@ class Service extends Kernel\Service\Core
 		}
 		foreach ($languages as $oneLang => $oneLocale) {
 			$this->registerLanguage($oneLang, $oneLocale);
-		}
-
-		$httpRequest = $this->getApp()->getHttp()->getRequest();
-		$uri = $httpRequest->getRequestUri();
-		if ($uri[0] == '/') {
-			$uri = substr($uri, 1);
-		}
-
-		$posFirstSlash = strpos($uri, '/');
-		$firstParam = substr($uri, 0, $posFirstSlash);
-
-		if ($this->isSupportedLanguage($firstParam)) {
-			$this->setCurrentLanguage($firstParam);
-			$uri = substr($uri, $posFirstSlash);
-			$httpRequest->setRequestUri($uri);
-			$this->setLocaleFromUrl(true);
 		}
 
 		return true;
