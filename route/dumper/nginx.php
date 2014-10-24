@@ -8,6 +8,9 @@ class Nginx extends Kernel\Route\Dumper
     public function dumpSites($sites)
     {
         $siteService = $this->getApp()->getSiteService();
+        $localizationService = $this->getApp()->getLocalizationService();
+        $langList = $localizationService->getSupportedLanguages();
+
         $content = '';
         foreach ($sites as $siteId) {
             $siteUrl = str_replace(
@@ -35,10 +38,16 @@ class Nginx extends Kernel\Route\Dumper
 
             $content .= "\tlocation / {\n";
             $content .= "\t\tindex index.php;\n";
+            $content .= "\t\trewrite ^\\/xhprof\\/(.*)$ /xhprof/index.php$1 break;\n";
 
-            $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true));
+            if ($siteId) {
+                foreach ($langList as $oneLang => $unused) {
+                    $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true), $oneLang);
+                }
+            } else {
+                $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true));
+            }
 
-            $content .= "\t\trewrite ^xhprof/(.*)$ /xhprof/index.php$1 break;\n";
             $content .= "\t\trewrite ^.*$ /index.php break;\n\n";
             $content .= "\t\tfastcgi_pass   127.0.0.1:9001;\n";
             $content .= "\t\tfastcgi_index  index.php;\n";
@@ -54,11 +63,11 @@ class Nginx extends Kernel\Route\Dumper
     /**
      * {@inheritDoc}
      */
-    protected function dumpRoutes($routes)
+    protected function dumpRoutes($routes, $lang = null)
     {
         $content = '';
         foreach ($routes as $route) {
-            $infos = $this->prepareRuleVars($route);
+            $infos = $this->prepareRuleVars($route, $lang);
             $content .= "\t\trewrite " . $infos['pattern'] . ' ' . $infos['dest'] . " break;\n";
         }
 

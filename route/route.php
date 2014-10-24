@@ -177,8 +177,8 @@ class Route extends Kernel\Core
 			return false;
 		}
 
-		if (!!preg_match('#' . $this->getRegexPattern() . '#', $request->getRequestUri(), $params)) {
-			$this->setParameters($params);
+        if ((bool)preg_match('#' . $this->getRegexPattern() . '#', $request->getRequestUri(), $params)) {
+            $this->setParameters($params);
 			return true;
 		}
 		return false;
