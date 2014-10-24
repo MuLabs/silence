@@ -12,6 +12,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	protected $entityType;
 	protected $name;
 	protected $forceGet = false;
+	protected $defaultRight = array();
 
 	protected $entityClassname;
 
@@ -293,6 +294,11 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 		}
 		return $key;
 	}
+
+    public function getDefaultRight()
+    {
+        return $this->defaultRight;
+    }
 
 	/**
 	 * @return string
