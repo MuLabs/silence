@@ -99,7 +99,6 @@ class Service extends Kernel\Service\Core
 
 	public function loadRoutes()
 	{
-        $this->routes = array();
         $app = $this->getApp();
         $filepath = APP_PATH . '/' . self::ROUTE_RULE_FILE;
 		if (!file_exists($filepath)) {
@@ -109,7 +108,7 @@ class Service extends Kernel\Service\Core
         $md5file = md5_file($filepath);
         $key = 'routeFile|' . $md5file;
         $cache = $this->getApp()->getPageCache();
-        if ($cache) {
+        if ($cache && empty($this->routes)) {
             try {
                 $routes = unserialize($cache->get($key));
             } catch (Kernel\Cache\Exception $e) {
@@ -122,6 +121,7 @@ class Service extends Kernel\Service\Core
         if (!empty($routes)) {
             $this->routes = $routes;
         } else {
+            $this->routes = array();
             $siteService = $app->getSiteService();
 
             $routesConfig = require($filepath);
