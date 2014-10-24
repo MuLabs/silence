@@ -106,7 +106,8 @@ class Service extends Kernel\Service\Core
 		}
 
         $md5file = md5_file($filepath);
-        $key = 'routeFile|' . $md5file;
+        $siteService = $app->getSiteService();
+        $key = 'routeFile|' . $md5file . '|' . $siteService->getCurrentSite();
         $cache = $this->getApp()->getPageCache();
         if ($cache && empty($this->routes)) {
             try {
@@ -122,8 +123,6 @@ class Service extends Kernel\Service\Core
             $this->routes = $routes;
         } else {
             $this->routes = array();
-            $siteService = $app->getSiteService();
-
             $routesConfig = require($filepath);
 
             foreach ($routesConfig as $name => $routeConfig) {
