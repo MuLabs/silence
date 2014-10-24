@@ -105,81 +105,62 @@ class Service extends Kernel\Service\Core
 			throw new Exception($filepath, Exception::FILE_NOT_FOUND);
 		}
 
-        $md5file = md5_file($filepath);
         $siteService = $app->getSiteService();
-        $key = 'routeFile|' . $md5file . '|' . $siteService->getCurrentSite();
-        $cache = $this->getApp()->getPageCache();
-        if ($cache && empty($this->routes)) {
-            try {
-                $routes = unserialize($cache->get($key));
-            } catch (Kernel\Cache\Exception $e) {
-                $routes = null;
-            }
-        } else {
-            $routes = null;
-        }
 
-        if (!empty($routes)) {
-            $this->routes = $routes;
-        } else {
-            $this->routes = array();
-            $routesConfig = require($filepath);
+        $this->routes = array();
+        $routesConfig = require($filepath);
 
-            foreach ($routesConfig as $name => $routeConfig) {
-                // Replace route by its alias if needed:
-                $aliasName = null;
-                if (isset($routeConfig['alias']) && isset($routesConfig[$routeConfig['alias']])) {
-                    $aliasName = $routeConfig['alias'];
-                    $aliasConfig = $routesConfig[$aliasName];
+        foreach ($routesConfig as $name => $routeConfig) {
+            // Replace route by its alias if needed:
+            $aliasName = null;
+            if (isset($routeConfig['alias']) && isset($routesConfig[$routeConfig['alias']])) {
+                $aliasName = $routeConfig['alias'];
+                $aliasConfig = $routesConfig[$aliasName];
 
-                    // Test if a pattern has been set, else complete it:
-                    if (!isset($routeConfig['pattern']) && isset($aliasConfig['pattern'])) {
-                        $routeConfig['pattern'] = preg_replace("#^$aliasName#", $name, $aliasConfig['pattern'], 1);
-                    }
-
-                    // Merge both configurations:
-                    $routeConfig = array_merge($aliasConfig, $routeConfig);
+                // Test if a pattern has been set, else complete it:
+                if (!isset($routeConfig['pattern']) && isset($aliasConfig['pattern'])) {
+                    $routeConfig['pattern'] = preg_replace("#^$aliasName#", $name, $aliasConfig['pattern'], 1);
                 }
 
-                // Test if the route is correctly configurated:
-                if (!isset($routeConfig['pattern']) || !isset($routeConfig['controller']) || !count($name)) {
-                    continue;
-                }
-
-                // Throw an exception if siteService is not activated and siteIn/siteOut is used
-                if ((isset($routeConfig['siteIn']) || isset($routeConfig['siteOut'])) && !$siteService) {
-                    throw new Exception('', Exception::MISSING_SITE_SERVICE);
-                }
-
-                $currentSite = $siteService->getCurrentSiteName();
-                if (isset($currentSite) && (isset($routeConfig['siteIn']) && !in_array(
-                            $currentSite,
-                            explode(',', $routeConfig['siteIn'])
-                        ))
-                    || (isset($routeConfig['siteOut']) && in_array($currentSite, explode(',', $routeConfig['siteOut'])))
-                ) {
-                    continue;
-                }
-
-                // Initialize route object:
-                $default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
-                $format = isset($routeConfig['format']) ? $routeConfig['format'] : '';
-                $route = $app->getFactory()->getRoute($routeConfig['controller']);
-                $route->setPattern($routeConfig['pattern']);
-                $route->setDefaultVars($default);
-                $route->setDefaultFormat($format);
-                $route->setName($name);
-                $route->setAlias($aliasName);
-
-                if (isset($routeConfig['bundle'])) {
-                    $route->setBundleName($routeConfig['bundle']);
-                }
-                $this->registerRoute($route);
+                // Merge both configurations:
+                $routeConfig = array_merge($aliasConfig, $routeConfig);
             }
 
-            if ($cache) {
-                $cache->set($key, serialize($this->routes));
+            // Test if the route is correctly configurated:
+            if (!isset($routeConfig['pattern']) || !isset($routeConfig['controller']) || !count($name)) {
+                continue;
             }
+
+            // Throw an exception if siteService is not activated and siteIn/siteOut is used
+            if ((isset($routeConfig['siteIn']) || isset($routeConfig['siteOut'])) && !$siteService) {
+                throw new Exception('', Exception::MISSING_SITE_SERVICE);
+            }
+
+            $currentSite = $siteService->getCurrentSiteName();
+            if (isset($currentSite) && (isset($routeConfig['siteIn']) && !in_array(
+                        $currentSite,
+                        explode(',', $routeConfig['siteIn'])
+                    ))
+                || (isset($routeConfig['siteOut']) && in_array($currentSite, explode(',', $routeConfig['siteOut'])))
+            ) {
+                continue;
+            }
+
+            // Initialize route object:
+            $default = isset($routeConfig['default']) ? $routeConfig['default'] : array();
+            $format = isset($routeConfig['format']) ? $routeConfig['format'] : '';
+            $route = $app->getFactory()->getRoute($routeConfig['controller']);
+            $route->setPattern($routeConfig['pattern']);
+            $route->setDefaultVars($default);
+            $route->setDefaultFormat($format);
+            $route->setName($name);
+            $route->setAlias($aliasName);
+
+            if (isset($routeConfig['bundle'])) {
+                $route->setBundleName($routeConfig['bundle']);
+            }
+            $this->registerRoute($route);
+
         }
     }
 
