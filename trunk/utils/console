@@ -19,31 +19,16 @@ try {
 	switch ($action) {
 		case 'dump-route':
 			display('Dumping all route...');
-			$format = strtolower(ask('Choose format [apache] : '));
-			switch ($format) {
-				case '':
-				case 'apache':
-					display('.htacces apache format file choosed...');
-					if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
-						$app->getRouteManager()->dumpRoutes('Apache');
-					} else {
-						display('Action cancelled');
-					}
-					break;
-				case 'nginx':
-					display('nginx format file choosed...');
-					if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
-						$app->getRouteManager()->dumpRoutes('Nginx');
-					} else {
-						display('Action cancelled');
-					}
-					break;
-				default:
-					throw new Kernel\Route\Exception($format, Kernel\Route\Exception::FORMAT_NOT_FOUND);
-					break;
-			}
-			break;
-		case 'flush-page-cache':
+            display('nginx format file choosed...');
+            if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+                $app->getRouteManager()->dumpRoutes('Nginx');
+            } else {
+                display('Action cancelled');
+            }
+
+            break;
+
+        case 'flush-page-cache':
 			display('Flushing all page cached...');
 			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
 				$app->getPageCache()->flush();
