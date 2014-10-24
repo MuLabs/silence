@@ -364,12 +364,11 @@ class Service extends Kernel\Service\Core
         $result = $dbhr->sendQuery($query);
 
         $errorsList = array();
-        while (list($id, $type, $priority, $message, $file, $line, $url, $referer, $date, $trace, $count) = $result->fetchRow(
-        )) {
+        while (list($id, $type, $priority, $message, $file, $line, $url, $referer, $date, $trace, $count) = $result->fetchRow()) {
             $errorsList[] = array(
                 'id' => $id,
                 'type' => $type,
-                'priority' => $priority,
+                'priority' => $this->getErrorPriority($priority),
                 'message' => $message,
                 'file' => $file,
                 'line' => $line,
@@ -395,5 +394,47 @@ class Service extends Kernel\Service\Core
         $dbhw = $this->getApp()->getDatabase()->getHandler('writeFront');
         $query = new Kernel\Db\Query('TRUNCATE TABLE @', array(), $this);
         $dbhw->sendQuery($query);
+    }
+
+    /**
+     * @param int $type
+     * @return string
+     */
+    public function getErrorPriority($type = 1)
+    {
+        switch($type) {
+            case E_ERROR: // 1 //
+                return 'ERROR';
+            case E_WARNING: // 2 //
+                return 'WARNING';
+            case E_PARSE: // 4 //
+                return 'PARSE';
+            case E_NOTICE: // 8 //
+                return 'NOTICE';
+            case E_CORE_ERROR: // 16 //
+                return 'CORE_ERROR';
+            case E_CORE_WARNING: // 32 //
+                return 'CORE_WARNING';
+            case E_COMPILE_ERROR: // 64 //
+                return 'COMPILE_ERROR';
+            case E_COMPILE_WARNING: // 128 //
+                return 'COMPILE_WARNING';
+            case E_USER_ERROR: // 256 //
+                return 'USER_ERROR';
+            case E_USER_WARNING: // 512 //
+                return 'USER_WARNING';
+            case E_USER_NOTICE: // 1024 //
+                return 'USER_NOTICE';
+            case E_STRICT: // 2048 //
+                return 'STRICT';
+            case E_RECOVERABLE_ERROR: // 4096 //
+                return 'FATAL';
+            case E_DEPRECATED: // 8192 //
+                return 'DEPRECATED';
+            case E_USER_DEPRECATED: // 16384 //
+                return 'USER_DEPRECATED';
+            default:
+                return 'UNKOWN';
+        }
     }
 }
