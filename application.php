@@ -22,6 +22,8 @@ abstract class Application
     protected $cookycryptKey = 'murloc';
     protected $extensions = array();
 
+    private $environment = null;
+
     const ENVIRONMENT_LOCAL     = 'local';
     const ENVIRONMENT_PREPROD   = 'preprod';
     const ENVIRONMENT_PROD      = 'prod';
@@ -29,7 +31,7 @@ abstract class Application
     /************************************************************************************
      **  INITIALISATION                                                                **
      ************************************************************************************/
-    public function __construct()
+    public function __construct($environment = null)
     {
         try {
             ob_start();
@@ -37,6 +39,13 @@ abstract class Application
             if (isset($_GET['XHPROF'])) {
                 \xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
             }
+
+            // Force environment if needed:
+            if (!empty($environment)) {
+                $this->environment = $environment;
+            }
+
+            // Init:
             $this->initialize();
 
             $this->setExtensions(array('SPL', 'xhprof', 'redis', 'igbinary', 'Zend OPcache'));
@@ -57,8 +66,6 @@ abstract class Application
             $this->setBundler($bundler);
             $this->registerBundles();
             #endregion
-
-            $this->defineTriggers();
         } catch (Kernel\EndException $e) {
             // Normal exception (end of execution)
         }
@@ -178,17 +185,23 @@ abstract class Application
      */
     public function getEnvironment()
     {
+        if ($this->environment!==null) {
+            return $this->environment;
+        }
+
         $environment = ini_get('docref_root');
         switch ($environment) {
             default:
-                return self::ENVIRONMENT_LOCAL;
+                $this->environment = self::ENVIRONMENT_LOCAL;
                 break;
             case self::ENVIRONMENT_LOCAL:
             case self::ENVIRONMENT_PREPROD:
             case self::ENVIRONMENT_PROD:
-                return $environment;
+                $this->environment = $environment;
                 break;
         }
+
+        return $this->environment;
     }
 
     /**
@@ -550,6 +563,10 @@ abstract class Application
     public function start()
     {
         try {
+            // Define triggers:
+            $this->defineTriggers();
+
+            // Get route and dispatch it:
             $this->route = $this->getRouteManager()->selectRoute();
             $this->dispatch();
         } catch (Kernel\EndException $e) {
