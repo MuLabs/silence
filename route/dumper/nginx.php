@@ -5,61 +5,63 @@ use Mu\Kernel;
 
 class Nginx extends Kernel\Route\Dumper
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function dumpRoutes($routes)
-	{
-		$content = "location / {\n";
-		$content .= "\troot " . PUBLIC_PATH . ";\n";
-		$content .= "\tindex index.php;\n";
-		/*foreach ($routes as $route) {
-			$infos = $this->prepareRuleVars($route);
-			$content .= "\trewrite " . $infos['pattern'] . ' ' . $infos['dest'] . " break;\n";
-		}*/
+    public function dumpSites($sites)
+    {
+        $siteService = $this->getApp()->getSiteService();
+        $content = '';
+        foreach ($sites as $siteId) {
+            $siteUrl = str_replace(
+                array(
+                    'http://',
+                    'https://'
+                ),
+                '',
+                $siteService->getSiteUrl($siteId)
+            );
+            $siteService->setCurrentSite($siteId);
 
-		$content .= "\trewrite ^/favicon\\.ico$ /favicon.ico break;\n";
-		$content .= "\trewrite ^.*\\.?(html|json)?$ /index.php break;\n\n";
-		$content .= "\tfastcgi_pass   127.0.0.1:9001;\n";
-		$content .= "\tfastcgi_index  index.php;\n";
-		$content .= "\t" . 'fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;' . "\n";
-		$content .= "\tinclude        fastcgi_params;\n";
-		$content .= '}';
+            $content .= "server {\n";
+            $content .= "\tlisten       80;\n";
+            $content .= "\tserver_name $siteUrl;\n";
+            $content .= "\troot " . PUBLIC_PATH . ";\n";
 
-		file_put_contents(PUBLIC_PATH . '/' . $this->getApp()->getName() . '.conf', $content);
-	}
+            $content .= "\tlocation /favicon.ico {\n";
+            $content .= "\t\trewrite ^/favicon.ico$ /favicon.ico break;\n";
+            $content .= "\t}\n\n";
 
-	/*
-	 * @param Kernel\Route\Route $route
-	 * @return array
-	 */
-	/*	public function prepareRuleVars(Kernel\Route\Route $route)
-		{
-			$pattern = $route->getPattern();
-			$pattern = str_replace('/', '\/', '^' . $pattern . '\.?(' . implode('|', $route->getAllowedFormats()) . ')?$');
-			$vars = array(
-				'rn=' . $route->getName()
-			);
+            $content .= "\tlocation /robots.txt {\n";
+            $content .= "\t\trewrite ^/robots.txt$ /robots.txt break;\n";
+            $content .= "\t}\n\n";
 
-			$defaultVars = $route->getDefaultVars();
-			while (preg_match('#\{([^\}\/]+)}#iu', $pattern, $matches)) {
-				$match = $matches[1];
+            $content .= "\tlocation / {\n";
+            $content .= "\t\tindex index.php;\n";
 
-				if (isset($defaultVars[$match])) {
-					$pattern = str_replace('{' . $match . '}\/', '([^\/\.]+)?\/?', $pattern);
-				}
-				$pattern = str_replace('{' . $match . '}', '([^\/\.]+)', $pattern);
-				$vars[] = $match . '=$' . count($vars);
-			}
+            $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true));
 
-			// Add format var:
-			$vars[] = 'format=$' . count($vars);
+            $content .= "\t\trewrite ^xhprof/(.*)$ /xhprof/index.php$1 break;\n";
+            $content .= "\t\trewrite ^.*$ /index.php break;\n\n";
+            $content .= "\t\tfastcgi_pass   127.0.0.1:9001;\n";
+            $content .= "\t\tfastcgi_index  index.php;\n";
+            $content .= "\t\t" . 'fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;' . "\n";
+            $content .= "\t\tinclude        fastcgi_params;\n";
+            $content .= "\t}\n";
+            $content .= "}\n\n";
+        }
 
-			$dest = '/index.php?' . implode('&', $vars);
+        file_put_contents(PUBLIC_PATH . '/' . $this->getApp()->getName() . '.conf', $content);
+    }
 
-			return array(
-				'dest' => $dest,
-				'pattern' => $pattern
-			);
-		}*/
+    /**
+     * {@inheritDoc}
+     */
+    protected function dumpRoutes($routes)
+    {
+        $content = '';
+        foreach ($routes as $route) {
+            $infos = $this->prepareRuleVars($route);
+            $content .= "\t\trewrite " . $infos['pattern'] . ' ' . $infos['dest'] . " break;\n";
+        }
+
+        return $content;
+    }
 }

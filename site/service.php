@@ -129,7 +129,7 @@ class Service extends Kernel\Service\Core
 	 */
     public function setCurrentSite($forceSite = null)
     {
-        if ($forceSite && in_array($forceSite, $this->sites)) {
+        if ($forceSite !== null && in_array($forceSite, $this->sites)) {
             $this->currentSite = $forceSite;
         } else {
             $httpRequestHeader = $this->getApp()->getHttp()->getRequest()->getRequestHeader();

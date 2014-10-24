@@ -99,6 +99,7 @@ class Service extends Kernel\Service\Core
 
 	public function loadRoutes()
 	{
+        $this->routes = array();
         $app = $this->getApp();
         $filepath = APP_PATH . '/' . self::ROUTE_RULE_FILE;
 		if (!file_exists($filepath)) {
@@ -207,13 +208,14 @@ class Service extends Kernel\Service\Core
 		return $this->getCurrentRoute()->getUrl($parameters);
 	}
 
-	/**
-	 * @return Route[]
-	 */
-	private function getRoutes()
-	{
-		if (empty($this->routes)) {
-			$this->loadRoutes();
+    /**
+     * @param bool $force
+     * @return Route[]
+     */
+    public function getRoutes($force = false)
+    {
+        if ($force || empty($this->routes)) {
+            $this->loadRoutes();
 		}
 		return $this->routes;
 	}
@@ -227,6 +229,6 @@ class Service extends Kernel\Service\Core
 		/** @var Dumper $dumper */
 		$dumper = new $dumperName();
 		$dumper->setApp($this->getApp());
-		$dumper->dumpRoutes($this->getRoutes());
-	}
+        $dumper->dumpSites($this->getApp()->getSiteService()->getSites());
+    }
 }
