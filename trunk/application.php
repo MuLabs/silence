@@ -125,6 +125,8 @@ abstract class Application
 
     protected function initializeUpdate()
     {
+        // Initialize all bundles:
+        $this->getBundler()->initializeAll();
         $dbS = $this->getDatabase();
 
         if ($dbS) {
@@ -134,6 +136,8 @@ abstract class Application
 
     protected function initializeInstall()
     {
+        // Initialize all bundles:
+        $this->getBundler()->initializeAll();
         $dbS = $this->getDatabase();
 
         if ($dbS) {
