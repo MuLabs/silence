@@ -61,11 +61,25 @@ class Bundler extends Kernel\Core
         $this->bundlesInstance[$name] = $bundle;
     }
 
+    /**
+     * @return void
+     */
+    public function initializeAll()
+    {
+        foreach (array_keys($this->bundles) as $name) {
+            $this->get($name);
+        }
+    }
+
 	/**
 	 * @return Core[]
 	 */
 	public function getAll()
 	{
+        // Initialize all bundles
+        $this->initializeAll();
+
+        // Return all bundles
 		return $this->bundlesInstance;
 	}
 }
