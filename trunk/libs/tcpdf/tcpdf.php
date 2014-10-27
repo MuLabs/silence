@@ -135,12 +135,12 @@
 /**
  * unicode data
  */
-require_once(VENDOR_PATH . '/soqrate/tcpdf/unicode_data.php');
+require_once(KERNEL_LIBS_PATH . '/tcpdf/unicode_data.php');
 
 /**
  * html colors table
  */
-require_once(VENDOR_PATH . '/soqrate/tcpdf/htmlcolors.php');
+require_once(KERNEL_LIBS_PATH . '/tcpdf/htmlcolors.php');
 
 if (!class_exists('TCPDF', false)) {
     /**
@@ -7133,8 +7133,8 @@ if (!class_exists('TCPDF', false)) {
          */
         protected function _getfontpath()
         {
-            if (!defined('K_PATH_FONTS') AND is_dir(VENDOR_PATH . '/soqrate/tcpdf/fonts')) {
-                define('K_PATH_FONTS', VENDOR_PATH . '/soqrate/tcpdf/fonts/');
+            if (!defined('K_PATH_FONTS') AND is_dir(KERNEL_LIBS_PATH . '/tcpdf/fonts')) {
+                define('K_PATH_FONTS', KERNEL_LIBS_PATH . '/tcpdf/fonts/');
             }
             return defined('K_PATH_FONTS') ? K_PATH_FONTS : '';
         }
@@ -13332,7 +13332,7 @@ if (!class_exists('TCPDF', false)) {
             $this->sign = true;
             $this->signature_data = array();
             if (strlen($signing_cert) == 0) {
-                $signing_cert = 'file://' . VENDOR_PATH . '/soqrate/tcpdf/tcpdf.crt';
+                $signing_cert = 'file://' . KERNEL_LIBS_PATH . '/tcpdf/tcpdf.crt';
                 $private_key_password = 'tcpdfdemo';
             }
             if (strlen($private_key) == 0) {
@@ -14965,7 +14965,7 @@ if (!class_exists('TCPDF', false)) {
             if ($this->empty_string($code)) {
                 return;
             }
-            require_once(VENDOR_PATH . '/soqrate/tcpdf/barcodes.php');
+            require_once(KERNEL_LIBS_PATH . '/tcpdf/barcodes.php');
             // save current graphic settings
             $gvars = $this->getGraphicVars();
             // create new barcode object
@@ -15255,7 +15255,7 @@ if (!class_exists('TCPDF', false)) {
             if ($this->empty_string($code)) {
                 return;
             }
-            require_once(VENDOR_PATH . '/soqrate/tcpdf/2dbarcodes.php');
+            require_once(KERNEL_LIBS_PATH . '/tcpdf/2dbarcodes.php');
             // save current graphic settings
             $gvars = $this->getGraphicVars();
             // create new barcode object
