@@ -40,6 +40,7 @@ class Servicer extends Kernel\Core
 	 */
 	public function register($name, $service, array $parameters = array())
 	{
+        $name = strtolower($name);
 		// Manage parameters:
 		if (!isset($this->servicesParameter[$name])) {
 			$this->servicesParameter[$name] = array_merge($parameters, $this->defaultParameters);
@@ -61,6 +62,7 @@ class Servicer extends Kernel\Core
 	 */
 	public function get($name)
 	{
+        $name = strtolower($name);
 		if (!isset($this->servicesInstance[$name])) {
 			if (!isset($this->services[$name])) {
 				throw new Exception($name, Exception::NOT_FOUND);
@@ -80,6 +82,7 @@ class Servicer extends Kernel\Core
 	 */
 	private function set($name, Kernel\Service\Core $service = null)
 	{
+        $name = strtolower($name);
 		// First get service if not an object:
 		if (!is_object($service)) {
 			$service = new $this->services[$name]();

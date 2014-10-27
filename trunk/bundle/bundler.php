@@ -15,6 +15,7 @@ class Bundler extends Kernel\Core
      */
     public function register($name, $bundle)
     {
+        $name = strtolower($name);
         if (isset($this->bundlesInstance[$name])) {
             unset($this->bundlesInstance[$name]);
         }
@@ -31,6 +32,7 @@ class Bundler extends Kernel\Core
      */
     public function get($name)
     {
+        $name = strtolower($name);
         if (!isset($this->bundlesInstance[$name])) {
             if (!isset($this->bundles[$name])) {
                 throw new Exception($name, Exception::NOT_FOUND);
@@ -49,6 +51,7 @@ class Bundler extends Kernel\Core
      */
     private function set($name, Kernel\Bundle\Core $bundle = null)
     {
+        $name = strtolower($name);
         // First get service if not an object:
         if (!is_object($bundle)) {
             $bundle = new $this->bundles[$name]();
