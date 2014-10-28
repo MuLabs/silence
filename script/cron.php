@@ -77,4 +77,11 @@ abstract class Cron extends Core
         $this->releaseLock();
         parent::exceptionsFatalError();
     }
+
+    public function log($message)
+    {
+        if ($this->standalone) {
+            parent::log($message);
+        }
+    }
 }
