@@ -313,6 +313,14 @@ abstract class Application
     }
 
     /**
+     * @return Cron\Service
+     */
+    public function getCronService()
+    {
+        return $this->getServicer()->get('cron');
+    }
+
+    /**
      * @return Log\Service
      */
     public function getLogger()

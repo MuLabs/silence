@@ -7,6 +7,16 @@ use Mu\Bundle;
 
 abstract class Cron extends Core
 {
+    private $standalone = true;
+
+    public function __construct($standalone = true)
+    {
+        $this->standalone = $standalone;
+        if ($this->standalone) {
+            parent::__construct();
+        }
+    }
+
     public function __realConstruct()
     {
         parent::__realConstruct();
@@ -31,7 +41,9 @@ abstract class Cron extends Core
 
     public function __destruct()
     {
-        parent::__destruct();
+        if ($this->standalone) {
+            parent::__destruct();
+        }
 
         $this->releaseLock();
     }

@@ -14,6 +14,7 @@ class Servicer extends Kernel\Core
 		'route' => '\Mu\Kernel\Route\Service',
 		'config' => '\Mu\Kernel\Config\Service',
 		'error' => '\Mu\Kernel\Error\Service',
+        'cron' => '\Mu\Kernel\Cron\Service',
 		'localization' => '\Mu\Kernel\Localization\Service',
 		'site' => '\Mu\Kernel\Site\Service',
 	);
@@ -28,6 +29,7 @@ class Servicer extends Kernel\Core
 		'route' => array(),
 		'config' => array(),
 		'error' => array('type' => '\Mu\Kernel\Error\Service'),
+        'cron' => array(),
 		'localization' => array(),
 		'site' => array(),
 	);
