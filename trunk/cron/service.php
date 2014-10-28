@@ -96,12 +96,45 @@ class Service extends Kernel\Service\Core
     );
 
     /**
+     * @param int
+     * @return array
+     */
+    public function get($id)
+    {
+        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError, :active
+			    FROM @
+			    WHERE id = ? ';
+        $data= array((int)$id);
+
+        $dbhr = $this->getApp()->getDatabase()->getHandler('readFront');
+        $query = new Kernel\Db\Query($sql, $data, $this);
+        $result = $dbhr->sendQuery($query);
+
+        list($id, $minute, $hour, $day, $month, $week, $script, $params, $dateLast, $dateError, $active) = $result->fetchRow();
+
+        return array(
+            'id'        => $id,
+            'minute'    => $minute,
+            'hour'      => $hour,
+            'day'       => $day,
+            'month'     => $month,
+            'week'      => $week,
+            'script'    => $script,
+            'params'    => $params,
+            'dateLast'  => $dateLast,
+            'dateError' => $dateError,
+            'active'    => $active,
+            'frequency' => "$minute $hour $day $month $week"
+        );
+    }
+
+    /**
      * @param null|bool
      * @return array
      */
     public function getAll($active = null)
     {
-        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError
+        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError, :active
 			    FROM @ ';
         $data= array();
 
@@ -115,7 +148,7 @@ class Service extends Kernel\Service\Core
         $result = $dbhr->sendQuery($query);
 
         $list = array();
-        while (list($id, $minute, $hour, $day, $month, $week, $script, $params, $dateLast, $dateError) = $result->fetchRow()) {
+        while (list($id, $minute, $hour, $day, $month, $week, $script, $params, $dateLast, $dateError, $active) = $result->fetchRow()) {
             $list[] = array(
                 'id'        => $id,
                 'minute'    => $minute,
@@ -127,10 +160,41 @@ class Service extends Kernel\Service\Core
                 'params'    => $params,
                 'dateLast'  => $dateLast,
                 'dateError' => $dateError,
+                'active'    => $active,
                 'frequency' => "$minute $hour $day $month $week"
             );
         }
         return $list;
+    }
+
+    /**
+     * @param $id
+     */
+    public function forceStart($id)
+    {
+        $cron = $this->get($id);
+        if (empty($cron)) {
+            return;
+        }
+
+        try {
+            $scriptName = ucfirst($cron['script']);
+            $scriptPath = '\\Mu\\App\\Script\\'.$scriptName;
+            if (!class_exists($scriptPath)) {
+                $this->setLastError($cron['id']);
+                return;
+            }
+
+            /** @var Kernel\Script\Cron $script */
+            $script = new $scriptPath(false);
+            $params = (!empty($cron['params'])) ? explode(' ', $cron['params']) : array();
+            $script->setApp($this->getApp());
+            $script->execute($params);
+
+            $this->setLastExecution($cron['id']);
+        } catch (\Exception $e) {
+            $this->setLastError($cron['id']);
+        }
     }
 
     /**
