@@ -91,6 +91,15 @@ class Service extends Kernel\Service\Core
                     'pdo_extra' => 'UNSIGNED NOT NULL DEFAULT 1',
                     'type' => 'tinyint',
                 ),
+                'force' => array(
+                    'title' => 'Force next execution',
+                    'form' => array(
+                        'type' => 'checkbox',
+                    ),
+                    'db' => 'force',
+                    'pdo_extra' => 'UNSIGNED NOT NULL DEFAULT 0',
+                    'type' => 'tinyint',
+                ),
             )
         )
     );
@@ -101,7 +110,7 @@ class Service extends Kernel\Service\Core
      */
     public function get($id)
     {
-        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError, :active
+        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError, :active, :force
 			    FROM @
 			    WHERE id = ? ';
         $data= array((int)$id);
@@ -110,22 +119,7 @@ class Service extends Kernel\Service\Core
         $query = new Kernel\Db\Query($sql, $data, $this);
         $result = $dbhr->sendQuery($query);
 
-        list($id, $minute, $hour, $day, $month, $week, $script, $params, $dateLast, $dateError, $active) = $result->fetchRow();
-
-        return array(
-            'id'        => $id,
-            'minute'    => $minute,
-            'hour'      => $hour,
-            'day'       => $day,
-            'month'     => $month,
-            'week'      => $week,
-            'script'    => $script,
-            'params'    => $params,
-            'dateLast'  => $dateLast,
-            'dateError' => $dateError,
-            'active'    => $active,
-            'frequency' => "$minute $hour $day $month $week"
-        );
+        return $this->getEntity($result->fetchRow());
     }
 
     /**
@@ -134,7 +128,7 @@ class Service extends Kernel\Service\Core
      */
     public function getAll($active = null)
     {
-        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError, :active
+        $sql = 'SELECT :id, :minute, :hour, :day, :month, :week, :script, :params, :dateLast, :dateError, :active, :force
 			    FROM @ ';
         $data= array();
 
@@ -148,53 +142,10 @@ class Service extends Kernel\Service\Core
         $result = $dbhr->sendQuery($query);
 
         $list = array();
-        while (list($id, $minute, $hour, $day, $month, $week, $script, $params, $dateLast, $dateError, $active) = $result->fetchRow()) {
-            $list[] = array(
-                'id'        => $id,
-                'minute'    => $minute,
-                'hour'      => $hour,
-                'day'       => $day,
-                'month'     => $month,
-                'week'      => $week,
-                'script'    => $script,
-                'params'    => $params,
-                'dateLast'  => $dateLast,
-                'dateError' => $dateError,
-                'active'    => $active,
-                'frequency' => "$minute $hour $day $month $week"
-            );
+        while ($data = $result->fetchRow()) {
+            $list[] = $this->getEntity($data);
         }
         return $list;
-    }
-
-    /**
-     * @param $id
-     */
-    public function forceStart($id)
-    {
-        $cron = $this->get($id);
-        if (empty($cron)) {
-            return;
-        }
-
-        try {
-            $scriptName = ucfirst($cron['script']);
-            $scriptPath = '\\Mu\\App\\Script\\'.$scriptName;
-            if (!class_exists($scriptPath)) {
-                $this->setLastError($cron['id']);
-                return;
-            }
-
-            /** @var Kernel\Script\Cron $script */
-            $script = new $scriptPath(false);
-            $params = (!empty($cron['params'])) ? explode(' ', $cron['params']) : array();
-            $script->setApp($this->getApp());
-            $script->execute($params);
-
-            $this->setLastExecution($cron['id']);
-        } catch (\Exception $e) {
-            $this->setLastError($cron['id']);
-        }
     }
 
     /**
@@ -212,13 +163,26 @@ class Service extends Kernel\Service\Core
 
     /**
      * @param $id
+     * @param bool $force
+     */
+    public function setForce($id, $force = true)
+    {
+        $sql = 'UPDATE @ SET :force = ? WHERE :id = ?';
+
+        $dbhr = $this->getApp()->getDatabase()->getHandler('writeFront');
+        $query = new Kernel\Db\Query($sql, array((int)$force, $id), $this);
+        $dbhr->sendQuery($query);
+    }
+
+    /**
+     * @param $id
      */
     public function setLastExecution($id)
     {
-        $sql = 'UPDATE @ SET :dateLast = NOW() WHERE :id = ?';
+        $sql = 'UPDATE @ SET :dateLast = NOW(), :force = ? WHERE :id = ?';
 
         $dbhr = $this->getApp()->getDatabase()->getHandler('writeFront');
-        $query = new Kernel\Db\Query($sql, array($id), $this);
+        $query = new Kernel\Db\Query($sql, array(0, $id), $this);
         $dbhr->sendQuery($query);
     }
 
@@ -227,10 +191,10 @@ class Service extends Kernel\Service\Core
      */
     public function setLastError($id)
     {
-        $sql = 'UPDATE @ SET :dateError = NOW() WHERE :id = ?';
+        $sql = 'UPDATE @ SET :dateError = NOW(), :force = ? WHERE :id = ?';
 
         $dbhr = $this->getApp()->getDatabase()->getHandler('writeFront');
-        $query = new Kernel\Db\Query($sql, array($id), $this);
+        $query = new Kernel\Db\Query($sql, array(0, $id), $this);
         $dbhr->sendQuery($query);
     }
 
@@ -275,5 +239,30 @@ class Service extends Kernel\Service\Core
 
         // Return test result:
         return eval("return {$crontab};");
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    private function getEntity(array $data)
+    {
+        list($id, $minute, $hour, $day, $month, $week, $script, $params, $dateLast, $dateError, $active, $force) = $data;
+
+        return array(
+            'id'        => $id,
+            'minute'    => $minute,
+            'hour'      => $hour,
+            'day'       => $day,
+            'month'     => $month,
+            'week'      => $week,
+            'script'    => $script,
+            'params'    => $params,
+            'dateLast'  => $dateLast,
+            'dateError' => $dateError,
+            'active'    => (bool)$active,
+            'force'     => (bool)$force,
+            'frequency' => "$minute $hour $day $month $week"
+        );
     }
 }
