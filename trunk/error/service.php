@@ -98,8 +98,8 @@ class Service extends Kernel\Service\Core
 
     public function __construct()
     {
-        register_shutdown_function(array($this, 'logFatalError'));
-        set_error_handler(array($this, 'logError'), E_ALL);
+        //register_shutdown_function(array($this, 'logFatalError'));
+        //set_error_handler(array($this, 'logError'), E_ALL);
     }
 
     /**
