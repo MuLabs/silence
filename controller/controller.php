@@ -140,7 +140,16 @@ abstract class Controller extends Kernel\Core
 		return call_user_func(array($this, $fragmentName . 'Fragment'));
 	}
 
-	/**
+    /**
+     * @param $content
+     * @return string
+     */
+    public function postRender($content)
+    {
+        return $content;
+    }
+
+    /**
 	 * Send an error via error service
 	 * @param int $code
 	 * @param string $message

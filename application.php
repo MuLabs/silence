@@ -648,6 +648,7 @@ abstract class Application
 
         // Fetch view content:
         $content  = $this->fetch();
+        $content = $this->getController()->postRender($content);
         if (!$sendData) {
             return $content;
         }
