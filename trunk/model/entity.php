@@ -279,9 +279,9 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		return $actionLogger->create($this, $action, $oldValue, $newValue);
 	}
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 	public function getLogsList()
 	{
 		$bo = $this->getApp()->getBackofficeService();
