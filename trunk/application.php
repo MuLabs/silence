@@ -160,6 +160,9 @@ abstract class Application
      */
     protected function registerDefaultServices(Service\Servicer $servicer)
     {
+        $servicer->register('error', '\\Mu\\Kernel\\Error\\Service');
+        // Force error initialize
+        $this->getErrorService();
         $servicer->register('renderer', '\\Mu\\Kernel\\Renderer\\Service');
     }
 
