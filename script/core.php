@@ -7,6 +7,8 @@ use Mu\Bundle;
 
 abstract class Core extends Kernel\Core
 {
+    protected $_cache = array();
+
     public function __construct()
     {
         $this->log('Start script');

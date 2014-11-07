@@ -7,7 +7,6 @@ use Mu\Bundle;
 
 abstract class Cron extends Core
 {
-
     public function __realConstruct()
     {
         parent::__realConstruct();
