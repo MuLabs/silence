@@ -27,7 +27,7 @@ class Service extends Kernel\Service\Core
 	{
 		if (isset($this->triggerFunctions[$name]) && is_array($this->triggerFunctions[$name])) {
             foreach ($this->triggerFunctions[$name] as $key => $oneTrigger) {
-                if (!$this->triggerInstanceFunctions[$name][$key]) {
+                if (!isset($this->triggerInstanceFunctions[$name][$key])) {
                     list($type, $objectName, $functionName) = $oneTrigger;
 
                     if ($type == 'manager') {
