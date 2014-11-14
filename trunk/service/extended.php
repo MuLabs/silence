@@ -40,8 +40,6 @@ abstract class Extended extends Core
 	{
 		if (!isset($this->handlers[$name])) {
 			$this->handlers[$name] = $handler;
-		} else {
-			throw new Exception($name, Exception::CONTEXT_ALREADY_EXISTS);
 		}
 	}
 
