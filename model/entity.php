@@ -304,9 +304,13 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	public function getPropertyValue($key)
 	{
 		$func = array($this, 'get' . ucfirst($key));
+		$func2 = array($this, 'is' . ucfirst($key));
+
 		if (is_callable($func)) {
 			return call_user_func($func);
-		}
+		} elseif (is_callable($func2)) {
+            return call_user_func($func2);
+        }
 
 		return '';
 	}
