@@ -189,7 +189,7 @@ class Xml extends Kernel\File\Handler
 		$http->setContent($content);
 		$http->send();
 
-		// Exite if needed:
+        // Exit if needed:
 		exit();
 	}
 

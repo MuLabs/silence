@@ -674,6 +674,9 @@ abstract class Application
         $controller = $this->getController();
         $error      = $controller->initialize();
         if ($error) {
+            if ($error instanceof Kernel\View\View) {
+                return $controller->getRenderer()->render($error);
+            }
             return $error;
         }
 
@@ -713,9 +716,7 @@ abstract class Application
             return '';
         }
 
-        $renderer= $controller->getRenderer();
-        $content = $renderer->render($view);
-        return $content;
+        return $controller->getRenderer()->render($view);
     }
 
 
