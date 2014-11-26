@@ -11,7 +11,33 @@ class Nginx extends Kernel\Route\Dumper
         $localizationService = $this->getApp()->getLocalizationService();
         $langList = $localizationService->getSupportedLanguages();
 
+        $statics = $this->getApp()->getStaticList();
         $content = '';
+        foreach ($statics as $oneStatic) {
+            $oneStatic = str_replace(
+                array(
+                    'http://',
+                    'https://'
+                ),
+                '',
+                $oneStatic
+            );
+
+            $content .= "server {\n";
+            $content .= "\tlisten       80;\n";
+            $content .= "\tserver_name $oneStatic;\n";
+            $content .= "\troot " . APP_STATIC_PATH . ";\n";
+
+            $content .= "\tlocation /favicon.ico {\n";
+            $content .= "\t\trewrite ^/favicon.ico$ /favicon.ico break;\n";
+            $content .= "\t}\n\n";
+
+            $content .= "\tlocation /robots.txt {\n";
+            $content .= "\t\trewrite ^/robots.txt$ /robots.txt break;\n";
+            $content .= "\t}\n\n";
+            $content .= "}\n\n";
+        }
+
         foreach ($sites as $siteId) {
             $siteUrl = str_replace(
                 array(

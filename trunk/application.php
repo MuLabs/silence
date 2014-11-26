@@ -861,11 +861,12 @@ abstract class Application
      */
     public function getUrlStatic($file)
     {
-        if (!is_array($this->statics)) {
+        $statics = $this->getStaticList();
+        if (!is_array($statics)) {
             throw new Exception('', Exception::NO_STATIC_REGISTRED);
         }
 
-        $nbStatic = count($this->statics);
+        $nbStatic = count($statics);
         if (!$nbStatic) {
             throw new Exception('', Exception::NO_STATIC_REGISTRED);
         }
@@ -874,9 +875,9 @@ abstract class Application
             $pos = md5($file);
             $pos = ord($pos{8}) % $nbStatic;
 
-            $baseUrl = $this->statics[$pos];
+            $baseUrl = $statics[$pos];
         } else {
-            $baseUrl = reset($this->statics);
+            $baseUrl = reset($statics);
         }
 
         return $baseUrl . '/' . $file;
@@ -898,6 +899,13 @@ abstract class Application
     public function registerStatic($url)
     {
         $this->statics[] = $url;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStaticList() {
+        return $this->statics;
     }
 
     /**
