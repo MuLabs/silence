@@ -57,7 +57,7 @@ class Service extends Kernel\Service\Core
 
             $localization = $this->getApp()->getLocalizationService();
             if ($localization) {
-                $uri = $this->httpRequest->getRequestUri();
+                $uri = $this->getRequest()->getRequestUri();
                 if ($uri[0] == '/') {
                     $uri = substr($uri, 1);
                 }
@@ -68,7 +68,7 @@ class Service extends Kernel\Service\Core
                 if ($localization->isSupportedLanguage($firstParam)) {
                     $localization->setCurrentLanguage($firstParam);
                     $uri = substr($uri, $posFirstSlash);
-                    $this->httpRequest->setRequestUri($uri);
+                    $this->getRequest()->setRequestUri($uri);
                     $localization->setLocaleFromUrl(true);
                 }
             }
