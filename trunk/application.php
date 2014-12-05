@@ -578,6 +578,10 @@ abstract class Application
     public function start()
     {
         try {
+            // Initialize bundles
+            $bundler = $this->getBundler();
+            $bundler->getAll();
+
             // Define triggers:
             $this->defineTriggers();
 
