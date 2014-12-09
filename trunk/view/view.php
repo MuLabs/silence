@@ -143,7 +143,7 @@ abstract class View extends Kernel\Core
     /**
      * @param string $target
      * @param null $fragment
-     * @return $this
+     * @return View
      */
     public function fetch($target = '', $fragment = null)
     {
