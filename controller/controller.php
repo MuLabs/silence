@@ -365,7 +365,7 @@ abstract class Controller extends Kernel\Core
 				continue;
 			}
 
-			$messages = [];
+			$messages = array();
 			foreach ($view->getVar($type . self::REPORT_KEY, []) as $report) {
 				if (is_int($report)) {
 					$messages[] = $report;
