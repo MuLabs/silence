@@ -28,6 +28,10 @@ class Nginx extends Kernel\Route\Dumper
             $content .= "\tserver_name $oneStatic;\n";
             $content .= "\troot " . APP_STATIC_PATH . ";\n";
 
+            $content .= "\tlocation ~* \\.(eot|ttf|woff)$ {\n";
+            $content .= "\t\tadd_header Access-Control-Allow-Origin *;\n";
+            $content .= "\t}\n\n";
+
             $content .= "\tlocation /favicon.ico {\n";
             $content .= "\t\trewrite ^/favicon.ico$ /favicon.ico break;\n";
             $content .= "\t}\n\n";
