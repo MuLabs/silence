@@ -45,11 +45,10 @@ class Service extends Kernel\Service\Core
 
 	/**
 	 * @param string $key
-	 * @param int $cache_ttl
 	 * @throws \Mu\Kernel\Cache\Exception
 	 * @return mixed
 	 */
-	public function get($key, $cache_ttl = 0)
+	public function get($key)
 	{
 		$handler = $this->getHandler();
 
@@ -64,18 +63,19 @@ class Service extends Kernel\Service\Core
 		return $result;
 	}
 
-	/**
-	 * @param string $key
-	 * @param string $value
-	 */
-	public function set($key, $value)
+    /**
+     * @param $key
+     * @param $value
+     * @param int $cache_ttl
+     */
+	public function set($key, $value, $cache_ttl = 0)
 	{
 		$handler = $this->getHandler();
 
 		if (!$handler) {
 			return;
 		}
-		$handler->set($this->getRealKey($key), $value);
+		$handler->set($this->getRealKey($key), $value, $cache_ttl);
 	}
 
 	public function flush()
