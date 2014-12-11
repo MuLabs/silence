@@ -9,7 +9,8 @@ abstract class View extends Kernel\Core
     protected $fragment;
 	protected $service;
 	protected $compileDir;
-	protected $vars = array();
+	protected $safeVars = array();
+	protected $unsafeVars = array();
 	protected $extension;
 
     /**
@@ -48,7 +49,7 @@ abstract class View extends Kernel\Core
 	public function setService(Service $service)
 	{
 		$this->service = $service;
-		$this->setVar('app', $service->getApp());
+		$this->setVar('app', $service->getApp(), false);
 	}
 
 	/**
@@ -62,18 +63,16 @@ abstract class View extends Kernel\Core
 	/**
 	 * @param string $var
 	 * @param mixed $value
+	 * @param bool $isSafe
 	 */
-	public function setVar($var, $value)
+	public function setVar($var, $value, $isSafe = true)
 	{
-		$this->vars[$var] = $value;
-	}
-
-	/**
-	 * @param array $vars
-	 */
-	public function setVars(array $vars)
-	{
-		$this->vars = array_merge($this->vars, $vars);
+		$app = null;
+		if ($isSafe) {
+			$this->safeVars[$var] = $value;
+		} else {
+			$this->unsafeVars[$var] = $value;
+		}
 	}
 
 	/**
@@ -83,8 +82,10 @@ abstract class View extends Kernel\Core
 	 */
 	public function getVar($var, $default = null)
 	{
-		if (isset($this->vars[$var])) {
-			return $this->vars[$var];
+		if (isset($this->safeVars[$var])) {
+			return $this->safeVars[$var];
+		} elseif (isset($this->unsafeVars[$var])) {
+			return $this->unsafeVars[$var];
 		} else {
 			return $default;
 		}
@@ -95,7 +96,22 @@ abstract class View extends Kernel\Core
 	 */
 	public function getVars()
 	{
-		return $this->vars;
+		return array_merge($this->safeVars, $this->unsafeVars);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSafeVars() {
+		return $this->safeVars;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getUnsafeVars() {
+
+		return $this->unsafeVars;
 	}
 
 	/**
