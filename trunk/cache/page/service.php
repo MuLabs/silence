@@ -55,7 +55,7 @@ class Service extends Kernel\Service\Core
 		if (!$handler) {
 			throw new Kernel\Cache\Exception(Kernel\Cache\Exception::KEY_NOT_FOUND);
 		}
-		$result = $handler->get($this->getRealKey($key), $cache_ttl);
+		$result = $handler->get($this->getRealKey($key));
 		if (!is_string($result)) {
 			throw new Kernel\Cache\Exception(Kernel\Cache\Exception::KEY_NOT_FOUND);
 		}
