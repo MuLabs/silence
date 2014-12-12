@@ -28,6 +28,7 @@ class Cookie extends Kernel\Session\Handler
     protected $httponly; // Bool
     protected $info = array();
     protected $disableRefresh = false;
+    protected $saved = false;
 
     /**
      * Load current cookie and check it's validity
@@ -74,6 +75,7 @@ class Cookie extends Kernel\Session\Handler
 
     public function remove() {
         setcookie($this->getContext(), null, -1, '/');
+        $this->saved = true;
     }
 
     /**
@@ -81,16 +83,18 @@ class Cookie extends Kernel\Session\Handler
      */
     public function save()
     {
+        // Don't save if already saved
+        if ($this->saved) {
+            return;
+        }
+
         // Test if header has been already sent, in this case cookie couldn't be saved:
         if (headers_sent()) {
             return; // TODO Add log
         }
 
-        // Force the cookie to be cleaned if needed, but after rendering:
-        if (count($this->info) == 0) {
-            $this->remove();
-        } else {
-            // Set protected keys:
+        // Set protected keys:
+        if (count($this->info)) {
             $this->info[$this->keyVerify] = $this->getId();
 
             // Save values:
@@ -105,6 +109,7 @@ class Cookie extends Kernel\Session\Handler
                 $this->secure,
                 $this->httponly
             );
+            $this->saved = true;
         }
     }
 
@@ -157,6 +162,7 @@ class Cookie extends Kernel\Session\Handler
         // Do not overload protected keys
         if ($name != $this->keyVerify) {
             $this->info[$name] = $value;
+            $this->saved = false;
         }
         return $value;
     }
@@ -167,6 +173,7 @@ class Cookie extends Kernel\Session\Handler
     public function setAll($values = array())
     {
         $this->info = $values;
+        $this->saved = false;
     }
 
     /**
@@ -178,10 +185,10 @@ class Cookie extends Kernel\Session\Handler
         $cookie = $this->getApp()->getHttp()->getRequest()->getParameters(
             $this->getContext(),
             Kernel\Http\Request::PARAM_TYPE_COOKIE,
-            array()
+            false
         );
 
-        return $this->__decryptCookie($cookie);
+        return $cookie !== false ? $this->__decryptCookie($cookie) : null;
     }
 
     /**
