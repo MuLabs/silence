@@ -23,7 +23,6 @@ class Cookie extends Kernel\Session\Handler
     const DEFAULT_SECURE = false;
 
     protected $keyVerify = 'mu_verify';
-    protected $keyTime = 'mu_time';
     protected $salt;
     protected $secure; // Bool
     protected $httponly; // Bool
@@ -43,18 +42,12 @@ class Cookie extends Kernel\Session\Handler
 
         // Get cookie:
         $cookie = $this->__getCookie();
-        foreach ($cookie as $key => $jsonValue) {
-            $cookie[$key] = json_decode($jsonValue, true);
-        }
 
         // Test cookie validity if not empty
         if (is_array($cookie)) {
             // Test validity:
             if (!isset($cookie[$this->keyVerify]) || $cookie[$this->keyVerify] != $this->getId()) {
-                return;
-            }
-            // Test timestamp:
-            if (!isset($cookie[$this->keyTime]) || time() - $cookie[$this->keyTime] > $this->getExpire() * 3600) {
+                $this->clean();
                 return;
             }
 
@@ -73,6 +66,16 @@ class Cookie extends Kernel\Session\Handler
         }
     }
 
+    public function clean() {
+        parent::clean();
+
+        $this->remove();
+    }
+
+    public function remove() {
+        setcookie($this->getContext(), null, -1, '/');
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -85,27 +88,23 @@ class Cookie extends Kernel\Session\Handler
 
         // Force the cookie to be cleaned if needed, but after rendering:
         if (count($this->info) == 0) {
-            foreach ($this->__getCookie() as $key => $value) {
-                setcookie($this->getContext() . '[' . $key . ']', null, -1, '/');
-            }
+            $this->remove();
         } else {
             // Set protected keys:
             $this->info[$this->keyVerify] = $this->getId();
-            $this->info[$this->keyTime] = time();
 
             // Save values:
             $expire = time() + $this->getExpire();
-            foreach ($this->info as $key => $value) {
-                setcookie(
-                    $this->getContext() . '[' . $key . ']',
-                    json_encode($value),
-                    $expire,
-                    '/',
-                    '',
-                    $this->secure,
-                    $this->httponly
-                );
-            }
+            $value = $this->__cryptCookie($this->info);
+            setcookie(
+                $this->getContext(),
+                $value,
+                $expire,
+                '/',
+                '',
+                $this->secure,
+                $this->httponly
+            );
         }
     }
 
@@ -147,7 +146,7 @@ class Cookie extends Kernel\Session\Handler
      */
     public function getId()
     {
-        return md5($this->getContext() . '--' . $this->salt);
+        return substr(md5($this->getContext() . '--' . $this->salt), 3, 6);
     }
 
     /**
@@ -156,7 +155,7 @@ class Cookie extends Kernel\Session\Handler
     public function set($name, $value = null)
     {
         // Do not overload protected keys
-        if ($name != $this->keyVerify || $name != $this->keyTime) {
+        if ($name != $this->keyVerify) {
             $this->info[$name] = $value;
         }
         return $value;
@@ -176,10 +175,51 @@ class Cookie extends Kernel\Session\Handler
      */
     private function __getCookie()
     {
-        return $this->getApp()->getHttp()->getRequest()->getParameters(
+        $cookie = $this->getApp()->getHttp()->getRequest()->getParameters(
             $this->getContext(),
             Kernel\Http\Request::PARAM_TYPE_COOKIE,
             array()
         );
+
+        return $this->__decryptCookie($cookie);
+    }
+
+    /**
+     * @param mixed $content
+     * @return string
+     */
+    private function __cryptCookie($content) {
+        // JSON encode for objects and array
+        $content = json_encode($content);
+
+        // Hash
+        $key = hash('sha256', self::DEFAULT_SALT);
+
+        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+        $iv = substr(hash('sha256', self::DEFAULT_EXPIRE), 0, 16);
+
+        $output = openssl_encrypt($content, 'AES-256-CBC', $key, 0, $iv);
+        return base64_encode($output);
+    }
+
+    /**
+     * @param string $content
+     * @return mixed
+     */
+    private function __decryptCookie($content) {
+        if (!is_string($content)) {
+            $this->clean();
+            return null;
+        }
+
+        // Hash
+        $key = hash('sha256', self::DEFAULT_SALT);
+
+        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+        $iv = substr(hash('sha256', self::DEFAULT_EXPIRE), 0, 16);
+
+        $output = openssl_decrypt(base64_decode($content), 'AES-256-CBC', $key, 0, $iv);
+
+        return json_decode($output, true);
     }
 }
