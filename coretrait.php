@@ -25,6 +25,14 @@ trait CoreTrait
     }
 
     /**
+     * Remove the App from the jsonSerialize
+     */
+    public function jsonSerialize()
+    {
+        $this->setApp();
+    }
+
+    /**
      * @return App\Application
      */
     public function getApp()
