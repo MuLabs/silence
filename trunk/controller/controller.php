@@ -303,6 +303,13 @@ abstract class Controller extends Kernel\Core
     }
 
 	/**
+	 * @return bool
+	 */
+	public function hasGet() {
+		return $this->getApp()->getHttp()->getRequest()->haveParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+	}
+
+	/**
 	 * @param string $label
 	 * @param mixed $default
 	 * @return mixed|null
@@ -314,6 +321,13 @@ abstract class Controller extends Kernel\Core
 			Kernel\Http\Request::PARAM_TYPE_GET,
 			$default
 		);
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasPost() {
+		return $this->getApp()->getHttp()->getRequest()->haveParameters(Kernel\Http\Request::PARAM_TYPE_POST);
 	}
 
 	/**
