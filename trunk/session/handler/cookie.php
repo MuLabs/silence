@@ -195,7 +195,7 @@ class Cookie extends Kernel\Session\Handler
      * @param mixed $content
      * @return string
      */
-    private function __cryptCookie($content) {
+    public function __cryptCookie($content) {
         // JSON encode for objects and array
         $content = json_encode($content);
 
@@ -213,7 +213,7 @@ class Cookie extends Kernel\Session\Handler
      * @param string $content
      * @return mixed
      */
-    private function __decryptCookie($content) {
+    public function __decryptCookie($content) {
         if (!is_string($content)) {
             $this->clean();
             return null;
