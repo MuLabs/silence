@@ -260,6 +260,26 @@ class Service extends Kernel\Service\Core
     }
 
     /**
+     * Log an external error
+     *
+     * @static
+     * @param    int $errno PHP internal error code
+     * @param    string $message PHP internal error description
+     * @param    string $file PHP file where error occurs
+     * @param    int $line Line on the file where error occurs
+     * @return  bool
+     */
+    public function logExternal($errno, $message, $file = '', $line = 0)
+    {
+        if ($this->getHandler() != self::HANDLER_DB) {
+            return false;
+        }
+
+        $this->create('php', $errno, $message, $file, $line);
+        return true;
+    }
+
+    /**
      * @static
      * @param    string $type
      * @param    int $priority
