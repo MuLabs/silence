@@ -18,22 +18,26 @@ class Service extends Kernel\Service\Core
 		$this->triggerFunctions[$name][] = $function;
 	}
 
-	/**
-	 * @param string $name
-	 * @param array $params
-	 * @throws Exception
-	 */
-	public function call($name, array $params)
+    /**
+     * @param string $name
+     * @param array $params
+     * @param Kernel\Core $triggerOrigin
+     * @throws Kernel\Service\Exception
+     */
+    public function call($name, array $params, Kernel\Core $triggerOrigin = null)
 	{
 		if (isset($this->triggerFunctions[$name]) && is_array($this->triggerFunctions[$name])) {
             foreach ($this->triggerFunctions[$name] as $key => $oneTrigger) {
                 if (!isset($this->triggerInstanceFunctions[$name][$key])) {
                     list($type, $objectName, $functionName) = $oneTrigger;
 
+                    $object = null;
                     if ($type == 'manager') {
                         $object = $this->getApp()->getModelManager()->getOneManager($objectName);
-                    } else {
+                    } elseif ($type == 'service') {
                         $object = $this->getApp()->getServicer()->get($objectName);
+                    } elseif ($triggerOrigin) {
+                        $object = $triggerOrigin;
                     }
 
                     if (!$object) {
