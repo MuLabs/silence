@@ -98,16 +98,18 @@ class Service extends Kernel\Service\Core
 	{
 		$urlList = $this->getApp()->getConfigManager()->get('url');
 
-		foreach ($urlList as $key => $oneUrl) {
-			if (!is_string($oneUrl)) {
-				continue;
-			}
+		if (is_array($urlList)) {
+			foreach ($urlList as $key => $oneUrl) {
+				if (!is_string($oneUrl)) {
+					continue;
+				}
 
-			if (!isset($this->sites[$key])) {
-				continue;
-			}
+				if (!isset($this->sites[$key])) {
+					continue;
+				}
 
-			$this->sitesUrl[$this->sites[$key]] = $oneUrl;
+				$this->sitesUrl[$this->sites[$key]] = $oneUrl;
+			}
 		}
 
 		if (count($this->sitesUrl) != count($this->sites)) {
@@ -129,7 +131,7 @@ class Service extends Kernel\Service\Core
 	 */
     public function setCurrentSite($forceSite = null)
     {
-        if ($forceSite !== null && in_array($forceSite, $this->sites)) {
+        if ($forceSite !== null && (in_array($forceSite, $this->sites) || $forceSite === self::BO_ID)) {
             $this->currentSite = $forceSite;
         } else {
             $httpRequestHeader = $this->getApp()->getHttp()->getRequest()->getRequestHeader();
