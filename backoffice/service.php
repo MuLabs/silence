@@ -65,7 +65,6 @@ class Service extends Kernel\Service\Core
 	private function generateWidget($widgetClassName)
 	{
 		$widget = $this->getApp()->getFactory()->get($widgetClassName);
-
 		if (!$widget instanceof Widget) {
 			throw new Exception($widgetClassName, Exception::INVALID_WIDGET_OBJECT);
 		}
@@ -78,10 +77,6 @@ class Service extends Kernel\Service\Core
 	 */
 	private function generateSectionWidgets($sectionName)
 	{
-		// Only if not done
-		if (isset($this->widgetsInstance[$sectionName])) {
-			return;
-		}
 		foreach ($this->widgets[$sectionName] as $oneWidget) {
 			$widget = $this->generateWidget($oneWidget);
 			$this->widgetsInstance[$sectionName][$widget->getName()] = $widget;
