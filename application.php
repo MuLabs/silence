@@ -150,7 +150,7 @@ abstract class Application
     /**
      * @param $autoload
      */
-    protected function registerAutoload($autoload)
+    public function registerAutoload($autoload)
     {
         $this->getToolbox()->registerAutoload($autoload);
     }
