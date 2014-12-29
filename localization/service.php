@@ -128,11 +128,13 @@ class Service extends Kernel\Service\Core
 		textdomain($domain);
 
 		$langCookie = $this->getLangCookie();
-		$langCookie->disableRefresh();
-        if ($langCookie && $langCookie->get('currentLang') != $lang) {
-            $langCookie->set('currentLang', $lang);
-            $langCookie->save();
-        }
+		if ($langCookie) {
+			$langCookie->disableRefresh();
+			if ($langCookie->get('currentLang') != $lang) {
+				$langCookie->set('currentLang', $lang);
+				$langCookie->save();
+			}
+		}
     }
 
 	/**
