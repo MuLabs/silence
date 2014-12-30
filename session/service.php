@@ -18,14 +18,6 @@ class Service extends Kernel\Service\Extended
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function getDirectory()
-	{
-		return 'session';
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected function getNamespace()
 	{
 		return __NAMESPACE__;
