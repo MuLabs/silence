@@ -5,48 +5,17 @@ use Mu\Kernel;
 
 class Servicer extends Kernel\Core
 {
-	protected $services = array(
-		'log' => '\Mu\Kernel\Log\Service',
-		'trigger' => '\Mu\Kernel\Trigger\Service',
-		'toolbox' => '\Mu\Kernel\Toolbox',
-		'http' => '\Mu\Kernel\Http\Service',
-		'factory' => '\Mu\Kernel\Factory',
-		'route' => '\Mu\Kernel\Route\Service',
-		'config' => '\Mu\Kernel\Config\Service',
-		'error' => '\Mu\Kernel\Error\Service',
-        'cron' => '\Mu\Kernel\Cron\Service',
-		'localization' => '\Mu\Kernel\Localization\Service',
-		'site' => '\Mu\Kernel\Site\Service',
-	);
+	protected $services = array();
 	/** @var Core[] */
 	protected $servicesInstance = array();
-	protected $servicesParameter = array(
-		'log' => array(),
-		'trigger' => array(),
-		'toolbox' => array(),
-		'http' => array(),
-		'factory' => array(),
-		'route' => array(),
-		'config' => array(),
-		'error' => array('type' => '\Mu\Kernel\Error\Service'),
-        'cron' => array(),
-		'localization' => array(),
-		'site' => array(),
-	);
-	protected $defaultParameters = array();
 
 	/**
 	 * @param $name
 	 * @param Core|string $service
-	 * @param array $parameters
 	 */
-	public function register($name, $service, array $parameters = array())
+	public function register($name, $service)
 	{
         $name = strtolower($name);
-		// Manage parameters:
-		if (!isset($this->servicesParameter[$name])) {
-			$this->servicesParameter[$name] = array_merge($parameters, $this->defaultParameters);
-		}
 
 		if (isset($this->servicesInstance[$name])) {
 			unset($this->servicesInstance[$name]);
@@ -88,12 +57,6 @@ class Servicer extends Kernel\Core
 		// First get service if not an object:
 		if (!is_object($service)) {
 			$service = new $this->services[$name]();
-		}
-
-		// Test service type:
-		$parameters = $this->servicesParameter[$name];
-		if (isset($parameters['type']) && !is_a($service, $parameters['type'])) {
-			throw new Exception($parameters['type'], Exception::PARAMETER_TYPE_ERROR);
 		}
 
 		// Set application and register it:

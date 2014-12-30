@@ -21,6 +21,21 @@ abstract class Application
     protected $siteUrl;
     protected $cookycryptKey = 'murloc';
     protected $extensions = array();
+    protected $defaultServiceList = array(
+        'log'           => '\Mu\Kernel\Log\Service',
+        'trigger'       => '\Mu\Kernel\Trigger\Service',
+        'toolbox'       => '\Mu\Kernel\Toolbox',
+        'http'          => '\Mu\Kernel\Http\Service',
+        'factory'       => '\Mu\Kernel\Factory',
+        'route'         => '\Mu\Kernel\Route\Service',
+        'config'        => '\Mu\Kernel\Config\Service',
+        'error'         => '\Mu\Kernel\Error\Service',
+        'cron'          => '\Mu\Kernel\Cron\Service',
+        'localization'  => '\Mu\Kernel\Localization\Service',
+        'site'          => '\Mu\Kernel\Site\Service',
+        'renderer'      => '\Mu\Kernel\Renderer\Service',
+    );
+    protected $serviceList = array();
 
     private $environment = null;
 
@@ -54,10 +69,10 @@ abstract class Application
             $servicer = new Service\Servicer();
             $servicer->setApp($this);
             $this->setServicer($servicer);
+
+            $this->registerServices();
             $this->loadConfiguration();
             $this->initConfiguration();
-            $this->registerDefaultServices($servicer);
-            $this->registerCustomServices();
             #endregion
 
             #region Register Bundler
@@ -112,8 +127,6 @@ abstract class Application
 
     abstract protected function loadConfiguration();
 
-    abstract protected function registerCustomServices();
-
     abstract protected function registerBundles();
 
     abstract public function configureService($name, Kernel\Service\Core $service);
@@ -155,15 +168,21 @@ abstract class Application
         $this->getToolbox()->registerAutoload($autoload);
     }
 
-    /**
-     * @param Service\Servicer $servicer
-     */
-    protected function registerDefaultServices(Service\Servicer $servicer)
+    protected function registerServices()
     {
-        $servicer->register('error', '\\Mu\\Kernel\\Error\\Service');
-        // Force error initialize
+        $servicer = $this->getServicer();
+        // Register all default services
+        foreach ($this->defaultServiceList as $serviceName => $serviceClass) {
+            $servicer->register($serviceName, $serviceClass);
+        }
+
+        // Register all custom services
+        foreach ($this->serviceList as $serviceName => $serviceClass) {
+            $servicer->register($serviceName, $serviceClass);
+        }
+
+        // Force error service initialization
         $this->getErrorService();
-        $servicer->register('renderer', '\\Mu\\Kernel\\Renderer\\Service');
     }
 
     /**
