@@ -30,7 +30,7 @@ class Service extends Kernel\Service\Extended
 	 * Open a file and generate an handler of the correct type
 	 * @param $file
 	 * @param array $parameters
-	 * @param $handler  Get handler name or try to determine it by extension (if set to null)
+	 * @param $handler Get handler name or try to determine it by extension (if set to null)
 	 * @return Handler
 	 * @throws Exception
 	 */
@@ -53,14 +53,6 @@ class Service extends Kernel\Service\Extended
 		} catch (Exception $e) {
 			throw $e;
 		}
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function getDirectory()
-	{
-		return 'file';
 	}
 
 	/**

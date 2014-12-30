@@ -11,8 +11,6 @@ abstract class Extended extends Core
 
 	abstract protected function getNamespace();
 
-	abstract protected function getDirectory();
-
 	/**
 	 * Correctly fire handlers close method
 	 */
