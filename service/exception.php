@@ -5,7 +5,6 @@ use Mu\Kernel;
 
 class Exception extends Kernel\Exception
 {
-	const NOT_FOUND = 0;
 	const SERVICE_REGISTRATION_ERROR = 1;
 	const CONTEXT_NOT_FOUND = 2;
 	const HANDLER_TYPE_NOT_FOUND = 3;
@@ -13,6 +12,7 @@ class Exception extends Kernel\Exception
 	const HANDLER_CLOSURE_ERROR = 5;
 	const CONTEXT_ALREADY_EXISTS = 6;
 	const PARAMETER_TYPE_ERROR = 7;
+	const NOT_FOUND = 8;
 
 	/**
 	 * @return string
