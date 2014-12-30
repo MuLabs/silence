@@ -172,7 +172,6 @@ class Service extends Kernel\Service\Core
 		foreach ($acceptLang as $oneLang => $quality) {
 			preg_match('#^[a-z]+#', $oneLang, $normalizedLang);
 
-
 			if (count($normalizedLang) && $this->isSupportedLanguage(reset($normalizedLang))) {
 				$normalizedLang = reset($normalizedLang);
 
