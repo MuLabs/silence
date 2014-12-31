@@ -6,12 +6,26 @@ use Mu\Kernel;
 class Csv extends Kernel\File\Handler
 {
 	/**
+	 * {@inheritDoc}
+	 */
+	public function __close()
+	{
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __init()
+	{
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function format($line)
 	{
 		if (!is_array($line)) {
-			$line = explode($this->sep_value, $line);
+			$line = explode($this->sepValue, $line);
 		};
 
 		foreach ($line as $key => $value) {
@@ -33,6 +47,19 @@ class Csv extends Kernel\File\Handler
 	}
 
 	/**
+	 * @param $handle
+	 * @return string
+	 */
+	protected function openLine($handle) {
+		$line = fgetcsv($handle);
+
+		if (!is_array($line)) {
+			return false;
+		}
+		return trim(implode($this->sepValue, $line));
+	}
+
+	/**
 	 * Get mime type from Http\Header\Response
 	 * @return string
 	 */
@@ -46,10 +73,6 @@ class Csv extends Kernel\File\Handler
 	 */
 	protected function writeLine($handle, $line)
 	{
-		if (!is_array($line)) {
-			$line = explode($this->sep_value, $line);
-		}
-
 		if (is_array($line) && count($line) > 0) {
 			fputcsv($handle, $line);
 		}
@@ -62,13 +85,11 @@ class Csv extends Kernel\File\Handler
 	 */
 	public function save($name, $header = array())
 	{
-		$bom = chr(239) . chr(187) . chr(191);
-
 		$handle = @fopen($name, 'w');
 		if (!$handle) {
 			throw new Kernel\File\Exception($name, Kernel\File\Exception::FILE_NOT_WRITABE);
 		}
-		fwrite($handle, $bom);
+		fwrite($handle, $this->getBOM());
 
 		// Output headers:
 		if (is_array($header)) {

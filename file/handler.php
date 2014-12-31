@@ -11,26 +11,12 @@ abstract class Handler extends Kernel\Handler\Core
 	const DEFAULT_PROTECTOR_VALUE = '"';
 
 	protected $configPrefix = 'file_';
-	protected $sep_line = self::DEFAULT_SEPARATOR_LINE;
-	protected $sep_value = self::DEFAULT_SEPARATOR_VALUE;
-	protected $pro_value = self::DEFAULT_PROTECTOR_VALUE;
+	protected $sepLine = self::DEFAULT_SEPARATOR_LINE;
+	protected $sepValue = self::DEFAULT_SEPARATOR_VALUE;
+	protected $proValue = self::DEFAULT_PROTECTOR_VALUE;
 	protected $content = array();
 	protected $appendHandler = array();
 	protected $filename;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function __init()
-	{
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function __close()
-	{
-	}
 
 	/**
 	 * Add a line
@@ -39,11 +25,7 @@ abstract class Handler extends Kernel\Handler\Core
 	 */
 	public function add($line)
 	{
-		$formated = $this->format($line);
-		if ($formated === false) {
-			throw new Exception($line, Exception::INCORRECT_FORMAT);
-		}
-		$this->content[] = $formated;
+		$this->content[] = $this->format($line);
 	}
 
 	/**
@@ -58,6 +40,13 @@ abstract class Handler extends Kernel\Handler\Core
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getContent() {
+		return $this->content;
+	}
+
+	/**
 	 * Clean current content
 	 */
 	public function clean()
@@ -68,17 +57,13 @@ abstract class Handler extends Kernel\Handler\Core
 	/**
 	 * Open file and store datas
 	 * @param $file
-	 * @param array $parameters
 	 * @throws Exception
 	 */
-	public function open($file, array $parameters = array())
+	public function open($file)
 	{
 		if (!file_exists($file)) {
 			throw new Exception($file, Exception::FILE_NOT_EXISTS);
 		}
-
-		// Parse parameters:
-		$this->setParameters($parameters);
 
 		// Store current filename:
 		$this->filename = $file;
@@ -86,16 +71,41 @@ abstract class Handler extends Kernel\Handler\Core
 		if (!$handle = @fopen($file, 'r')) {
 			throw new Exception($file, Exception::FILE_NOT_READABLE);
 		}
+
 		// Store data:
+		$firstLine = true;
 		while (!feof($handle)) {
-			$line = fgets($handle);
-			if ($line !== false) {
+			$line = $this->openLine($handle);
+
+			if ($line !== false && strlen($line)) {
+				if ($firstLine) {
+					$firstLine = false;
+					if (substr($line, 0, 3) === $this->getBOM()) {
+						$line = substr($line, 3);
+					}
+				}
+
 				$this->add(trim($line));
 			}
 		}
 
 		// Close handle:
 		fclose($handle);
+	}
+
+	/**
+	 * @param $handle
+	 * @return string
+	 */
+	protected function openLine($handle) {
+		return trim(fgets($handle));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBOM() {
+		return chr(239) . chr(187) . chr(191);
 	}
 
 	/**
@@ -142,7 +152,7 @@ abstract class Handler extends Kernel\Handler\Core
 
 		// Output content:
 		foreach ($this->content as $line) {
-			$this->writeLine($this->appendHandler[$name], $this->toString($line));
+			$this->writeLine($this->appendHandler[$name], $line);
 		}
 	}
 
@@ -156,7 +166,7 @@ abstract class Handler extends Kernel\Handler\Core
 		// Get content:
 		$content = '';
 		foreach ($this->content as $line) {
-			$content .= $this->toString($line) . $this->sep_line;
+			$content .= $this->toString($line) . $this->sepLine;
 		}
 
 		// Set headers:
@@ -168,25 +178,6 @@ abstract class Handler extends Kernel\Handler\Core
 		// Write content:
 		$http->setContent($content);
 		$http->send();
-
-		// End with success exception:
-		throw new Kernel\EndException();
-	}
-
-	/**
-	 * @param array $parameters
-	 */
-	public function setParameters(array $parameters = array())
-	{
-		if (isset($parameters['sep_line']) && is_string($parameters['sep_line'])) {
-			$this->sep_line = $parameters['sep_line'];
-		}
-		if (isset($parameters['sep_string']) && is_string($parameters['sep_string'])) {
-			$this->sep_string = $parameters['sep_string'];
-		}
-		if (isset($parameters['sep_value']) && is_string($parameters['sep_value'])) {
-			$this->sep_value = $parameters['sep_value'];
-		}
 	}
 
 	/**
@@ -197,7 +188,7 @@ abstract class Handler extends Kernel\Handler\Core
 	protected function toString($line)
 	{
 		if (is_array($line)) {
-			$line = implode($this->sep_value, $line);
+			$line = implode($this->sepValue, $line);
 		}
 
 		return $line;
