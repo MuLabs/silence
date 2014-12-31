@@ -15,9 +15,15 @@ class Xml extends Kernel\File\Handler
 	/**
 	 * {@inheritDoc}
 	 */
+	public function __close()
+	{
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function __init()
 	{
-		$this->clean();
 	}
 
 	/**
@@ -166,7 +172,7 @@ class Xml extends Kernel\File\Handler
 	public function save($name, $header = array())
 	{
 		if (!$this->content->saveXML($name)) {
-			throw new Exception($file, Exception::FILE_NOT_WRITABE);
+			throw new Exception($name, Exception::FILE_NOT_WRITABE);
 		}
 	}
 

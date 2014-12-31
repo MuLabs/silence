@@ -6,12 +6,26 @@ use Mu\Kernel;
 class Text extends Kernel\File\Handler
 {
 	/**
+	 * {@inheritDoc}
+	 */
+	public function __close()
+	{
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function __init()
+	{
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function format($line)
 	{
 		if (is_array($line)) {
-			$line = implode($this->sep_value, $line);
+			$line = implode($this->sepValue, $line);
 		};
 
 		return $line;
