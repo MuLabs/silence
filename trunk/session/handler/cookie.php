@@ -21,6 +21,7 @@ class Cookie extends Kernel\Session\Handler
     const DEFAULT_HTTPONLY = false;
     const DEFAULT_SALT = '67e04b7bbbcbfbe9ebc84f7d29fdb0bc';
     const DEFAULT_SECURE = false;
+    const COOKIE_PREFIX = 'mu_';
 
     protected $keyVerify = 'mu_verify';
     protected $salt;
@@ -74,7 +75,7 @@ class Cookie extends Kernel\Session\Handler
     }
 
     public function remove() {
-        setcookie($this->getContext(), null, -1, '/');
+        setcookie($this->getCookieName(), null, -1, '/');
         $this->saved = true;
     }
 
@@ -101,7 +102,7 @@ class Cookie extends Kernel\Session\Handler
             $expire = time() + $this->getExpire();
             $value = $this->__cryptCookie($this->info);
             setcookie(
-                $this->getContext(),
+                $this->getCookieName(),
                 $value,
                 $expire,
                 '/',
@@ -111,6 +112,13 @@ class Cookie extends Kernel\Session\Handler
             );
             $this->saved = true;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCookieName() {
+        return self::COOKIE_PREFIX.$this->getContext();
     }
 
     public function disableRefresh()
@@ -183,7 +191,7 @@ class Cookie extends Kernel\Session\Handler
     private function __getCookie()
     {
         $cookie = $this->getApp()->getHttp()->getRequest()->getParameters(
-            $this->getContext(),
+            $this->getCookieName(),
             Kernel\Http\Request::PARAM_TYPE_COOKIE,
             false
         );
