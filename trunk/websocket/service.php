@@ -207,9 +207,9 @@ class Service extends Kernel\Service\Core
                     continue;
                 }
 
-                $this->log('Received updated clients');
+                $this->writeLog('Received updated clients');
                 $receivedText = $this->unmask($content);
-                $this->log('Message text : ' . $receivedText);
+                $this->writeLog('Message text : ' . $receivedText);
 
                 $messages[] = array(
                     'from' => $socket,
@@ -226,7 +226,7 @@ class Service extends Kernel\Service\Core
      */
     public function connectClient()
     {
-        $this->log('Accept new client');
+        $this->writeLog('Accept new client');
         $socketNew = socket_accept($this->master);
         $this->clients[] = $socketNew;
 
@@ -360,7 +360,7 @@ class Service extends Kernel\Service\Core
     /**
      * @param string $message
      */
-    public function log($message)
+    public function writeLog($message)
     {
         $callback = $this->getLogCallback();
         if (is_callable($callback)) {
