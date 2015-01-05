@@ -190,6 +190,12 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 			return false;
 		}
 
+		// Avoid SQL and log add if already deleted
+		$deletedValue = $this->getPropertyValue('deleted');
+		if ($deletedValue !== '' && $deletedValue) {
+			return true;
+		}
+
 		$sql = 'UPDATE @ SET :deleted = ? WHERE ' . $manager->getSpecificWhere();
 		$value = array(1, $this->getId());
 		$query = new Kernel\Db\Query($sql, $value, $manager);
