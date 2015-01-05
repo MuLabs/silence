@@ -5,6 +5,7 @@ use Mu\Kernel;
 
 class Exception extends Kernel\Exception
 {
+	const BREADCRUMB_NOT_FOUND 	= 0;
 	const SECTION_NOT_FOUND 	= 1;
 	const WIDGET_NOT_FOUND 		= 2;
 	const WIDGET_NOT_ALLOWED 	= 3;
@@ -16,6 +17,9 @@ class Exception extends Kernel\Exception
 	public function getFormatedMessage()
 	{
 		switch ($this->code) {
+			case self::BREADCRUMB_NOT_FOUND:
+				return 'Breadcrumb not found : ' . $this->message;
+				break;
 			case self::SECTION_NOT_FOUND:
 				return 'Backoffice section not found : ' . $this->message;
 				break;

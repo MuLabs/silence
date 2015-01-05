@@ -6,7 +6,7 @@ use Mu\Kernel;
 class Service extends Kernel\Service\Core
 {
 	protected $sections = array();
-	protected $widgets = array();
+	protected $widgets 	= array();
 	protected $widgetsInstance = array();
 	protected $actionLogger;
 
@@ -38,6 +38,75 @@ class Service extends Kernel\Service\Core
 		}
 
 		return $this->sections[$sectionName];
+	}
+
+	/**
+	 * @param $name
+	 * @return bool|array
+	 */
+	public function getSubSection($name)
+	{
+		foreach ($this->sections as $section) {
+			if (!isset($section['sub']) || !isset($section['sub'][$name])) {
+				continue;
+			}
+
+			return $section['sub'][$name];
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string $section
+	 * @return array
+	 * @throws Exception
+	 * @throws Kernel\Route\Exception
+	 */
+	public function generateBreadcrumbs($section = '')
+	{
+		$section = (isset($this->sections[$section])) ? $this->sections[$section] : $this->getSubSection($section);
+		if (empty($section)) {
+			return array();
+		}
+
+		$app = $this->getApp();
+		$routeManager = $app->getRouteManager();
+
+		// Get current section breadcrumb:
+		$breadcrumb = (isset($section['breadcrumb'])) ? $section['breadcrumb'] : false;
+		if (!$breadcrumb) {
+			return array();
+		}
+
+		// Get current section url:
+		$menu = (isset($section['menu'])) ? $section['menu'] : false;
+		if ($menu) {
+			$breadcrumb['url'] = $routeManager->getUrl($menu['route'], $menu['param']);
+		}
+
+		// Generate breadcrumbs hierarchy:
+		$result[] = $breadcrumb;
+		$parent   = (isset($breadcrumb['parent'])) ? $breadcrumb['parent'] : false;
+		while (!empty($parent)) {
+			$section = (isset($this->sections[$parent])) ? $this->sections[$parent] : array();
+			if (!isset($section['breadcrumb']) || !isset($section['menu'])) {
+				break;
+			}
+
+			$menu 		= $section['menu'];
+			$breadcrumb = $section['breadcrumb'];
+			if (isset($menu['route'])) {
+				$breadcrumb['url'] = $routeManager->getUrl($menu['route'], $menu['param']);
+			}
+			array_unshift($result, $breadcrumb);
+
+			// Get next parent:
+			$parent = (isset($breadcrumb['parent'])) ? $breadcrumb['parent'] : false;
+		}
+
+		// Return the list:
+		return $result;
 	}
 
 	/**
