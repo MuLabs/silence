@@ -53,6 +53,8 @@ try {
 			}
 			break;
 		case 'update':
+			// Initialize database
+			$app->getDatabase();
 			display('Updating application...');
 			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
 				$app->update('\Mu\display');
@@ -61,6 +63,8 @@ try {
 			}
 			break;
 		case 'install':
+			// Initialize database
+			$app->getDatabase();
 			display(
 				"Installing application...\n/!\\ WARNING : Installing application when your application is already install delete all your old datas /!\\\nConcerned database : " . $app->getDefaultDatabase(
 				)
