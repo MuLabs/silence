@@ -272,6 +272,11 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	 */
 	public function logAction($action, $oldValue, $newValue)
 	{
+		// Don't log on installing:
+		if (defined('INSTALLING')) {
+			return false;
+		}
+
 		$bo = $this->getApp()->getBackofficeService();
 		if (!$bo) {
 			return false;
