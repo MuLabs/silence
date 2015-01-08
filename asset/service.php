@@ -19,7 +19,7 @@ class Service extends Kernel\Service\Core
 	public function getAsset(array $fileList)
 	{
 		$asset = new Asset($this, $fileList);
-		if (!$asset->exists()) {
+		if (!$asset->exists() || $this->forceRegenerate) {
 			$asset->generate();
 		}
 
@@ -30,7 +30,7 @@ class Service extends Kernel\Service\Core
 	 * @param string $ext
 	 * @param string $generator
 	 */
-	public function registerExtension($ext, $generator)
+		public function registerExtension($ext, $generator)
 	{
 		$this->allowedExtension[$ext] = $generator;
 	}
