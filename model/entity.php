@@ -344,7 +344,17 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	 */
 	public function setLocalizedValue($property, $lang, $value)
 	{
-		return $this->getApp()->getLocalizationService()->setLocalization($this, $lang, $property, $value);
+		$oldVal = $this->getLocalizedValue($property, $lang);
+		$result = $this->getApp()->getLocalizationService()->setLocalization($this, $lang, $property, $value);
+		if ($result && $oldVal!=$value) {
+			$this->logAction(
+				Kernel\Backoffice\ActionLogger::ACTION_UPDATE,
+				array($property.ucfirst($lang) => $oldVal),
+				array($property.ucfirst($lang) => $value)
+			);
+		}
+
+		return $result;
 	}
 
 	/**
