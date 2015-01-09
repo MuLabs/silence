@@ -160,7 +160,9 @@ class Service extends Kernel\Service\Core
                     $content = $oneMessage['content'];
 
                     $action = $this->getTypeCallback($content['type']);
-                    call_user_func($action, $this, $oneMessage['from'], $oneMessage['content']);
+                    if (!empty($action)) {
+                        call_user_func($action, $this, $oneMessage['from'], $oneMessage['content']);
+                    }
                 }
             }
         }
@@ -345,7 +347,7 @@ class Service extends Kernel\Service\Core
             }
         }
 
-        $secKey = $headers['Sec-WebSocket-Key'];
+        $secKey    = (isset($headers['Sec-WebSocket-Key'])) ? $headers['Sec-WebSocket-Key'] : '';
         $secAccept = base64_encode(pack('H*', sha1($secKey . $this->getWebsocketMagicKey())));
         //hand shaking header
         $upgrade = "HTTP/1.1 101 Web Socket Protocol Handshake\r\n" .
