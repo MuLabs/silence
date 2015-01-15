@@ -153,7 +153,7 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
-	 * @return Widget[]
+	 * @return array
 	 */
 	public function getAllWidgets()
 	{
