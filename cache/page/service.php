@@ -29,6 +29,20 @@ class Service extends Kernel\Service\Core
 	}
 
 	/**
+	 * @return bool
+	 */
+	public function isActive()
+	{
+		$handler = $this->getHandler();
+
+		/*		if (!$handler) {
+                    return false;
+                }*/
+
+		return !$this->getApp()->getConfigManager()->get('asset.forceRegenerate', false);
+	}
+
+	/**
 	 * @param string $key
 	 * @param int $cache_ttl
 	 * @return bool
