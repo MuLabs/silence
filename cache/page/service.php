@@ -35,9 +35,9 @@ class Service extends Kernel\Service\Core
 	{
 		$handler = $this->getHandler();
 
-		/*		if (!$handler) {
-                    return false;
-                }*/
+		if (!$handler) {
+			return false;
+		}
 
 		return !$this->getApp()->getConfigManager()->get('asset.forceRegenerate', false);
 	}
