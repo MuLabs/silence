@@ -36,6 +36,7 @@ abstract class Application
         'renderer'      => '\Mu\Kernel\Renderer\Service',
     );
     protected $serviceList = array();
+    protected $projectList = array();
 
     private $environment = null;
 
@@ -228,6 +229,28 @@ abstract class Application
         }
 
         return $this->environment;
+    }
+
+    /**
+     * @param $label
+     * @return int
+     */
+    public function getProjectId($label)
+    {
+        if (!isset($this->projectIds)) {
+            $this->projectIds = array_flip($this->projectList);
+        }
+
+        return ($this->projectIds[$label]) ? $this->projectIds[$label] : 0;
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public function getProjectLabel($id)
+    {
+        return (isset($this->projectList[$id])) ? $this->projectList[$id] : 'default';
     }
 
     /**
