@@ -712,7 +712,7 @@ abstract class Application
         }
 
         $cacheManager = $this->getPageCache();
-        if ($cacheManager && $controller->hasCache()) {
+        if ($cacheManager && $cacheManager->isActive() && $controller->hasCache()) {
             $cacheKey = $controller->getCacheKey();
 
             try {
