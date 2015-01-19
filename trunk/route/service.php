@@ -26,7 +26,9 @@ class Service extends Kernel\Service\Core
 
     public function reloadMainRoute()
     {
-        $this->currentRoute = $this->mainRoute;
+        if (!empty($this->mainRoute)) {
+            $this->currentRoute = $this->mainRoute;
+        }
     }
 
 	/**
