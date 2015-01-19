@@ -8,6 +8,7 @@ class Service extends Kernel\Service\Core
 	protected $routes = array();
     protected $transferedParameters = array();
     protected $currentRoute;
+    protected $mainRoute;
 
 	const ROUTE_RULE_FILE = 'route.php';
 	const FRAGMENT_PARAM = '__fg';
@@ -17,8 +18,16 @@ class Service extends Kernel\Service\Core
 	 */
 	private function setCurrentRoute(Route $route)
 	{
+        if (empty($this->currentRoute)) {
+            $this->mainRoute = $route;
+        }
 		$this->currentRoute = $route;
 	}
+
+    public function reloadMainRoute()
+    {
+        $this->currentRoute = $this->mainRoute;
+    }
 
 	/**
 	 * @return Route
