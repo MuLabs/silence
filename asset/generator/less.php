@@ -18,8 +18,8 @@ class Less extends Kernel\Asset\Generator\Css
 		}
 
 
-		$content = $this->lesser->compile($this->dumpVars() . "\n" . $this->getFullContent());
-		$content = $this->minify($content);
+		$content = $this->lesser->compile($this->dumpVars() . "\r\n" . $this->getFullContent());
+		$content = $this->minify($content) . "\r\n";
 		$path = $this->getAsset()->getPath();
 		$dirPath = dirname($path);
 		if (!file_exists($dirPath)) {
