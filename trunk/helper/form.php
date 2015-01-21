@@ -49,7 +49,8 @@ class Form extends Kernel\Service\Core
         'class' => '', // Specific field class
         'required' => false, // Is field required
         'pattern' => '', // Pattern to add to input fields (HTML5)
-        'values' => [], // Values for checkbox, radio and select
+        'option' => '', // Value of the option checked in checkbox
+        'values' => [], // Values for radio and select
         'multiple' => false, // Multiple select declarator
         'separator' => ',', // Default separator (for DB storage)
     );
@@ -129,14 +130,18 @@ class Form extends Kernel\Service\Core
             }
 
             // Set default values for radio and select:
-            if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array(
-                    $field['values']
-                )
-            ) {
+            if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['values'])) {
                 if (method_exists($manager, $field['values'])) {
                     $field['values'] = $manager->$field['values']();
+                } else if (is_string($field['values'])) {
+                    $field['values'] = explode(',', $field['values']);
                 } else {
                     continue;
+                }
+
+                if (isset($field['none'])) {
+                    $default = (is_array($field['none'])) ? $field['none'] : array($field['none']);
+                    $field['values'] = array_merge($default, $field['values']);
                 }
             }
 
@@ -144,7 +149,7 @@ class Form extends Kernel\Service\Core
             $value = null;
             if (is_a($object, '\Mu\Kernel\Model\Entity')) {
                 if ($lang == null) {
-                    $getter = 'get' . ucfirst($id);
+                    $getter = (isset($field['getter'])) ? $field['getter'] : 'get' . ucfirst($id);
                     if ($entity != null and method_exists($entity, $getter)) {
                         $value = $entity->$getter();
                     }
