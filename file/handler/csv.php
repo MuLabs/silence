@@ -63,7 +63,7 @@ class Csv extends Kernel\File\Handler
 	 * Get mime type from Http\Header\Response
 	 * @return string
 	 */
-	protected function getMimeType()
+	public function getMimeType()
 	{
 		return Kernel\Http\Header\Response::MIME_TYPE_CSV;
 	}
