@@ -56,6 +56,30 @@ class Service extends Kernel\Service\Extended
 	}
 
 	/**
+	 * Send content from server
+	 * @param $filepath
+	 * @throws \Mu\Kernel\EndException
+	 */
+	public function sendFile($filepath, $handler)
+	{
+		$handler = $this->getHandler($handler);
+
+		// Get content:
+		$content = file_get_contents($filepath);
+		$name = basename($filepath);
+
+		// Set headers:
+		$http = new Kernel\Http\Response();
+		$http->getHeader()->setContentType($handler->getMimeType());
+		$http->getHeader()->setContentLength(strlen($content));
+		$http->getHeader()->setContentFilename($name);
+
+		// Write content:
+		$http->setContent($content);
+		$http->send();
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function getNamespace()

@@ -166,7 +166,7 @@ abstract class Handler extends Kernel\Handler\Core
 		// Get content:
 		$content = '';
 		foreach ($this->content as $line) {
-			$content .= $this->toString($line) . $this->sepLine;
+			$content .= $this->proValue . $this->toString($line) . $this->proValue . $this->sepLine;
 		}
 
 		// Set headers:
@@ -205,7 +205,7 @@ abstract class Handler extends Kernel\Handler\Core
 	 * Get mime type from Http\Header\Response
 	 * @return string
 	 */
-	abstract protected function getMimeType();
+	abstract public function getMimeType();
 
 	/**
 	 * Call the correct write function to add line into handle
