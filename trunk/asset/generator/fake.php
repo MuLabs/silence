@@ -10,7 +10,7 @@ class Fake extends Kernel\Asset\Generator
 	 */
 	public function generateAsset()
 	{
-		$content = $this->minify($this->getFullContent());
+		$content = $this->minify($this->getFullContent()) . "\r\n";
 		$path = $this->getAsset()->getPath();
 		$dirPath = dirname($path);
 		if (!file_exists($dirPath)) {
