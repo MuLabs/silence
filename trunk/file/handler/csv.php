@@ -74,7 +74,7 @@ class Csv extends Kernel\File\Handler
 	protected function writeLine($handle, $line)
 	{
 		if (is_array($line) && count($line) > 0) {
-			fputcsv($handle, $line);
+			fputcsv($handle, array_map('utf8_decode', $line));
 		}
 	}
 
@@ -89,7 +89,6 @@ class Csv extends Kernel\File\Handler
 		if (!$handle) {
 			throw new Kernel\File\Exception($name, Kernel\File\Exception::FILE_NOT_WRITABE);
 		}
-		fwrite($handle, $this->getBOM());
 
 		// Output headers:
 		if (is_array($header)) {
