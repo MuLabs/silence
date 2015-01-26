@@ -126,6 +126,31 @@ class Request
 		$this->requestUri = $uri;
 	}
 
+	/**
+	 * @param string $label
+	 * @param int $type
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function setParameter($label, $type, $value)
+	{
+		switch ($type) {
+			case self::PARAM_TYPE_GET:
+				$_GET[$label] = $value;
+				$_REQUEST[$label] = $value;
+				break;
+
+			case self::PARAM_TYPE_POST:
+				$_POST[$label] = $value;
+				$_REQUEST[$label] = $value;
+				break;
+
+			case self::PARAM_TYPE_SESSION:
+				$_SESSION[$label] = $value;
+				break;
+		}
+	}
+
 	/********************/
 	/*    GETTER        */
 	/********************/
@@ -248,31 +273,6 @@ class Request
 
 			default:
 				return false;
-				break;
-		}
-	}
-
-	/**
-	 * @param string $label
-	 * @param int $type
-	 * @param mixed $value
-	 * @return void
-	 */
-	public function setParameter($label, $type, $value)
-	{
-		switch ($type) {
-			case self::PARAM_TYPE_GET:
-				$_GET[$label] = $value;
-				$_REQUEST[$label] = $value;
-				break;
-
-			case self::PARAM_TYPE_POST:
-				$_POST[$label] = $value;
-				$_REQUEST[$label] = $value;
-				break;
-
-			case self::PARAM_TYPE_SESSION:
-				$_SESSION[$label] = $value;
 				break;
 		}
 	}
