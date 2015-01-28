@@ -53,6 +53,7 @@ class Form extends Kernel\Service\Core
         'values' => [], // Values for radio and select
         'multiple' => false, // Multiple select declarator
         'separator' => ',', // Default separator (for DB storage)
+        'permissions' => array('read'=>true, 'write'=>true)
     );
 
     /**
@@ -105,11 +106,15 @@ class Form extends Kernel\Service\Core
             return [];
         }
 
+        // Get viewer to test permissions:
+        $defGroup = $manager->getDefaultGroup(); // TODO remove this when Permity::hadPermissionToProperty can use groups
+        /** @var \Mu\Bundle\Users\Model\Entity\User $viewer */
+        $viewer   = $this->getViewer();
+        $bPerm    = ($viewer && method_exists($viewer, 'hasPermissionToProperty'));
+
         // Get properties to check:
-        $properties = (!empty($properties)) ? array_intersect_key(
-            $allProperties[$group]['properties'],
-            array_flip($properties)
-        )
+        $properties = (!empty($properties))
+            ? array_intersect_key($allProperties[$group]['properties'], array_flip($properties))
             : $allProperties[$group]['properties'];
 
         // Start form creation:
@@ -121,8 +126,16 @@ class Form extends Kernel\Service\Core
 
             // Set generalities:
             $field = array_merge($this->defaultField, $values['form']);
-            $field['label'] = (isset($values['title'])) ? $values['title'] : null;
+            $field['label']  = (isset($values['title'])) ? $values['title'] : null;
             $field['length'] = (isset($values['length'])) ? $values['length'] : null;
+
+            // Set permissions:
+            if ($bPerm && $group == $defGroup) { // TODO remove this when Permity::hadPermissionToProperty can use groups
+                $field['permissions'] = array(
+                    'read' => $viewer->hasPermissionToProperty($group, $id, 1),
+                    'write'=> $viewer->hasPermissionToProperty($group, $id, 2)
+                );
+            }
 
             // Check input type:
             if (!isset($field['type']) || $field['type'] == self::TYPE_INPUT) {
@@ -260,5 +273,18 @@ class Form extends Kernel\Service\Core
     public function setEnctype($type)
     {
         $this->enctype = $type;
+    }
+
+    /**
+     * @return bool|\Mu\Bundle\Users\Interfaces\Authenticable
+     */
+    private function getViewer()
+    {
+        $app = $this->getApp();
+        if (method_exists($app, 'getAuthenticationService')) {
+            return $app->getAuthenticationService()->getViewer();
+        } else {
+            return false;
+        }
     }
 }
