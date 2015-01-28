@@ -131,17 +131,19 @@ class Form extends Kernel\Service\Core
 
             // Set default values for radio and select:
             if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['values'])) {
-                if (method_exists($manager, $field['values'])) {
+                if (method_exists($object, $field['values'])) {
+                    $field['values'] = $object->$field['values']();
+                } else if (method_exists($manager, $field['values'])) {
                     $field['values'] = $manager->$field['values']();
-                } else if (is_string($field['values'])) {
-                    $field['values'] = explode(',', $field['values']);
+                } else if (isset($field['values'])) {
+                    $field['values'] = (is_string($field['values'])) ? explode(',', $field['values']) : $field['values'];
                 } else {
                     continue;
                 }
 
                 if (isset($field['none'])) {
-                    $default = (is_array($field['none'])) ? $field['none'] : array($field['none']);
-                    $field['values'] = array_merge($default, $field['values']);
+                    $field['values'][0] = $field['none'];
+                    ksort($field['values']);
                 }
             }
 
@@ -162,6 +164,11 @@ class Form extends Kernel\Service\Core
                 $field['value'] = $value;
             }
 
+            // Add lang:
+            if ($lang != null) {
+                $id .= '_' . $lang;
+            }
+
             // Add default input name:
             if (!isset($field['name'])) {
                 $field['name'] = $id;
@@ -170,10 +177,6 @@ class Form extends Kernel\Service\Core
             // Add default field ID:
             if (!isset($field['id'])) {
                 $field['id'] = $id;
-            }
-
-            if ($lang != null) {
-                $field['id'] .= '_' . $lang;
             }
 
             // Add field into the form array:
@@ -207,7 +210,7 @@ class Form extends Kernel\Service\Core
     public function isValid($object, array $properties = array())
     {
         // Get manager fields:
-        $fields = $this->getForm($object, $properties);
+        $fields = $this->getField($object, $properties);
 
         // Get request:
         $request = $this->getApp()->getHttp()->getRequest();
