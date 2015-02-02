@@ -33,6 +33,14 @@ abstract class Controller extends Kernel\Core
 	}
 
 	/**
+	 * @param bool
+	 */
+	public function setCache($bCache = false)
+	{
+		$this->hasCache = (bool)$bCache;
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getCacheTtl()
@@ -60,7 +68,6 @@ abstract class Controller extends Kernel\Core
     public function getCacheKey()
     {
 		$cacheElements = $this->getCacheKeyElements();
-
 		if (!is_array($cacheElements)) {
 			return '';
 		}
@@ -133,11 +140,12 @@ abstract class Controller extends Kernel\Core
 			return false;
 		}
 
-		if (!is_callable(array($this, $fragmentName . 'Fragment'))) {
+		$return = call_user_func(array($this, $fragmentName . 'Fragment'));
+		if (!$return) {
 			throw new Exception($fragmentName, Exception::INVALID_FRAGMENT_NAME);
 		}
 
-		return call_user_func(array($this, $fragmentName . 'Fragment'));
+		return $return;
 	}
 
     /**
