@@ -207,11 +207,11 @@ trait Requestable
     {
         $app = $this->getApp();
         if (!isset($this->dbHandler)) {
-            $this->setDbHandler($app->getDatabase()->getHandler($app->getDefaultDbContext()));
-        }
-
-        if (!$this->dbHandler) {
-            throw new Kernel\Db\Exception(__CLASS__, Kernel\Db\Exception::NO_DB_HANDLER);
+            try {
+                $this->setDbHandler($app->getDatabase()->getHandler($app->getDefaultDbContext()));
+            } catch (\Exception $e) {
+                throw new Kernel\Db\Exception(__CLASS__, Kernel\Db\Exception::NO_DB_HANDLER);
+            }
         }
 
         return $this->dbHandler;
