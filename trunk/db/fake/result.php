@@ -61,6 +61,13 @@ class Result extends Kernel\Db\Result
 	/**
 	 * {@inheritDoc}
 	 */
+	public function fetchAllValue() {
+		return array(array($this->query));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function numRows()
 	{
 		return rand(0, 100);
