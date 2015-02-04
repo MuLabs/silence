@@ -186,7 +186,9 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	public function delete()
 	{
 		$manager = $this->getManager();
-		if (!$manager->getProperty($manager->getDefaultGroup(), 'deleted')) {
+		try {
+			$manager->getProperty($manager->getDefaultGroup(), 'deleted');
+		} catch (Kernel\Db\Exception $e) {
 			return false;
 		}
 
