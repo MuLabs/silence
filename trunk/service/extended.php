@@ -21,8 +21,9 @@ abstract class Extended extends Core
 			foreach ($handlers as $handler) {
 				$handler->__close();
 			}
-		} catch (Exception $e) {
-			throw new Exception($e->getMessage(), Exception::HANDLER_CLOSURE_ERROR);
+			return true;
+		} catch (\Exception $e) {
+			return false;
 		}
 	}
 
@@ -105,6 +106,9 @@ abstract class Extended extends Core
 		// Get handler class
 		$type = ucfirst($type);
 		$class = $this->getNamespace() . '\\Handler\\' . $type;
+		if (!class_exists($class)) {
+			throw new Exception('Class not found '.$class, Exception::HANDLER_TYPE_NOT_FOUND);
+		}
 
 		try {
 			// Generate new handler and initialize it
@@ -116,8 +120,8 @@ abstract class Extended extends Core
 
 			// Return the handler instance:
 			return $handler;
-		} catch (Exception $e) {
-			throw new Exception($e->getMessage(), Exception::HANDLER_TYPE_NOT_FOUND);
+		} catch (\Exception $e) {
+			throw new Exception($e->getMessage(), Exception::HANDLER_CREATION_ERROR);
 		}
 	}
 }
