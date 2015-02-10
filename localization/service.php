@@ -264,7 +264,7 @@ class Service extends Kernel\Service\Core
 	 * @param string $lang
 	 * @return mixed
 	 */
-	private function getLocalizationValue(Kernel\Model\Entity $entity, $property, $lang = null)
+	protected function getLocalizationValue(Kernel\Model\Entity $entity, $property, $lang = null)
 	{
 		$manager = $entity->getManager();
 		$managerName = $manager->getName();

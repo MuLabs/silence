@@ -205,13 +205,13 @@ trait Requestable
      */
     public function getDbHandler()
     {
-        $app = $this->getApp();
-        if (!isset($this->dbHandler)) {
-            try {
+        try {
+            $app = $this->getApp();
+            if (!isset($this->dbHandler)) {
                 $this->setDbHandler($app->getDatabase()->getHandler($app->getDefaultDbContext()));
-            } catch (\Exception $e) {
-                throw new Kernel\Db\Exception(__CLASS__, Kernel\Db\Exception::NO_DB_HANDLER);
             }
+        } catch (\Exception $e) {
+            throw new Kernel\Db\Exception(__CLASS__, Kernel\Db\Exception::NO_DB_HANDLER);
         }
 
         return $this->dbHandler;
