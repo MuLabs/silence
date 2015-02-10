@@ -316,4 +316,12 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			$pageCacheManage->delete('*{' . $this->getEntityType() . '}*');
 		}
 	}
+
+	/**
+	 * @return array
+	 */
+	public function getItemToRegister()
+	{
+		return array();
+	}
 }
