@@ -79,7 +79,7 @@ class Servicer extends Kernel\Core
 			try {
 				$service = $this->get($serviceName);
 				$service->createStructure($stdOut);
-			} catch (Exception $e) {
+			} catch (Kernel\Exception $e) {
 				if ($e->getCode() == Exception::NOT_FOUND) {
 					continue;
 				}
