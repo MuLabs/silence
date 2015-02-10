@@ -103,7 +103,7 @@ class Form extends Kernel\Service\Core
 
         // Get manager properties or return array:
         if (!is_array($allProperties[$group]['properties'])) {
-            return [];
+            return array();
         }
 
         // Get viewer to test permissions:
@@ -209,7 +209,7 @@ class Form extends Kernel\Service\Core
      */
     public function getField($object, $field, $group = null, $lang = null)
     {
-        $fields = $this->getFields($object, [$field], $group, $lang);
+        $fields = $this->getFields($object, array($field), $group, $lang);
         $return = reset($fields);
         return $return;
     }
