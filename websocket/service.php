@@ -165,6 +165,7 @@ class Service extends Kernel\Service\Core
                     }
                 }
             }
+            sleep(1);
         }
     }
 
