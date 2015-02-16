@@ -199,9 +199,9 @@ class Service extends Kernel\Service\Core
 
             if ($loop == 60) {
                 $loop = 0;
+                $message = '1';
                 foreach ($this->clients as $socket) {
-                    $content = socket_read($socket, self::BUFFER_LENGTH);
-                    if ($content === false) {
+                    if (socket_write($socket, $message, strlen($message)) === false) {
                         $this->disconnectClient($socket);
                         continue;
                     }
