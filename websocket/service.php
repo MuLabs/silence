@@ -164,8 +164,6 @@ class Service extends Kernel\Service\Core
                         call_user_func($action, $this, $oneMessage['from'], $oneMessage['content']);
                     }
                 }
-                /*unset($messages);
-                gc_collect_cycles();*/
             }
             sleep(1);
         }
@@ -203,7 +201,7 @@ class Service extends Kernel\Service\Core
                 $loop = 0;
                 foreach ($this->clients as $socket) {
                     $content = socket_read($socket, self::BUFFER_LENGTH);
-                    if ($content === "" || $content === false) {
+                    if ($content === false) {
                         $this->disconnectClient($socket);
                         continue;
                     }
