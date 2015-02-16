@@ -164,6 +164,8 @@ class Service extends Kernel\Service\Core
                         call_user_func($action, $this, $oneMessage['from'], $oneMessage['content']);
                     }
                 }
+                /*unset($messages);
+                gc_collect_cycles();*/
             }
             sleep(1);
         }
@@ -189,10 +191,24 @@ class Service extends Kernel\Service\Core
         $messages = array();
         /** @var array $changed */
 
+        $loop = 0;
         while (true) {
+            sleep(1);
+            ++$loop;
             $changed = $this->clients;
             $changed[] = $this->master;
             socket_select($changed, $null, $null, 0, 10);
+
+            if ($loop == 60) {
+                $loop = 0;
+                foreach ($this->clients as $socket) {
+                    $content = socket_read($socket, self::BUFFER_LENGTH);
+                    if ($content === "" || $content === false) {
+                        $this->disconnectClient($socket);
+                        continue;
+                    }
+                }
+            }
 
             if (empty($changed)) {
                 continue;
