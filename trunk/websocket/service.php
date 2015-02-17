@@ -189,24 +189,10 @@ class Service extends Kernel\Service\Core
         $messages = array();
         /** @var array $changed */
 
-        $loop = 0;
         while (true) {
-            sleep(1);
-            ++$loop;
             $changed = $this->clients;
             $changed[] = $this->master;
-            socket_select($changed, $null, $null, 0, 10);
-
-            if ($loop == 60) {
-                $loop = 0;
-                $message = '1';
-                foreach ($this->clients as $socket) {
-                    if (socket_write($socket, $message, strlen($message)) === false) {
-                        $this->disconnectClient($socket);
-                        continue;
-                    }
-                }
-            }
+            socket_select($changed, $null, $null, 10, 0);
 
             if (empty($changed)) {
                 continue;
@@ -258,11 +244,13 @@ class Service extends Kernel\Service\Core
 
     public function disconnectClient($client)
     {
+        $this->writeLog('Disconnect client');
         $callbacks = $this->getDisconnectCallbacks();
         foreach ($callbacks as $callback) {
             call_user_func($callback, $this, $client);
         }
 
+        socket_shutdown($client, 2);
         socket_close($client);
         $key = array_search($client, $this->clients);
         unset($this->clients[$key]);
@@ -285,10 +273,11 @@ class Service extends Kernel\Service\Core
         }
 
         $response = $this->mask(json_encode($msg));
+        $result = true;
         foreach ($clients as $changedSocket) {
-            socket_write($changedSocket, $response, strlen($response));
+            $result &= socket_write($changedSocket, $response, strlen($response));
         }
-        return true;
+        return (bool)$result;
     }
 
     /**
