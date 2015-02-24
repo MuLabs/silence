@@ -21,84 +21,108 @@ class Service extends Kernel\Service\Core
             'properties' => array(
                 'id' => array(
                     'title' => 'ID',
-                    'db' => 'id',
-                    'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
-                    'type' => 'smallint',
+                    'database' => array(
+                        'attribute' => 'id',
+                        'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
+                        'type' => 'smallint',
+                    ),
                 ),
                 'minute' => array(
                     'title' => 'Minutes frequency',
-                    'db' => 'minute',
-                    'type' => 'varchar',
-                    'length' => 5,
-                    'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    'database' => array(
+                        'attribute' => 'minute',
+                        'type' => 'varchar',
+                        'length' => 5,
+                        'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    ),
                 ),
                 'hour' => array(
                     'title' => 'Hour frequency',
-                    'db' => 'hour',
-                    'type' => 'varchar',
-                    'length' => 5,
-                    'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    'database' => array(
+                        'attribute' => 'hour',
+                        'type' => 'varchar',
+                        'length' => 5,
+                        'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    ),
                 ),
                 'day' => array(
                     'title' => 'Day of month frequency',
-                    'db' => 'day',
-                    'type' => 'varchar',
-                    'length' => 5,
-                    'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    'database' => array(
+                        'attribute' => 'day',
+                        'type' => 'varchar',
+                        'length' => 5,
+                        'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    ),
                 ),
                 'month' => array(
                     'title' => 'Month frequency',
-                    'db' => 'month',
-                    'type' => 'varchar',
-                    'length' => 5,
-                    'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    'database' => array(
+                        'attribute' => 'month',
+                        'type' => 'varchar',
+                        'length' => 5,
+                        'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    ),
                 ),
                 'week' => array(
                     'title' => 'Week day frequency',
-                    'db' => 'week',
-                    'type' => 'varchar',
-                    'length' => 11,
-                    'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    'database' => array(
+                        'attribute' => 'week',
+                        'type' => 'varchar',
+                        'length' => 11,
+                        'pdo_extra' => 'NOT NULL DEFAULT "*"',
+                    ),
                 ),
                 'script' => array(
                     'title' => 'Script path',
-                    'db' => 'script',
-                    'type' => 'varchar',
-                    'length' => 255,
+                    'database' => array(
+                        'attribute' => 'script',
+                        'type' => 'varchar',
+                        'length' => 255,
+                    ),
                 ),
                 'params' => array(
                     'title' => 'Script params',
-                    'db' => 'params',
-                    'type' => 'varchar',
-                    'length' => 255,
+                    'database' => array(
+                        'attribute' => 'params',
+                        'type' => 'varchar',
+                        'length' => 255,
+                    ),
                 ),
                 'dateLast' => array(
                     'title' => 'Execution date',
-                    'db' => 'dateLast',
-                    'type' => 'timestamp',
+                    'database' => array(
+                        'attribute' => 'dateLast',
+                        'type' => 'timestamp',
+                    ),
                 ),
                 'dateError' => array(
                     'title' => 'Last error date',
-                    'db' => 'dateError',
-                    'type' => 'timestamp',
+                    'database' => array(
+                        'attribute' => 'dateError',
+                        'type' => 'timestamp',
+                    ),
                 ),
                 'active' => array(
                     'title' => 'Status active',
                     'form' => array(
                         'type' => 'checkbox',
                     ),
-                    'db' => 'active',
-                    'pdo_extra' => 'UNSIGNED NOT NULL DEFAULT 1',
-                    'type' => 'tinyint',
+                    'database' => array(
+                        'attribute' => 'active',
+                        'pdo_extra' => 'UNSIGNED NOT NULL DEFAULT 1',
+                        'type' => 'tinyint',
+                    ),
                 ),
                 'force' => array(
                     'title' => 'Force next execution',
                     'form' => array(
                         'type' => 'checkbox',
                     ),
-                    'db' => 'force',
-                    'pdo_extra' => 'UNSIGNED NOT NULL DEFAULT 0',
-                    'type' => 'tinyint',
+                    'database' => array(
+                        'attribute' => 'force',
+                        'pdo_extra' => 'UNSIGNED NOT NULL DEFAULT 0',
+                        'type' => 'tinyint',
+                    ),
                 ),
             )
         )

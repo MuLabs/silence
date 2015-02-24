@@ -23,7 +23,7 @@ trait Requestable
 
                 // Generate properties
                 foreach ($oneGroupInfos['properties'] as $label => $oneProperty) {
-                    if (!isset($oneProperty['db'])) {
+                    if (!isset($oneProperty['database']['attribute'])) {
                         continue;
                     }
 
@@ -204,10 +204,10 @@ trait Requestable
     {
         $propertyInfos = $this->getProperty($group, $name);
         if ($isShortMode) {
-            return '`' . $propertyInfos['db'] . '`';
+            return '`' . $propertyInfos['database']['attribute'] . '`';
         } else {
             $groupInfos = $this->getGroupPropertyInfos($group);
-            return '`' . $groupInfos['db'] . '`.`' . $propertyInfos['db'] . '`';
+            return '`' . $groupInfos['db'] . '`.`' . $propertyInfos['database']['attribute'] . '`';
         }
     }
 

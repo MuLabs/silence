@@ -133,12 +133,12 @@ abstract class Handler extends Kernel\Core
                 ), exception::INVALID_PROPERTY_COUNT);
             }
             $property = $property['manager']->getProperty($property['group'], $property['property']);
-            $propertyType = $this->knowActions[$property['type']];
+            $propertyType = $this->knowActions[$property['database']['type']];
             $values[$valuesOffset] = array(
                 'type' => $propertyType,
                 'value' => ($checkValue ? $this->checkProperty(
                         $values[$valuesOffset],
-                        $this->knowActions[$property['type']]
+                        $this->knowActions[$property['database']['type']]
                     ) : $values[$valuesOffset])
             );
             $lastFound = strrpos($subQuery, '?');

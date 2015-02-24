@@ -162,17 +162,17 @@ class Handler extends Kernel\Db\Handler
 	 */
 	public function getStructureFromProperty(array $property)
 	{
-		if (!isset($this->typeToSQL[$property['type']])) {
-			throw new Exception($property['type'], Exception::INVALID_PROPERTY_TYPE);
+		if (!isset($this->typeToSQL[$property['database']['type']])) {
+			throw new Exception($property['database']['type'], Exception::INVALID_PROPERTY_TYPE);
 		}
 
-		$propDatas = $this->typeToSQL[$property['type']];
-		if (isset($property['length'])) {
-			$propDatas .= '(' . $property['length'] . ')';
+		$propDatas = $this->typeToSQL[$property['database']['type']];
+		if (isset($property['database']['length'])) {
+			$propDatas .= '(' . $property['database']['length'] . ')';
 		}
 
-		if (isset($property['pdo_extra'])) {
-			$propDatas .= ' ' . $property['pdo_extra'];
+		if (isset($property['database']['pdo_extra'])) {
+			$propDatas .= ' ' . $property['database']['pdo_extra'];
 		}
 		return $propDatas;
 	}
