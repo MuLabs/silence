@@ -83,7 +83,7 @@ abstract class Handler extends Kernel\Core
         $subQuery = $strQuery;
         $defaultGroup = $defaultRequestable->getDefaultGroup();
 
-        while ($lastFound !== false) {
+        while ($lastFound !== false && $valuesOffset >= 0) {
             $subQuery = substr($subQuery, 0, $lastFound);
             $subPropQuery = substr($subQuery, strrpos($subQuery, ':') + 1);
             $posT = strpos($subPropQuery, "\t");

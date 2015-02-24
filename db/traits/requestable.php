@@ -66,60 +66,82 @@ trait Requestable
      */
     public function createStructure($stdOut = '\print')
     {
-        $handler = $this->getDbHandler();
         call_user_func($stdOut, 'Start creating structure for ' . get_called_class());
         foreach ($this->properties as $table => $oneTableInfos) {
-            $properties = array();
-
-            $isDefault = $table == $this->getDefaultGroup();
-            if ($isDefault) {
-                $tableToken = '@';
-            } else {
-                $tableToken = '@' . $table;
-            }
-            call_user_func($stdOut, 'Start creating structure for table ' . $tableToken);
-
-            // Generate properties
-            foreach ($oneTableInfos['properties'] as $label => $oneProperty) {
-                if (!isset($oneProperty['db'])) {
-                    continue;
-                }
-
-                if ($isDefault) {
-                    $propToken = ':' . $label;
-                } else {
-                    $propToken = str_replace('@', ':', $tableToken) . '.' . $label;
-                }
-
-                call_user_func($stdOut, 'Generating property ' . $propToken);
-
-                $propDatas = $handler->getStructureFromProperty($oneProperty);
-                $properties[] = $propToken . ' ' . $propDatas;
-                call_user_func($stdOut, $propToken . ' => Done');
-            }
-
-            // Generate keys
-            foreach ($oneTableInfos['keys'] as $keyName => $oneKey) {
-                call_user_func($stdOut, 'Generating key ' . $keyName);
-
-                $properties[] = $handler->getStructureFromKey(str_replace('@', ':', $tableToken), $keyName, $oneKey);
-                call_user_func($stdOut, $keyName . ' => Done');
-            }
-
-            // Generate tables infos
-            $tableExtra = $handler->getStructureFromTableInfos($oneTableInfos);
-            $query = new Kernel\Db\Query('CREATE TABLE ' . $tableToken . ' (' . implode(
-                    ', ',
-                    $properties
-                ) . ') ' . $tableExtra, array(), $this);
-            $query->setShortMode(true);
-            $handler->sendQuery($query);
-
-            call_user_func($stdOut, $tableToken . ' => Done');
+            $this->createTableStructure($stdOut, $this, $table, $oneTableInfos);
         }
 
         call_user_func($stdOut, get_called_class() . ' => Done');
         return true;
+    }
+
+    /**
+     * @param string $stdOut
+     * @param Kernel\Db\Interfaces\Requestable $requestable
+     * @param string $tableName
+     * @param array $tableInfos
+     * @throws Kernel\Db\Exception
+     */
+    protected function createTableStructure(
+        $stdOut = '\print',
+        Kernel\Db\Interfaces\Requestable $requestable,
+        $tableName,
+        $tableInfos
+    ) {
+        $handler = $this->getDbHandler();
+        $properties = array();
+
+        if ($tableName == 'data') {
+            echo 'plop';
+        }
+
+        $isDefault = $tableName == $this->getDefaultGroup();
+        if ($isDefault) {
+            $tableToken = '@';
+        } else {
+            $tableToken = '@' . $tableName;
+        }
+        call_user_func($stdOut, 'Start creating structure for table ' . $tableToken);
+
+        // Generate properties
+        foreach ($tableInfos['properties'] as $label => $oneProperty) {
+            if (!isset($oneProperty['db'])) {
+                continue;
+            }
+
+            if ($isDefault) {
+                $propToken = ':' . $label;
+            } else {
+                $propToken = str_replace('@', ':', $tableToken) . '.' . $label;
+            }
+
+            call_user_func($stdOut, 'Generating property ' . $propToken);
+
+            $propDatas = $handler->getStructureFromProperty($oneProperty);
+            $properties[] = $propToken . ' ' . $propDatas;
+            call_user_func($stdOut, $propToken . ' => Done');
+        }
+
+        // Generate keys
+        foreach ($tableInfos['keys'] as $keyName => $oneKey) {
+            call_user_func($stdOut, 'Generating key ' . $keyName);
+
+            $properties[] = $handler->getStructureFromKey(str_replace('@', ':', $tableToken), $keyName, $oneKey);
+            call_user_func($stdOut, $keyName . ' => Done');
+        }
+
+        // Generate tables infos
+        $tableExtra = $handler->getStructureFromTableInfos($tableInfos);
+        $query = new Kernel\Db\Query(
+            'CREATE TABLE ' . $tableToken . ' (' . implode(
+                ', ',
+                $properties
+            ) . ') ' . $tableExtra, array(), $requestable
+        );
+        $query->setShortMode(true);
+        $handler->sendQuery($query);
+
+        call_user_func($stdOut, $tableToken . ' => Done');
     }
 
     /**
