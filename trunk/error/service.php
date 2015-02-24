@@ -32,64 +32,86 @@ class Service extends Kernel\Service\Core
             'properties' => array(
                 'id' => array(
                     'title' => 'ID',
-                    'db' => 'idError',
-                    'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
-                    'type' => 'mediumint',
+                    'database' => array(
+                        'attribute' => 'idError',
+                        'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
+                        'type' => 'mediumint',
+                    ),
                 ),
                 'type' => array(
                     'title' => 'Error type',
-                    'db' => 'type',
-                    'type' => 'varchar',
-                    'length' => 10,
+                    'database' => array(
+                        'attribute' => 'type',
+                        'type' => 'varchar',
+                        'length' => 10,
+                    ),
                 ),
                 'priority' => array(
                     'title' => 'Error priority',
-                    'db' => 'priority',
-                    'type' => 'smallint',
+                    'database' => array(
+                        'attribute' => 'priority',
+                        'type' => 'smallint',
+                    ),
                 ),
                 'message' => array(
                     'title' => 'Error message',
-                    'db' => 'message',
-                    'type' => 'text',
+                    'database' => array(
+                        'attribute' => 'message',
+                        'type' => 'text',
+                    ),
                 ),
                 'file' => array(
                     'title' => 'Error file',
-                    'db' => 'file',
-                    'type' => 'varchar',
-                    'length' => 255,
+                    'database' => array(
+                        'attribute' => 'file',
+                        'type' => 'varchar',
+                        'length' => 255,
+                    ),
                 ),
                 'line' => array(
                     'title' => 'Error line',
-                    'db' => 'line',
-                    'type' => 'smallint',
+                    'database' => array(
+                        'attribute' => 'line',
+                        'type' => 'smallint',
+                    ),
                 ),
                 'url' => array(
                     'title' => 'Error url',
-                    'db' => 'url',
-                    'type' => 'varchar',
-                    'length' => 255,
+                    'database' => array(
+                        'attribute' => 'url',
+                        'type' => 'varchar',
+                        'length' => 255,
+                    ),
                 ),
                 'referer' => array(
                     'title' => 'Error referer',
-                    'db' => 'referer',
-                    'type' => 'varchar',
-                    'length' => 255,
+                    'database' => array(
+                        'attribute' => 'referer',
+                        'type' => 'varchar',
+                        'length' => 255,
+                    ),
                 ),
                 'count' => array(
                     'title' => 'Error count',
-                    'db' => 'count',
-                    'type' => 'smallint',
+                    'database' => array(
+                        'attribute' => 'count',
+                        'type' => 'smallint',
+                    ),
                 ),
                 'trace' => array(
                     'title' => 'Error trace',
-                    'db' => 'trace',
-                    'type' => 'text',
+                    'database' => array(
+                        'attribute' => 'trace',
+                        'type' => 'text',
+                    ),
                 ),
                 'date' => array(
                     'title' => 'Execution date',
-                    'db' => 'date',
-                    'type' => 'timestamp',
-                    'pdo_extra' => 'NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+                    'database' => array(
+                        'attribute' => 'date',
+                        'type' => 'timestamp',
+                        'pdo_extra' => 'NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+                    ),
                 ),
             )
         ),

@@ -57,7 +57,7 @@ class Query extends Kernel\Core
     /**
      * @return Kernel\Db\Interfaces\Requestable[]
      */
-    public function getRequestableList()
+    public function  getRequestableList()
     {
         return $this->requestableList;
     }

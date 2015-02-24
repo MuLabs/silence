@@ -24,28 +24,36 @@ abstract class Service extends Kernel\Service\Core
             'properties' => array(
                 'id' => array(
                     'title' => 'ID',
-                    'db' => 'id_db_version',
-                    'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
-                    'type' => 'mediumint',
+                    'database' => array(
+                        'attribute' => 'id_db_version',
+                        'pdo_extra' => 'UNSIGNED NOT NULL AUTO_INCREMENT',
+                        'type' => 'mediumint',
+                    ),
                 ),
                 'bundle' => array(
                     'title' => 'Bundle name',
-                    'db' => 'bundle',
-                    'type' => 'varchar',
-                    'length' => 30,
+                    'database' => array(
+                        'attribute' => 'bundle',
+                        'type' => 'varchar',
+                        'length' => 30,
+                    ),
                 ),
                 'filename' => array(
                     'title' => 'Update name',
-                    'db' => 'filename',
-                    'type' => 'char',
-                    'length' => 20,
-                    'pdo_extra' => 'NOT NULL',
+                    'database' => array(
+                        'attribute' => 'filename',
+                        'type' => 'char',
+                        'length' => 20,
+                        'pdo_extra' => 'NOT NULL',
+                    ),
                 ),
                 'date' => array(
                     'title' => 'Execution date',
-                    'db' => 'date',
-                    'type' => 'timestamp',
-                    'pdo_extra' => 'NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+                    'database' => array(
+                        'attribute' => 'date',
+                        'type' => 'timestamp',
+                        'pdo_extra' => 'NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
+                    ),
                 ),
             )
         ),

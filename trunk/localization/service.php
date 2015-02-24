@@ -32,34 +32,44 @@ class Service extends Kernel\Service\Core
 			'properties' => array(
 				'idObject' => array(
 					'title' => 'ID Object',
-					'db' => 'idObject',
-					'pdo_extra' => 'UNSIGNED NOT NULL',
-					'type' => 'int',
+					'database' => array(
+						'attribute' => 'idObject',
+						'pdo_extra' => 'UNSIGNED NOT NULL',
+						'type' => 'int',
+					),
 				),
 				'objectType' => array(
 					'title' => 'Object Type',
-					'db' => 'objectType',
-					'type' => 'tinyint',
-					'pdo_extra' => 'UNSIGNED NOT NULL',
+					'database' => array(
+						'attribute' => 'objectType',
+						'type' => 'tinyint',
+						'pdo_extra' => 'UNSIGNED NOT NULL',
+					),
 				),
 				'lang' => array(
 					'title' => 'Language',
-					'db' => 'lang',
-					'type' => 'char',
-					'length' => 2,
-					'pdo_extra' => 'NOT NULL',
+					'database' => array(
+						'attribute' => 'lang',
+						'type' => 'char',
+						'length' => 2,
+						'pdo_extra' => 'NOT NULL',
+					),
 				),
 				'property' => array(
 					'title' => 'Property name',
-					'db' => 'property',
-					'type' => 'varchar',
-					'pdo_extra' => 'NOT NULL',
-					'length' => 50,
+					'database' => array(
+						'attribute' => 'property',
+						'type' => 'varchar',
+						'pdo_extra' => 'NOT NULL',
+						'length' => 50,
+					),
 				),
 				'value' => array(
 					'title' => 'Value',
-					'db' => 'value',
-					'type' => 'text',
+					'database' => array(
+						'attribute' => 'value',
+						'type' => 'text',
+					),
 				),
 			)
 		),
