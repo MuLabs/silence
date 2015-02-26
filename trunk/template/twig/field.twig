@@ -25,7 +25,7 @@
 			>
 		{% set multipleValues = (field.multiple) ? value|split(field.separator) : [] %}
 
-		{% for option,label in field.values %}
+		{% for option,label in field.allowedValues %}
 			<option value="{{ option }}" {% if option==value or option in multipleValues %}selected{% endif %}>
 				{{ label }}
 			</option>
@@ -33,7 +33,7 @@
 	</select>
 	{# Render radio #}
 {% elseif field.type == 'radio' %}
-	{% for option,label in field.values %}
+	{% for option,label in field.allowedValues %}
 		<input
 				type="radio"
 				name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
@@ -44,17 +44,17 @@
 	{% endfor %}
 	{# Render checkbox #}
 {% elseif field.type == 'checkbox' %}
-	{% set option = (field.values is defined) ? field.values : field.default %}
+	{% set option = (field.allowedValues is defined) ? field.allowedValues : field.default %}
 	<input
 			type="checkbox"
 			name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}"
 			value="{{ option }}"
 			{% if fieldClass is not empty %}class="{{ fieldClass }}"{% endif %}
 			title="{{ label }}"
-			{% if value == field.values %}checked{% endif %} />
+			{% if value == field.allowedValues %}checked{% endif %} />
 	{# Render checkbox list #}
 {% elseif field.type == 'checkboxlist' %}
-	{% for option,label in field.values %}
+	{% for option,label in field.allowedValues %}
 		<input
 				type="checkbox"
 				name="{% if fieldName is not empty %}{{ fieldName }}{% elseif field.name is not empty %}{{ field.name }}{% else %}{{ name }}{% endif %}[]"
