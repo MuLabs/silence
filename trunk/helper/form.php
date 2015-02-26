@@ -50,7 +50,7 @@ class Form extends Kernel\Service\Core
         'required' => false, // Is field required
         'pattern' => '', // Pattern to add to input fields (HTML5)
         'option' => '', // Value of the option checked in checkbox
-        'values' => [], // Values for radio and select
+        'allowedValues' => [], // Values for radio and select
         'multiple' => false, // Multiple select declarator
         'separator' => ',', // Default separator (for DB storage)
         'permissions' => array('read'=>true, 'write'=>true)
@@ -127,7 +127,7 @@ class Form extends Kernel\Service\Core
             // Set generalities:
             $field = array_merge($this->defaultField, $values['form']);
             $field['label']  = (isset($values['title'])) ? $values['title'] : null;
-            $field['length'] = (isset($values['length'])) ? $values['length'] : null;
+            $field['length'] = (isset($values['database']['length'])) ? $values['database']['length'] : null;
 
             // Set permissions:
             if ($bPerm && $group == $defGroup) { // TODO remove this when Permity::hadPermissionToProperty can use groups
@@ -143,20 +143,20 @@ class Form extends Kernel\Service\Core
             }
 
             // Set default values for radio and select:
-            if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['values'])) {
-                if (method_exists($object, $field['values'])) {
-                    $field['values'] = $object->$field['values']();
-                } else if (method_exists($manager, $field['values'])) {
-                    $field['values'] = $manager->$field['values']();
-                } else if (isset($field['values'])) {
-                    $field['values'] = (is_string($field['values'])) ? explode(',', $field['values']) : $field['values'];
+            if (in_array($field['type'], [self::TYPE_RADIO, self::TYPE_SELECT, self::TYPE_CBLIST]) && !is_array($field['allowedValues'])) {
+                if (method_exists($object, $field['allowedValues'])) {
+                    $field['allowedValues'] = $object->$field['allowedValues']();
+                } else if (method_exists($manager, $field['allowedValues'])) {
+                    $field['allowedValues'] = $manager->$field['allowedValues']();
+                } else if (isset($field['allowedValues'])) {
+                    $field['allowedValues'] = (is_string($field['allowedValues'])) ? explode(',', $field['allowedValues']) : $field['allowedValues'];
                 } else {
                     continue;
                 }
 
                 if (isset($field['none'])) {
-                    $field['values'][0] = $field['none'];
-                    ksort($field['values']);
+                    $field['allowedValues'][0] = $field['none'];
+                    ksort($field['allowedValues']);
                 }
             }
 
