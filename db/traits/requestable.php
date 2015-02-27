@@ -105,7 +105,7 @@ trait Requestable
 
         // Generate properties
         foreach ($tableInfos['properties'] as $label => $oneProperty) {
-            if (!isset($oneProperty['db'])) {
+            if (!isset($oneProperty['database']['attribute'])) {
                 continue;
             }
 
