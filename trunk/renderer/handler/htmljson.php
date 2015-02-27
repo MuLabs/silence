@@ -21,6 +21,11 @@ class HtmlJson extends Kernel\Renderer\Handler
             )
         );
 
+        // Get redirection link:
+        if ($view->getVar('redirect', false)) {
+            $aReturn['redirect'] = $view->getVar('redirect');
+        }
+
         // Return json encoded data:
 		return json_encode($aReturn);
 	}
