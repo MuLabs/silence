@@ -122,10 +122,6 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function initialize()
 	{
-        // Test success and error codes:
-        $this->reportSuccess($this->getMessageFromCode($this->request('success')));
-        $this->reportError($this->getMessageFromCode($this->request('error')));
-
         return false;
 	}
 
@@ -236,9 +232,21 @@ abstract class Controller extends Kernel\Core
 			// Initialize reports:
 			foreach ($this->messageTypes as $type) {
 				$this->view->setVar($type . self::REPORT_KEY, []);
+
+				// Try to get previous messages:
+				$messages = $this->request($type, false);
+				if (!$messages) {
+					continue;
+				}
+
+				$messages = explode(',', $messages);
+				foreach ($messages as $code) {
+					$message = (is_numeric($code)) ? $this->getMessageFromCode($code) : $code;
+					$this->report($message, $type);
+				}
 			}
 
-            // Initialize redirect link:
+			// Initialize redirect link:
             $redirect = $this->request('redirect', '');
             if ($redirect!='') {
                 $this->view->setVar('redirect', $redirect);
@@ -279,6 +287,22 @@ abstract class Controller extends Kernel\Core
     {
         return ($this->getCurrentRenderer() == $this->getApp()->getRendererManager()->getConstant('HANDLER_HTML'));
     }
+
+	/**
+	 * @return bool
+	 */
+	public function isJsonRendering()
+	{
+		return ($this->getCurrentRenderer() == $this->getApp()->getRendererManager()->getConstant('HANDLER_JSON'));
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isHtmlJsonRendering()
+	{
+		return ($this->getCurrentRenderer() == $this->getApp()->getRendererManager()->getConstant('HANDLER_HJSON'));
+	}
 
 	/**
 	 * @param string $routeName
@@ -382,30 +406,36 @@ abstract class Controller extends Kernel\Core
 
 		// Add reports codes to the parameters:
 		// !! Only transmit integers !!
-		foreach ($this->messageTypes as $type) {
-			if (isset($parameters[$type])) {
-				continue;
-			}
-
-			$messages = array();
-			foreach ($view->getVar($type . self::REPORT_KEY, []) as $report) {
-				if (is_int($report)) {
-					$messages[] = $report;
+		if (!$this->isHtmlJsonRendering()) {
+			foreach ($this->messageTypes as $type) {
+				if (isset($parameters[$type])) {
+					continue;
 				}
-			}
-			if (!empty($messages)) {
-				$parameters[$type] = implode(',', $messages);
+
+				$messages = array();
+				foreach ($view->getVar($type . self::REPORT_KEY, []) as $report) {
+					if (is_int($report)) {
+						$messages[] = $report;
+					}
+				}
+				if (!empty($messages)) {
+					$parameters[$type] = implode(',', $messages);
+				}
 			}
 		}
 
         // Transfer format and redirection link:
         if (!$this->isHtmlRendering()) {
+			if ($this->isHtmlJsonRendering()) {
+				$forceRedirection = false;
+			}
+
             // Update redirection link or generate it:
             if (isset($parameters['redirect'])) {
                 $parameters['redirect'] = $this->getCurrentUrl(true);
             } else {
                 $params = $parameters;
-                $parameters['redirect'] = base64_encode($this->getApp()->getRouteManager()->getUrl($routeName, $params, $forceRedirection, $sendData));
+                $parameters['redirect'] = base64_encode($this->getApp()->getRouteManager()->getUrl($routeName, $params));
             }
         }
 
