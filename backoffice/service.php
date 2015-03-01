@@ -82,7 +82,8 @@ class Service extends Kernel\Service\Core
 		// Get current section url:
 		$menu = (isset($section['menu'])) ? $section['menu'] : false;
 		if ($menu) {
-			$breadcrumb['url'] = $routeManager->getUrl($menu['route'], $menu['param']);
+            $param = (isset($menu['param'])) ? $menu['param'] : array();
+			$breadcrumb['url'] = $routeManager->getUrl($menu['route'], $param);
 		}
 
 		// Generate breadcrumbs hierarchy:
@@ -97,7 +98,8 @@ class Service extends Kernel\Service\Core
 			$menu 		= $section['menu'];
 			$breadcrumb = $section['breadcrumb'];
 			if (isset($menu['route'])) {
-				$breadcrumb['url'] = $routeManager->getUrl($menu['route'], $menu['param']);
+                $param = (isset($menu['param'])) ? $menu['param'] : array();
+				$breadcrumb['url'] = $routeManager->getUrl($menu['route'], $param);
 			}
 			array_unshift($result, $breadcrumb);
 
