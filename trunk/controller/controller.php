@@ -144,6 +144,14 @@ abstract class Controller extends Kernel\Core
 		return $return;
 	}
 
+	/**
+	 * Keep this class for authentication control
+	 */
+	public function preFetch()
+	{
+
+	}
+
     /**
      * @param $content
      * @return string

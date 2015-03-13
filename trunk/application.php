@@ -731,6 +731,7 @@ abstract class Application
         }
 
         // Fetch fragment and skip controller if request is only for fragment
+        $controller->preFetch();
         $fragmentView = $controller->fetchFragment();
         if ($fragmentView) {
             $renderer = $this->getRendererManager()->getHtmlHandler();  // Force HTML renderer for fragments
