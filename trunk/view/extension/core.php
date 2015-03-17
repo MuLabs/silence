@@ -29,6 +29,16 @@ trait Core
 	}
 
 	/**
+	 * @param string $routeName
+	 * @param array $parameters
+	 * @return string
+	 */
+	public function getUrlBase64($routeName, array $parameters = array())
+	{
+		return base64_encode($this->getUrl($routeName, $parameters));
+	}
+
+	/**
 	 * @param array $parameters
 	 * @return string
 	 */
