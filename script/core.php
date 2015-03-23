@@ -11,6 +11,8 @@ abstract class Core extends Kernel\Core
 
     public function __construct()
     {
+        $domain = 'messages';
+        bindtextdomain($domain, APP_LOCALE_PATH.'/fake');
         $this->log('Start script');
     }
 
