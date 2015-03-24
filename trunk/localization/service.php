@@ -132,6 +132,8 @@ class Service extends Kernel\Service\Core
 		$domain = 'messages';
 
 		putenv("LC_ALL=$locale");
+		putenv("LANG=$locale");
+		putenv("LANGUAGE=$locale");
 		setlocale(LC_ALL, $locale);
 		bindtextdomain($domain, APP_LOCALE_PATH);
 		bind_textdomain_codeset($domain, "UTF-8");
