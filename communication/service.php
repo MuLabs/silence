@@ -44,6 +44,18 @@ class Service extends Kernel\Service\Extended
 	}
 
 	/**
+	 * Return an handler by its type and context, generate it if needed
+	 * @param string $type
+	 * @param string $context
+	 * @throws Exception
+	 * @return Kernel\Handler\Core
+	 */
+	public function getHandler($type, $context = Kernel\Handler\Core::DEFAULT_CONTEXT)
+	{
+		return $this->generateHandler($type, $context);
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function getNamespace()
