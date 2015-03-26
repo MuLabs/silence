@@ -91,7 +91,11 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			}
 
 			$cacheEntities[$cacheKey]->setManager($this);
-			$this->entities[$id] = $entities[$id] = $cacheEntities[$cacheKey];
+
+			if (!defined('__QUEUE__')) {
+				$this->entities[$id] = $cacheEntities[$cacheKey];
+			}
+			$entities[$id] = $cacheEntities[$cacheKey];
 		}
 
 		// Get missing items
@@ -107,7 +111,11 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 				if ($entityCache && $entity) {
 					$entityCache->set($entity, $this->getDefaultScope());
 				}
-				$this->entities[$id] = $entities[$id] = $entity;
+
+				if (!defined('__QUEUE__')) {
+					$this->entities[$id] = $entity;
+				}
+				$entities[$id] = $entity;
 			}
 			unset($toRetrieve);
 		}
@@ -171,7 +179,10 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 		if ($entityCache && $entity) {
 			$entityCache->set($entity, $this->getDefaultScope());
 		}
-        $this->entities[$id] = $entity;
+
+		if (!defined('__QUEUE__')) {
+			$this->entities[$id] = $entity;
+		}
 
         return $entity;
 	}
