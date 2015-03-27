@@ -18,9 +18,10 @@ abstract class Core extends Kernel\Core
 
 	/**
 	 * @param string $key
+	 * @param bool $serialize
 	 * @return mixed
 	 */
-	public abstract function get($key);
+	public abstract function get($key, $serialize = true);
 
 	/**
 	 * @param string $pattern
@@ -38,9 +39,10 @@ abstract class Core extends Kernel\Core
 	 * @param string $key
 	 * @param string $value
 	 * @param int $cache_ttl
+	 * @param bool $serialize
 	 * @return mixed
 	 */
-	public abstract function set($key, $value, $cache_ttl = 0);
+	public abstract function set($key, $value, $cache_ttl = 0, $serialize = true);
 
 	/**
 	 * @param $key

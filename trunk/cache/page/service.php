@@ -69,7 +69,7 @@ class Service extends Kernel\Service\Core
 		if (!$handler) {
 			throw new Kernel\Cache\Exception(Kernel\Cache\Exception::KEY_NOT_FOUND);
 		}
-		$result = $handler->get($this->getRealKey($key));
+		$result = $handler->get($this->getRealKey($key), false);
 		if (!is_string($result)) {
 			throw new Kernel\Cache\Exception(Kernel\Cache\Exception::KEY_NOT_FOUND);
 		}
@@ -89,7 +89,7 @@ class Service extends Kernel\Service\Core
 		if (!$handler) {
 			return;
 		}
-		$handler->set($this->getRealKey($key), $value, $cache_ttl);
+		$handler->set($this->getRealKey($key), $value, $cache_ttl, false);
 	}
 
 	public function flush()
