@@ -47,12 +47,12 @@ class Redis extends Kernel\Cache\Handler\Core
 	 * @return mixed
 	 * @throws Kernel\Cache\Exception
 	 */
-	public function get($key)
+	public function get($key, $serialize = true)
 	{
         if (!$this->handler) {
             return null;
         }
-        return unserialize($this->handler->get($key));
+        return ($serialize) ? unserialize($this->handler->get($key)) : $this->handler->get($key);
 	}
 
 	/**
@@ -96,12 +96,12 @@ class Redis extends Kernel\Cache\Handler\Core
 	 * @param int $cacheTtl
 	 * @return mixed|void
 	 */
-	public function set($key, $value, $cacheTtl = 0)
+	public function set($key, $value, $cacheTtl = 0, $serialize = true)
 	{
         if (!$this->handler) {
             return null;
         }
-        return $this->handler->set($key, serialize($value), $cacheTtl);
+        return $this->handler->set($key, ($serialize) ? serialize($value) : $value, $cacheTtl);
 	}
 
 	/**
