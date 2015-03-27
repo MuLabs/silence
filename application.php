@@ -51,10 +51,10 @@ abstract class Application
     {
         try {
             ob_start();
-            $this->startMicrotime = microtime(true);
+            /*$this->startMicrotime = microtime(true);
             if (isset($_GET['XHPROF'])) {
                 \xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-            }
+            }*/
 
             // Force environment if needed:
             if (!empty($environment)) {
@@ -89,7 +89,7 @@ abstract class Application
 
     public function __destruct()
     {
-        if (isset($_GET['XHPROF'])) {
+        /*if (isset($_GET['XHPROF'])) {
             // stop profiler
             $xhprofData = \xhprof_disable();
 
@@ -104,7 +104,7 @@ abstract class Application
 
             $id = uniqid();
             $xhprofRuns->save_run($xhprofData, strtolower(str_replace(' ', '_', $this->getName())), $id);
-        }
+        }*/
     }
 
     /**
