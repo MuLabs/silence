@@ -51,8 +51,8 @@ abstract class Application
     {
         try {
             ob_start();
-            /*$this->startMicrotime = microtime(true);
-            if (isset($_GET['XHPROF'])) {
+            $this->startMicrotime = microtime(true);
+            /*if (isset($_GET['XHPROF'])) {
                 \xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
             }*/
 

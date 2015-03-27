@@ -72,18 +72,24 @@ abstract class Controller extends Kernel\Core
 			return '';
 		}
 
+		$finalCacheElements = array();
 		foreach ($cacheElements as $key => $oneElement) {
+			if ($oneElement === null) {
+				continue;
+			}
 			if ($oneElement instanceof Kernel\Model\Entity) {
-				$cacheElements[$key] = '(' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ')';
+				$finalCacheElements[] = '(' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ')';
 			} elseif ($oneElement instanceof Kernel\Model\Manager) {
-				$cacheElements[$key] = '{' . $oneElement->getEntityType() . '}';
+				$finalCacheElements[] = '{' . $oneElement->getEntityType() . '}';
 			} elseif (is_array($oneElement) && count($oneElement)) {
 				list($manager, $id) = $oneElement;
-				$cacheElements[$key] = '(' . $manager->getEntityType() . ':' . $id . ')';
+				$finalCacheElements[] = '(' . $manager->getEntityType() . ':' . $id . ')';
+			} else {
+				$finalCacheElements[] = $oneElement;
 			}
 		}
 
-		$trail = implode('|', $cacheElements);
+		$trail = implode('|', $finalCacheElements);
         return get_called_class() . '|' . $trail;
     }
 
