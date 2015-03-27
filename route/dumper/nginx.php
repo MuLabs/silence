@@ -71,8 +71,12 @@ class Nginx extends Kernel\Route\Dumper
             $content .= "\t\trewrite ^\\/xhprof\\/(.*)$ /xhprof/index.php$1 break;\n";
 
             if ($siteId) {
-                foreach ($langList as $oneLang => $unused) {
-                    $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true), $oneLang);
+                if (empty($langList)) {
+                    $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true));
+                } else {
+                    foreach ($langList as $oneLang => $unused) {
+                        $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true), $oneLang);
+                    }
                 }
             } else {
                 $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true));

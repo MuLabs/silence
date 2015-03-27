@@ -236,7 +236,7 @@ class Service extends Kernel\Service\Core
 	/**
 	 * @param string $type
 	 */
-	public function dumpRoutes($type = 'Apache')
+	public function dumpRoutes($type = 'Nginx')
 	{
 		$dumperName = '\\Mu\\Kernel\\Route\\Dumper\\' . $type;
 		/** @var Dumper $dumper */
