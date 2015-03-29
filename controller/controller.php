@@ -15,6 +15,7 @@ abstract class Controller extends Kernel\Core
 	protected $cacheTtl = 0;
 	/** @var $view Kernel\View\View */
 	protected $view;
+	protected $http;
 	protected $fragmentName = null;
 	protected $isFragmentExtracted = false;
 	protected $messageTypes = array(self::MESSAGE_ERROR, self::MESSAGE_INFO, self::MESSAGE_SUCCESS, self::MESSAGE_WARN);
@@ -46,6 +47,18 @@ abstract class Controller extends Kernel\Core
 	public function getCacheTtl()
 	{
 		return $this->cacheTtl;
+	}
+
+	/**
+	 * @return Kernel\Http\Service
+	 */
+	public function getHttp()
+	{
+		if (!isset($this->http)) {
+			$this->http = $this->getApp()->getHttp();
+		}
+
+		return $this->http;
 	}
 
 	/**
@@ -385,7 +398,7 @@ abstract class Controller extends Kernel\Core
      */
     protected function getCurrentUrl($bEncode = false)
     {
-        $params = $this->getApp()->getHttp()->getRequest()->getAllParameters(
+		$params = $this->getHttp()->getRequest()->getAllParameters(
             Kernel\Http\Request::PARAM_TYPE_REQUEST
         );
 
@@ -403,7 +416,7 @@ abstract class Controller extends Kernel\Core
 	 * @return bool
 	 */
 	public function hasGet() {
-		return $this->getApp()->getHttp()->getRequest()->haveParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+		return $this->getHttp()->getRequest()->haveParameters(Kernel\Http\Request::PARAM_TYPE_GET);
 	}
 
 	/**
@@ -413,7 +426,7 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function get($label, $default = null)
 	{
-		return $this->getApp()->getHttp()->getRequest()->getParameters(
+		return $this->getHttp()->getRequest()->getParameters(
 			$label,
 			Kernel\Http\Request::PARAM_TYPE_GET,
 			$default
@@ -424,7 +437,7 @@ abstract class Controller extends Kernel\Core
 	 * @return bool
 	 */
 	public function hasPost() {
-		return $this->getApp()->getHttp()->getRequest()->haveParameters(Kernel\Http\Request::PARAM_TYPE_POST);
+		return $this->getHttp()->getRequest()->haveParameters(Kernel\Http\Request::PARAM_TYPE_POST);
 	}
 
 	/**
@@ -434,7 +447,7 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function post($label, $default = null)
 	{
-		return $this->getApp()->getHttp()->getRequest()->getParameters(
+		return $this->getHttp()->getRequest()->getParameters(
 			$label,
 			Kernel\Http\Request::PARAM_TYPE_POST,
 			$default
@@ -448,7 +461,7 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function request($label, $default = null)
 	{
-		return $this->getApp()->getHttp()->getRequest()->getParameters(
+		return $this->getHttp()->getRequest()->getParameters(
 			$label,
 			Kernel\Http\Request::PARAM_TYPE_REQUEST,
 			$default
@@ -515,7 +528,7 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function setGet($label, $value)
 	{
-		$this->getApp()->getHttp()->getRequest()->setParameter($label, Kernel\Http\Request::PARAM_TYPE_GET, $value);
+		$this->getHttp()->getRequest()->setParameter($label, Kernel\Http\Request::PARAM_TYPE_GET, $value);
 	}
 
 	/**
@@ -525,16 +538,16 @@ abstract class Controller extends Kernel\Core
 	 */
 	public function setPost($label, $value)
 	{
-		$this->getApp()->getHttp()->getRequest()->setParameter($label, Kernel\Http\Request::PARAM_TYPE_POST, $value);
+		$this->getHttp()->getRequest()->setParameter($label, Kernel\Http\Request::PARAM_TYPE_POST, $value);
 	}
 
 	public function flushPost()
 	{
-		$this->getApp()->getHttp()->getRequest()->flushParameters(Kernel\Http\Request::PARAM_TYPE_POST);
+		$this->getHttp()->getRequest()->flushParameters(Kernel\Http\Request::PARAM_TYPE_POST);
 	}
 
 	public function flushGet()
 	{
-		$this->getApp()->getHttp()->getRequest()->flushParameters(Kernel\Http\Request::PARAM_TYPE_GET);
+		$this->getHttp()->getRequest()->flushParameters(Kernel\Http\Request::PARAM_TYPE_GET);
 	}
 }
