@@ -18,6 +18,10 @@ try {
 	#region Action switch
 	switch ($action) {
 		case 'dump-route':
+		case 'dump-routes':
+		case 'dump':
+		case 'route':
+		case 'routes':
 			display('Dumping all route...');
             display('nginx format file choosed...');
             if ('n' != strtolower(ask('Confirm [Y/n] : '))) {

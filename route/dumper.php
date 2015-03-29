@@ -14,6 +14,8 @@ abstract class Dumper extends Kernel\Core
 
     abstract public function dumpSites($sites);
 
+    abstract public function moveFile($content);
+
     /**
      * @param Kernel\Route\Route $route
      * @param null $lang
@@ -32,9 +34,9 @@ abstract class Dumper extends Kernel\Core
             $match = $matches[1];
 
             if (isset($defaultVars[$match])) {
-                $pattern = str_replace('{' . $match . '}\/', '([^\/\.]+)?\/?', $pattern);
+                $pattern = str_replace('{' . $match . '}\/', '(?<'.$match.'>[^\/\.]+)?\/?', $pattern);
             }
-            $pattern = str_replace('{' . $match . '}', '([^\/\.]+)', $pattern);
+            $pattern = str_replace('{' . $match . '}', '(?<'.$match.'>[^\/\.]+)', $pattern);
             $vars[] = $match . '=$' . count($vars);
         }
 

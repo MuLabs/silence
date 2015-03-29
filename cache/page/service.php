@@ -125,7 +125,7 @@ class Service extends Kernel\Service\Core
 	 * @param string $key
 	 * @return string
 	 */
-	private function getRealKey($key)
+	public function getRealKey($key)
 	{
 		return self::KEY_PREFIX . $key;
 	}

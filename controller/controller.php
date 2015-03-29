@@ -54,12 +54,83 @@ abstract class Controller extends Kernel\Core
 	public function getCacheKeyElements()
 	{
 		return array(
-            'renderer' => $this->getCurrentRenderer(),
-            'info' => $this->request('info'),
+		);
+	}
+
+	protected function getFinalCacheKeyElements($replaceValues = true) {
+		$cacheElements = $this->getCacheKeyElements();
+		$cacheElements['internal'] = array(
+			'renderer' => $this->getCurrentRenderer(),
+			'info' => $this->request('info'),
 			'warn' => $this->request('warn'),
 			'success' => $this->request('success'),
 			'error' => $this->request('error'),
 		);
+
+		if (!is_array($cacheElements)) {
+			return array();
+		}
+
+		$finalCacheElements = array();
+		foreach ($cacheElements as $gType => $variables) {
+			if (empty($variables)) {
+				continue;
+			}
+
+			foreach ($variables as $key => $oneVariable) {
+				if ($gType === 'entity') {
+					if ($oneVariable['type']['type'] == 'get') {
+						$entityType = ($replaceValues) ? $this->get($oneVariable['type']['value']) : '$'.$oneVariable['type']['value'];
+					} else {
+						$entityType = $oneVariable['type']['value'];
+					}
+
+
+					if ($oneVariable['id']['type'] == 'get') {
+						$entityId = ($replaceValues) ? $this->get($oneVariable['id']['value']) : '$'.$oneVariable['id']['value'];
+					} else {
+						$entityId = $oneVariable['id']['value'];
+					}
+				} elseif ($gType === 'internal') {
+					$value = $oneVariable;
+				} else {
+					$vType = $oneVariable['type'];
+					$value = $oneVariable['value'];
+					if ($vType == 'get') {
+						$value = ($replaceValues) ? $this->get($value) : '$' . $value;
+					}
+				}
+
+				switch ($gType) {
+					case 'entity':
+						$finalCacheElements[] = '(' . $entityType . ':' . $entityId . ')';
+						break;
+					case 'manager':
+						$finalCacheElements[] = '{' . $value . '}';
+						break;
+					default:
+					case 'internal':
+					case 'other':
+						if (empty($value)) {
+							continue;
+						}
+						$finalCacheElements[] = $value;
+						break;
+				}
+			}
+		}
+
+		return $finalCacheElements;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDynamicCacheKey() {
+		$cacheElements = $this->getFinalCacheKeyElements(false);
+
+		$trail = implode('|', $cacheElements);
+		return get_called_class() . '|' . $trail;
 	}
 
 	/**
@@ -67,29 +138,9 @@ abstract class Controller extends Kernel\Core
 	 */
     public function getCacheKey()
     {
-		$cacheElements = $this->getCacheKeyElements();
-		if (!is_array($cacheElements)) {
-			return '';
-		}
+		$cacheElements = $this->getFinalCacheKeyElements();
 
-		$finalCacheElements = array();
-		foreach ($cacheElements as $key => $oneElement) {
-			if ($oneElement === null) {
-				continue;
-			}
-			if ($oneElement instanceof Kernel\Model\Entity) {
-				$finalCacheElements[] = '(' . $oneElement->getEntityType() . ':' . $oneElement->getId() . ')';
-			} elseif ($oneElement instanceof Kernel\Model\Manager) {
-				$finalCacheElements[] = '{' . $oneElement->getEntityType() . '}';
-			} elseif (is_array($oneElement) && count($oneElement)) {
-				list($manager, $id) = $oneElement;
-				$finalCacheElements[] = '(' . $manager->getEntityType() . ':' . $id . ')';
-			} else {
-				$finalCacheElements[] = $oneElement;
-			}
-		}
-
-		$trail = implode('|', $finalCacheElements);
+		$trail = implode('|', $cacheElements);
         return get_called_class() . '|' . $trail;
     }
 

@@ -12,6 +12,8 @@ class Redis extends Kernel\Cache\Handler\Core
 	{
 		try {
 			$this->handler = new \Redis();
+			$this->setHost($host);
+			$this->setPort($port);
 			$this->handler->connect($host, $port);
 			$this->handler->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE);
 		} catch (\RedisException $e) {

@@ -135,7 +135,13 @@ class Service extends Kernel\Service\Core
             $this->currentSite = $forceSite;
         } else {
             $httpRequestHeader = $this->getApp()->getHttp()->getRequest()->getRequestHeader();
-            $host = $httpRequestHeader->getHost();
+            $raw_host = $httpRequestHeader->getHost();
+			$hasPort = strpos($raw_host, ':');
+			if ($hasPort === false) {
+				$host = $raw_host;
+			} else {
+				$host = substr($raw_host, 0, $hasPort);
+			}
 
             if (empty($host)) {
                 return;

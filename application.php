@@ -533,19 +533,6 @@ abstract class Application
         return $this->getServicer()->get('trigger');
     }
 
-    /**
-     * @return string
-     */
-    private function getControllerClassname()
-    {
-        if ($this->getRoute()->getBundleName()) {
-            return '\\Mu\\Bundle\\' . $this->getRoute()->getBundleName() . '\\Controller\\' . $this->getRoute(
-            )->getControllerName();
-        } else {
-            return '\\Mu\\App\\Controller\\' . $this->getRoute()->getControllerName();
-        }
-    }
-
     public function getExtensions()
     {
         return $this->extensions;
@@ -603,20 +590,6 @@ abstract class Application
     /************************************************************************************
      **  DISPLAY                                                                       **
      ************************************************************************************/
-    /**
-     * @return Controller\Controller
-     * @throws Controller\exception
-     */
-    private function generateControllerObject()
-    {
-        $classname = $this->getControllerClassname();
-        if (!class_exists($classname)) {
-            throw new Controller\Exception($classname, Controller\Exception::CLASS_NOT_FOUND);
-        }
-
-        return $this->getFactory()->getController($classname);
-    }
-
     public function start()
     {
         try {
@@ -688,7 +661,7 @@ abstract class Application
      */
     private function dispatch($sendData = true)
     {
-        $this->controller = $this->generateControllerObject();
+        $this->controller = $this->getRoute()->getController();
 
         // If the current route is an alias, set Response header code to 301:
         if ($this->getRoute()->isAlias()) {

@@ -7,6 +7,7 @@ class Route extends Kernel\Core
 {
 	protected $parameters = array();
 	protected $controllerName;
+	protected $controller;
 	protected $bundleName;
 	protected $defaultVars = array();
 	protected $defaultFormat;
@@ -19,11 +20,73 @@ class Route extends Kernel\Core
 	const FORMAT_JSON = 'json';
 
 	/**
+	 * @return bool
+	 */
+	public function hasDumpCache() {
+		$controller = $this->getController();
+
+		if (!$controller || !$controller->hasCache()) {
+			return false;
+		}
+
+		$cacheKeyElements = $controller->getCacheKeyElements();
+
+		if (isset($cacheKeyElements['other'])) {
+			foreach ($cacheKeyElements['other'] as $oneElement) {
+				if ($oneElement['type'] == 'variable') {
+					return false;
+				}
+			}
+		}
+
+		if (isset($cacheKeyElements['manager'])) {
+			foreach ($cacheKeyElements['manager'] as $oneElement) {
+				if ($oneElement['type'] == 'variable') {
+					return false;
+				}
+			}
+		}
+
+		if (isset($cacheKeyElements['entity'])) {
+			foreach ($cacheKeyElements['entity'] as $oneElement) {
+				if ($oneElement['type']['type'] == 'variable'
+				|| $oneElement['id']['type'] == 'variable') {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDumpCacheKey() {
+		return $this->getController()->getDynamicCacheKey();
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getControllerName()
 	{
-		return $this->controllerName;
+		if ($this->getBundleName()) {
+			return '\\Mu\\Bundle\\' . $this->getBundleName() . '\\Controller\\' . $this->controllerName;
+		} else {
+			return '\\Mu\\App\\Controller\\' . $this->controllerName;
+		}
+	}
+
+	/**
+	 * @return Kernel\Controller\Controller
+	 */
+	public function getController() {
+		if (!$this->controller) {
+			$this->controller = $this->getApp()->getFactory()->get($this->getControllerName());
+		}
+
+		return $this->controller;
 	}
 
 	/**

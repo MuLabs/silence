@@ -10,6 +10,37 @@ abstract class Core extends Kernel\Core
 	const SCOPE_GLOBAL = 3;
 	const SCOPE_ALL = 6;
 
+	private $host;
+	private $port;
+
+	/**
+	 * @return string
+	 */
+	public function getHost() {
+		return $this->host;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getPort() {
+		return $this->port;
+	}
+
+	/**
+	 * @param string $host
+	 */
+	public function setHost($host) {
+		$this->host = $host;
+	}
+
+	/**
+	 * @param int $port
+	 */
+	public function setPort($port) {
+		$this->port = (int)$port;
+	}
+
 	/**
 	 * @param string $key
 	 * @return bool
