@@ -9,6 +9,9 @@ class Nginx extends Kernel\Route\Dumper
     const DEFAULT_ENABLED_DIR = 'sites-enabled';
     const DEFAULT_AVAILABLE_DIR = 'sites-available';
 
+    /**
+     * @param string $content
+     */
     public function moveFile($content) {
         $path = '';
 
@@ -27,7 +30,7 @@ class Nginx extends Kernel\Route\Dumper
             if (file_exists($path.self::DEFAULT_ENABLED_DIR.'/'.$this->getApp()->getName())) {
                 unlink($symlink);
             }
-            symlink($file, $symlink);
+            exec('ln -s ' . $file . ' ' . $symlink);
         }
 
         if ('n' != strtolower(\Mu\ask('Restart Nginx (root only) [Y/n] : '))) {
@@ -41,6 +44,9 @@ class Nginx extends Kernel\Route\Dumper
 
     }
 
+    /**
+     * @param array $sites
+     */
     public function dumpSites($sites)
     {
         $statics = $this->getApp()->getStaticList();

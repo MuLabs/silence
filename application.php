@@ -14,7 +14,6 @@ abstract class Application
     protected $installFunctions = array();
     protected $startMicrotime = 0;
     protected $defaultDbContext;
-    protected $production = true;
     protected $enableEsi = false;
     protected $enableSsi = false;
     protected $defaultDatabase;
@@ -118,8 +117,6 @@ abstract class Application
         foreach ($statics as $staticUrl) {
             $this->registerStatic($staticUrl);
         }
-
-        $this->production = (bool)$this->getConfigManager()->get('general.production', true);
     }
 
     abstract public function getProjectName();
@@ -595,10 +592,10 @@ abstract class Application
         try {
             // Initialize bundles
             $bundler = $this->getBundler();
-            $bundler->getAll();
+            //$bundler->getAll();
 
             // Define triggers:
-            $this->defineTriggers();
+            //$this->defineTriggers();
 
             // Get route and dispatch it:
             $this->route = $this->getRouteManager()->selectRoute();
