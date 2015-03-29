@@ -17,10 +17,7 @@ function autoLoader($name)
 
     if ($path) {
         $file = $path . '/' . strtolower($name) . '.php';
-
-        if (file_exists($file)) {
-            require($file);
-        }
+        require($file);
     }
 }
 
