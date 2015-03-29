@@ -1,0 +1,103 @@
+<?php
+namespace Mu;
+
+use Mu\Kernel;
+
+define('MU_CONSOLE', true);
+$absPath = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+require_once $absPath . '/setup.php';
+
+try {
+	$app = new App\Application();
+
+	$args = $argv;
+	array_shift($args);
+
+	$action = (count($args)) ? $args[0] : '';
+
+	#region Action switch
+	switch ($action) {
+		case 'dump-route':
+		case 'dump-routes':
+		case 'dump':
+		case 'route':
+		case 'routes':
+			display('Dumping all route...');
+            display('nginx format file choosed...');
+            if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+                $app->getRouteManager()->dumpRoutes('Nginx');
+            } else {
+                display('Action cancelled');
+            }
+
+            break;
+
+        case 'flush-page-cache':
+			display('Flushing all page cached...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->getPageCache()->flush();
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'flush-entity-cache':
+			display('Flushing all entities cached...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->getEntityCache()->flush();
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'flush-assets':
+			display('Flushing all entities cached...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->getAssetManager()->flush();
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'update':
+			// Initialize database
+			$app->getDatabase();
+			display('Updating application...');
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->update('\Mu\display');
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		case 'install':
+			// Initialize database
+			$app->getDatabase();
+			display(
+				"Installing application...\n/!\\ WARNING : Installing application when your application is already install delete all your old datas /!\\\nConcerned database : " . $app->getDefaultDatabase(
+				)
+			);
+			if ('n' != strtolower(ask('Confirm [Y/n] : '))) {
+				$app->install('\Mu\display');
+			} else {
+				display('Action cancelled');
+			}
+			break;
+		default:
+			throw new Kernel\Exception($action, Kernel\Exception::UNDEFINED_ACTION);
+			break;
+	}
+
+	#endregion
+} catch (Kernel\EndException $e) {
+	// Normal exception (end of execution)
+}
+
+function ask($message)
+{
+	display($message);
+	return trim(fgets(STDIN));
+}
+
+function display($message = null)
+{
+	echo PHP_EOL . $message;
+	ob_flush();
+	flush();
+}
