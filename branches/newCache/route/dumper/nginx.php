@@ -127,7 +127,7 @@ class Nginx extends Kernel\Route\Dumper
                 $content .= "\tlocation @fallback {\n";
                 $content .= "\t\tproxy_pass ".$siteService->getSiteUrl($siteId).":8001;\n";
                 $content .= "\t}\n\n";
-
+                $content .= "\terror_page     404 502 504 = @fallback;\n";
                 foreach ($dumpableRoutes as $oneRoute) {
                     if (empty($langList)) {
                         $content .= $this->dumpCacheRoute($oneRoute);
@@ -217,7 +217,6 @@ class Nginx extends Kernel\Route\Dumper
         $content .= "\t\tredis_read_timeout 5;\n";
         $content .= "\t\tredis_connect_timeout 5;\n";
         $content .= "\t\tdefault_type   text/html;\n";
-        $content .= "\t\terror_page     404 502 504 = @fallback;\n";
         $content .= "\t}\n\n";
 
         return $content;
