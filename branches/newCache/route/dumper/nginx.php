@@ -212,10 +212,11 @@ class Nginx extends Kernel\Route\Dumper
         $dumpCacheKey = $cacheService->getRealKey($route->getDumpCacheKey());
 
         $content = '';
+        $projectName = strtolower($this->getApp()->getProjectName());
         $infos = $this->prepareRuleVars($route, $lang);
         $content .= "\tlocation ~".$infos['pattern']." {\n";
         $content .= "\t\tset \$redis_key \"$dumpCacheKey\";\n";
-        $content .= "\t\tredis_pass     redisPool;\n";
+        $content .= "\t\tredis_pass     redisPool_$projectName;\n";
         $content .= "\t\tredis_read_timeout 5;\n";
         $content .= "\t\tredis_connect_timeout 5;\n";
         $content .= "\t\tdefault_type   text/html;\n";
