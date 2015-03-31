@@ -80,6 +80,16 @@ abstract class Controller extends Kernel\Core
 			'error' => $this->request('error'),
 		);
 
+		$localization = $this->getApp()->getLocalizationService();
+		if ($localization && $localization->getCurrentLanguage()) {
+			$cacheElements['internal']['lang'] = $localization->getCurrentLanguage();
+		}
+
+		$site = $this->getApp()->getSiteService();
+		if ($site && $site->getCurrentSite()) {
+			$cacheElements['internal']['site'] = $site->getCurrentSite();
+		}
+
 		if (!is_array($cacheElements)) {
 			return array();
 		}
