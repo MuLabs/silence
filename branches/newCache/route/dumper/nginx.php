@@ -77,10 +77,11 @@ class Nginx extends Kernel\Route\Dumper
         }
 
         $cacheService = $this->getApp()->getPageCache();
-        if ($cacheService !== false) {
+        if ($cacheService !== false && $cacheService->getHandler()) {
             $cacheHost = $cacheService->getHandler()->getHost();
             $cachePort = $cacheService->getHandler()->getPort();
-            $content .= "upstream redisPool {\n";
+            $projectName = strtolower($this->getApp()->getProjectName());
+            $content .= "upstream redisPool_$projectName {\n";
             $content .= "\tserver       $cacheHost:$cachePort;\n";
             $content .= "\tkeepalive 512;\n";
             $content .= "}\n\n";
@@ -110,7 +111,7 @@ class Nginx extends Kernel\Route\Dumper
         );
         $siteService->setCurrentSite($siteId);
 
-        if ($pageCacheService !== false) {
+        if ($pageCacheService !== false && $pageCacheService->getHandler()) {
             $dumpableRoutes = array();
             foreach ($this->getApp()->getRouteManager()->getRoutes(true) as $oneRoute) {
                 if ($oneRoute->hasDumpCache()) {
@@ -207,6 +208,7 @@ class Nginx extends Kernel\Route\Dumper
     protected function dumpCacheRoute(Kernel\Route\Route $route, $lang = null)
     {
         $cacheService = $this->getApp()->getPageCache();
+        $this->getApp()->getLocalizationService()->setCurrentLanguage($lang);
         $dumpCacheKey = $cacheService->getRealKey($route->getDumpCacheKey());
 
         $content = '';
