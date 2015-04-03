@@ -135,7 +135,7 @@ class Query extends Kernel\Core
             if ($requestableList instanceof Kernel\Db\Interfaces\Requestable) {
                 $this->requestableList['default'] = $requestableList;
             } else {
-                throw new Exception(Exception::INVALID_MANAGER, $requestableList);
+                throw new Exception($requestableList, Exception::INVALID_MANAGER);
             }
         }
     }

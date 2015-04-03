@@ -19,7 +19,7 @@ abstract class Application
     protected $enableSsi = false;
     protected $defaultDatabase;
     protected $siteUrl;
-    protected $cookycryptKey = 'murloc';
+    protected $cookycryptKey = 'murloc1234567890';
     protected $extensions = array();
     protected $defaultServiceList = array(
         'log'           => '\Mu\Kernel\Log\Service',
