@@ -523,4 +523,12 @@ class Request
 	{
 		return $this->requestHeader;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function isBot()
+	{
+		return (bool)preg_match('/bot|crawl|slurp|spider/i', $this->getRequestHeader()->getUserAgent());
+	}
 }
