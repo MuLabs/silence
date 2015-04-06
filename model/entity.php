@@ -74,7 +74,8 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	 */
 	public function getCacheKey()
 	{
-		return $this->getManager()->getCacheKey($this->getId());
+		$manager = $this->getManager();
+		return $manager->getCacheKey($this->getId());
 	}
 
 	/**
