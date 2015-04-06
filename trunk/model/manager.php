@@ -8,12 +8,13 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 	use Kernel\Db\Traits\Requestable;
 
 	protected $defaultScope = Kernel\Cache\Handler\Core::SCOPE_ALL;
+	protected $_cache = array();
 	protected $entities = array();
 	protected $entityType;
 	protected $name;
 	protected $forceGet = false;
-	protected $defaultRight = array();
 
+	protected $defaultRight = array();
 	protected $entityClassname;
 
     public function __construct() {}
