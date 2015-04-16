@@ -12,6 +12,10 @@ class Core
 
 	const TEST = 1;
 
+	public function __construct() {
+
+	}
+
 	/**
 	 * Get class name without namespace
 	 * @return string
