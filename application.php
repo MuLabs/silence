@@ -5,6 +5,7 @@ use Mu\Kernel;
 
 abstract class Application
 {
+    protected $boMultiLang = false;
     protected $controller;
     protected $route;
     protected $servicer;
@@ -259,6 +260,10 @@ abstract class Application
     public function isEsiEnabled()
     {
         return $this->enableEsi;
+    }
+
+    public function isBoMultiLang() {
+        return $this->boMultiLang;
     }
 
     /**
