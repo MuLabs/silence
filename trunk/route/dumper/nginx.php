@@ -70,7 +70,7 @@ class Nginx extends Kernel\Route\Dumper
             $content .= "\t\tindex index.php;\n";
             $content .= "\t\trewrite ^\\/xhprof\\/(.*)$ /xhprof/index.php$1 break;\n";
 
-            if ($siteId) {
+            if ($siteId || $this->getApp()->isBoMultiLang()) {
                 if (empty($langList)) {
                     $content .= $this->dumpRoutes($this->getApp()->getRouteManager()->getRoutes(true));
                 } else {
