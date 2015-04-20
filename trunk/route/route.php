@@ -260,6 +260,8 @@ class Route extends Kernel\Core
 		while (strpos($pattern, '//') !== false) {
 			$pattern = str_replace('//', '/', $pattern);
 		}
+
+		$pattern = preg_replace('#\/(\.{3}\/)(((.+)\/)+)(\.{3}\/)\/#', '/', $pattern);
         return $app->getUrl() . $pattern . $paramString . $dash;
     }
 
