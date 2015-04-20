@@ -60,11 +60,11 @@ class Servicer extends Kernel\Core
 		}
 
 		// Set application and register it:
-        $app = $this->getApp();
-        $service->setApp($app);
-        $service->initialize();
-        $app->configureService($name, $service);
-        $this->servicesInstance[$name] = $service;
+		$this->servicesInstance[$name] = $service;
+		$app = $this->getApp();
+		$service->setApp($app);
+		$service->initialize();
+		$app->configureService($name, $service);
 	}
 
 	/**
