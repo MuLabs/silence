@@ -133,7 +133,7 @@ trait Requestable
         // Generate tables infos
         $tableExtra = $handler->getStructureFromTableInfos($tableInfos);
         $query = new Kernel\Db\Query(
-            'CREATE TABLE ' . $tableToken . ' (' . implode(
+            'CREATE TABLE IF NOT EXISTS ' . $tableToken . ' (' . implode(
                 ', ',
                 $properties
             ) . ') ' . $tableExtra, array(), $requestable
