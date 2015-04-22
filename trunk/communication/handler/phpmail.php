@@ -2,6 +2,8 @@
 namespace Mu\Kernel\Communication\Handler;
 
 require_once(VENDOR_PATH . '/phpmailer/phpmailer/class.phpmailer.php');
+require_once(VENDOR_PATH . '/phpmailer/phpmailer/class.smtp.php');
+require_once(VENDOR_PATH . '/phpmailer/phpmailer/class.pop3.php');
 
 use Mu\Kernel;
 use Mu\Kernel\Communication;
