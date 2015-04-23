@@ -890,6 +890,8 @@ class Toolbox extends Service\Core
      */
     public function getEntitiesFromAutocompleteString($string)
     {
+        $string = trim($string);
+
         if (substr($string, -3) == '|,|') {
             $string = substr($string, 0, -3);
         }
