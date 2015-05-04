@@ -65,6 +65,9 @@ class Service extends Kernel\Service\Core
 			try {
 				$result = $handler->multiGet($this->getRealKeyMulti($keys));
 
+				if (empty($result)) {
+					$result = array_fill(0, count($keys), null);
+				}
 				return array_combine($keys, $result);
 			} catch (Kernel\Cache\Exception $e) {
 			}
