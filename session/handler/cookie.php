@@ -75,7 +75,15 @@ class Cookie extends Kernel\Session\Handler
     }
 
     public function remove() {
-        setcookie($this->getCookieName(), null, -1, '/');
+        setcookie(
+            $this->getCookieName(),
+            null,
+            -1,
+            '/',
+            str_replace(array('http://', 'https://'), '', $this->getApp()->getUrl()),
+            $this->secure,
+            $this->httponly
+        );
         $this->saved = true;
     }
 
@@ -106,7 +114,7 @@ class Cookie extends Kernel\Session\Handler
                 $value,
                 $expire,
                 '/',
-                '',
+                str_replace(array('http://', 'https://'), '', $this->getApp()->getUrl()),
                 $this->secure,
                 $this->httponly
             );
