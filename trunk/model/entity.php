@@ -229,9 +229,14 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	}
 
 #endregion
+	public function discardLocalCache()
+	{
+		$this->_cache = array();
+	}
 
 	public function discard()
 	{
+		$this->discardLocalCache();
 		$this->isInitialized = false;
 		$this->initialize();
 		$cacheManager = $this->getApp()->getEntityCache();
