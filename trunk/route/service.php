@@ -98,7 +98,7 @@ class Service extends Kernel\Service\Core
                     }
 
                     if (str_replace($app->getUrl(), '', $url) !== $currentUrl) {
-                        $app->redirect($route->getName(), $parameters, true);
+                        $app->redirect($route->getName(), $parameters, 301);
                     }
                 }
                 return $route;
