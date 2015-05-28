@@ -654,7 +654,11 @@ abstract class Application
             $response = $this->getHttp()->getResponse();
             $header   = $response->getHeader();
             $header->setLocation($url);
-            $header->setCode(301);
+            if ($forceRedirection === 301) {
+                $header->setCode(301);
+            } else {
+                $header->setCode(302);
+            }
 
             // Send redirection:
             $response->send();
