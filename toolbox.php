@@ -425,7 +425,7 @@ class Toolbox extends Service\Core
      */
     public function cmToInch($value)
     {
-        return $value / self::INCH_TO_CM;
+        return intval($value) / self::INCH_TO_CM;
     }
 
     /**

@@ -57,6 +57,10 @@ class Service extends Kernel\Service\Core
 	 */
 	public function multiGet(array $keys, $scope)
 	{
+        if (empty($keys)) {
+            return array();
+        }
+
 		foreach ($this->handlers as $handler) {
 			if (!($scope & $handler->getScope())) {
 				continue;
