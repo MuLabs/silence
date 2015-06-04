@@ -10,7 +10,6 @@ class Toolbox extends Service\Core
     const PREFIX_PASS_HASH = '54qsd';
     const SUFFIX_PASS_HASH = '32HfD';
 
-    const TVA_VALUE = 0.196;
     const INCH_TO_CM = 2.54;
 
     protected $bannedKeywords = array(
@@ -479,62 +478,6 @@ class Toolbox extends Service\Core
 
         // Return query string:
         return "($query)";
-    }
-
-    #endregion
-
-    /************************************************************************************
-     **  MONEY                                                                       **
-     ************************************************************************************/
-    #region MONEY
-    /**
-     * @param int $value
-     * @param string $separator
-     * @param string $thousand
-     * @param string $money
-     * @return string
-     */
-    public function priceFormat($value, $separator = ',', $thousand = ' ', $money = 'EUR')
-    {
-        $value = number_format((float)($value / 100), 2, $separator, $thousand);
-        $value .= ($money) ? ' ' . $money : '';
-        return $value;
-    }
-
-    /**
-     * @param int|float $value
-     * @return float
-     */
-    public function priceHtToTtc($value)
-    {
-        return ceil($value * (1 + self::TVA_VALUE));
-    }
-
-    /**
-     * @param int|float $value
-     * @return float
-     */
-    public function priceTtcToHt($value)
-    {
-        return floor($value / (1 + self::TVA_VALUE));
-    }
-
-    /**
-     * @param int|float $value
-     * @return float
-     */
-    public function priceHtToTva($value)
-    {
-        return ceil($value * self::TVA_VALUE);
-    }
-
-    /**
-     * @param int|float $value
-     * @return float
-     */
-    public function priceTtcToTva($value)
-    {
-        return $value - self::priceTtcToHt($value);
     }
 
     #endregion
