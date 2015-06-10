@@ -13,6 +13,7 @@ class Core extends \Twig_Extension
 	public function getFunctions()
 	{
 		return array(
+            'isInstanceof'	=> new \Twig_Function_Method($this, 'isInstanceof'),
 			'asset' 		=> new \Twig_Function_Method($this, 'asset', array('is_safe' => array('html'))),
 			'getUrl' 		=> new \Twig_Function_Method($this, 'getUrl'),
 			'getUrlBase64' 	=> new \Twig_Function_Method($this, 'getUrlBase64'),
@@ -23,8 +24,8 @@ class Core extends \Twig_Extension
 			'addFragment' 	=> new \Twig_Function_Method($this, 'addFragment', array('is_safe' => array('html'))),
 			'thisFragment' 	=> new \Twig_Function_Method($this, 'thisFragment', array('is_safe' => array('html'))),
 			'getLoc' 		=> new \Twig_Function_Method($this, 'getLoc'),
-			'getConvertedDate'	=> new \Twig_Function_Method($this, 'getConvertedDate')
-		);
+			'getConvertedDate'	=> new \Twig_Function_Method($this, 'getConvertedDate'),
+        );
 	}
 
 	/**
