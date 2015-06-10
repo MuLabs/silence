@@ -129,6 +129,15 @@ trait Core
 	}
 
     /**
+     * @param $var
+     * @param $instance
+     * @return bool
+     */
+    public function isInstanceof($var, $instance) {
+        return  $var instanceof $instance;
+    }
+
+    /**
      * @param $date
      * @param $format
      * @return string

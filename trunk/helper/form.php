@@ -196,6 +196,8 @@ class Form extends Kernel\Service\Core
             $form[$id] = $field;
         }
 
+
+
         // Return formated array:
         return $form;
     }
@@ -211,6 +213,7 @@ class Form extends Kernel\Service\Core
     {
         $fields = $this->getFields($object, array($field), $group, $lang);
         $return = reset($fields);
+        $return['object'] = $object;
         return $return;
     }
 
