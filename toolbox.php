@@ -460,9 +460,9 @@ class Toolbox extends Service\Core
     public function getDistanceBetweenQuery($latitude = 0, $longitude = 0, $fieldLat = ':latitude', $fieldLon = ':longitude', $bRound = false, $bKm = false)
     {
         // Compute distance reference:
-        $meters= 6353000;
+        $meters = 6353000;
         if ($bKm) {
-            $meters/= 1000;
+            $meters /= 1000;
         }
 
         // Set query:
@@ -497,7 +497,9 @@ class Toolbox extends Service\Core
 
     public function arrayWithKeyToString($array)
     {
-        return implode(', ', array_map(function ($v, $k) { return $k . '=' . $v; }, $array, array_keys($array)));
+        return implode(', ', array_map(function ($v, $k) {
+            return $k . '=' . $v;
+        }, $array, array_keys($array)));
     }
 
     /**
@@ -613,8 +615,7 @@ class Toolbox extends Service\Core
         $text = strtolower($text);
         $text = preg_replace('~[^-\w]+~', '', $text);
 
-        if (empty($text))
-        {
+        if (empty($text)) {
             return 'n-a';
         }
 
@@ -818,15 +819,16 @@ class Toolbox extends Service\Core
      */
     function realEscapeString($string)
     {
-        if(is_array($string))
+        if (is_array($string))
             return array_map(__METHOD__, $string);
 
-        if(!empty($string) && is_string($string)) {
+        if (!empty($string) && is_string($string)) {
             return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $string);
         }
 
         return trim($string);
     }
+
     /**
      * @param $string
      * @return Kernel\Model\Entity[]
@@ -842,7 +844,7 @@ class Toolbox extends Service\Core
         $objects = array_unique(explode('|,|', $string));
 
         $entities = array();
-        foreach($objects as $object) {
+        foreach ($objects as $object) {
             $aObject = explode('|:|', $object);
 
             if (count($aObject) < 2) {
@@ -862,7 +864,7 @@ class Toolbox extends Service\Core
     public function getAutocompleteStringFromEntities($entities)
     {
         $aEntity = array();
-        foreach($entities as $entity) {
+        foreach ($entities as $entity) {
             $aEntity[] = $entity . '|:|' . $entity->getEntityType() . '|:|' . $entity->getId();
         }
 
@@ -870,12 +872,13 @@ class Toolbox extends Service\Core
         return $sEntity;
     }
 
-	public function isValidEmail($email){
-		if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email))
-			return true;
-		else
-			return false;
-	}
+    public function isValidEmail($email)
+    {
+        if (preg_match("#^[a-z0-9._-]+@[a-z0-9._-]{2,}\.[a-z]{2,4}$#", $email))
+            return true;
+        else
+            return false;
+    }
 
 
     #endregion
@@ -1066,5 +1069,18 @@ class Toolbox extends Service\Core
         preg_match('/' . $attribute . '="([^"]+)"/', $html, $match);
         $matchSrc = str_ireplace('src="', '', $match[1]);
         return $matchSrc;
+    }
+
+    public function getStringFromHourInt($hourString)
+    {
+        $length = strlen($hourString);
+        $nIteration = 6 - $length;
+
+        for ($i = 0; $i < $nIteration; $i++) {
+            $hourString = '0' . $hourString;
+        }
+       $hourString = preg_replace('/^(\d{2})(\d{2})(\d{2})$/', '$1:$2:$3', $hourString);
+
+        return $hourString;
     }
 }
