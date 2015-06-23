@@ -148,6 +148,14 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 	}
 
 	/**
+	 * @return Manager
+	 */
+	protected function getSaveManager()
+	{
+		return $this->getManager();
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function save()
@@ -155,7 +163,7 @@ abstract class Entity extends Kernel\Core implements \JsonSerializable, Kernel\M
 		if (!count($this->unsavedChanges)) {
 			return true;
 		}
-		$manager = $this->getManager();
+		$manager = $this->getSaveManager();
 
 		$updateDatas = ':' . implode(' = ?, :', array_keys($this->unsavedChanges)) . ' = ?';
 		$updateValues = array_values($this->unsavedChanges);
