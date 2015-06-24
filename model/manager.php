@@ -103,7 +103,7 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 		if (is_array($toRetrieve) && count($toRetrieve)) {
 			$toRetrieve = $this->initEntities($toRetrieve);
 			foreach ($toRetrieve as $id => $entity) {
-				if (!$entity->isValid()) {
+				if (!$entity instanceof Entity || !$entity->isValid()) {
 					$entity = null;
 				} else {
 					$entity->initialize();
