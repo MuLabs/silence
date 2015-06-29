@@ -29,18 +29,24 @@ class Service extends Kernel\Service\Core
 		if (isset($this->triggerFunctions[$name]) && is_array($this->triggerFunctions[$name])) {
             foreach ($this->triggerFunctions[$name] as $key => $oneTrigger) {
                 if (!isset($this->triggerInstanceFunctions[$name][$key])) {
-                    list($type, $objectName, $functionName) = $oneTrigger;
 
-                    $object = null;
-                    if ($type == 'manager') {
-                        $object = $this->getApp()->getModelManager()->getOneManager($objectName);
-                    } elseif ($type == 'service') {
-                        $object = $this->getApp()->getServicer()->get($objectName);
-                    } elseif ($triggerOrigin) {
-                        $object = $triggerOrigin;
+                    $object = $functionName = null;
+                    if (count($oneTrigger) == 3) {
+                        list($type, $objectName, $functionName) = $oneTrigger;
+
+                        if ($type == 'manager') {
+                            $object = $this->getApp()->getModelManager()->getOneManager($objectName);
+                        } elseif ($type == 'service') {
+                            $object = $this->getApp()->getServicer()->get($objectName);
+                        } elseif ($triggerOrigin) {
+                            $object = $triggerOrigin;
+                        }
+                    } elseif (count($oneTrigger) == 2) {
+                        list($object, $functionName) = $oneTrigger;
                     }
 
-                    if (!$object) {
+
+                    if (!$object || !$functionName) {
                         continue;
                     }
 
