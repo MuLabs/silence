@@ -1083,4 +1083,22 @@ class Toolbox extends Service\Core
 
         return $hourString;
     }
+
+    public function generateRandomString($numberBytes){
+        $time = '"' . time() . "'";
+        $substr1 = substr($time, 0,8 );
+        $substr2 = substr($time, 8 );
+
+        $string = $substr1 . 'murloc' . $substr2;
+
+        switch ($numberBytes) {
+            case '32':
+                $string = md5($string);
+                break;
+            default :
+                break;
+        }
+
+        return $string;
+    }
 }
