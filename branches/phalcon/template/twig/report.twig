@@ -1,0 +1,44 @@
+{% 	if errorReport is not empty
+	or warningReport is not empty
+	or infoReport is not empty
+	or successReport is not empty
+%}
+	{% set display = '' %}
+{% else %}
+	{% set display = 'display:none' %}
+{% endif %}
+
+<div id="mu-report" style="{{ display }}">
+	{# Include errors #}
+	<div class="{% if errorClass is not empty %}{{ errorClass }}{% else %}error{% endif %}">
+		{% if beforeErrors is not empty %}{{ beforeErrors | raw }}{% endif %}
+		{% for idError, error in errorReport %}
+			<p>{% include 'reportMessage.twig' with {id:idError, message:error} only %}</p>
+		{% endfor %}
+		{% if afterErrors is not empty %}{{ afterErrors | raw }}{% endif %}
+	</div>
+	{# Include warnings #}
+	<div class="{% if warnClass is not empty %}{{ warnClass }}{% else %}warn{% endif %}">
+		{% if beforeWarns is not empty %}{{ beforeWarns | raw }}{% endif %}
+		{% for idWarn, warn in warningReport %}
+			<p>{% include 'reportMessage.twig' with {id:idWarn, message:warn} only %}</p>
+		{% endfor %}
+		{% if afterWarns is not empty %}{{ afterWarns | raw }}{% endif %}
+	</div>
+	{# Include infos #}
+	<div class="{% if infoClass is not empty %}{{ infoClass }}{% else %}info{% endif %}">
+		{% if beforeInfos is not empty %}{{ beforeInfos | raw }}{% endif %}
+		{% for idInfo, info in infoReport %}
+			<p>{% include 'reportMessage.twig' with {id:idInfo, message:info} only %}</p>
+		{% endfor %}
+		{% if afterInfos is not empty %}{{ afterInfos | raw }}{% endif %}
+	</div>
+	{# Include success #}
+	<div class="{% if successClass is not empty %}{{ successClass }}{% else %}success{% endif %}">
+		{% if beforeSuccess is not empty %}{{ beforeSuccess | raw }}{% endif %}
+		{% for idSuccess, success in successReport %}
+			<p>{% include 'reportMessage.twig' with {id:idSuccess, message:success} only %}</p>
+		{% endfor %}
+		{% if afterSuccess is not empty %}{{ afterSuccess | raw }}{% endif %}
+	</div>
+</div>

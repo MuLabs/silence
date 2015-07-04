@@ -1,0 +1,13 @@
+{% set options = widget.getDefaultOptions() %}
+{% set name   = widget.getName() %}
+{% set title  = widget.getTitle() %}
+
+<div class="widget">
+	<h3 class="handle">{{ widget.getTitle() }}</h3>
+
+	<div>
+		{% if widgetContent is defined %}
+            {{ widgetContent }}
+        {% endif %}
+	</div>
+</div>
