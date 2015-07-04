@@ -10,6 +10,11 @@
 			"role": "Developer"
 		}
 	],
+    "autoload": {
+      "psr-0": {
+        "Mu\\Kernel": "/"
+      }
+    },
 	"require": {
 		"php": ">=5.4.0"
 	}
