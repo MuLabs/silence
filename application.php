@@ -30,7 +30,8 @@ abstract class Application extends \Phalcon\Mvc\Application
         'cron'          => '\Mu\Kernel\Cron\Service',
         'localization'  => '\Mu\Kernel\Localization\Service',
         'site'          => '\Mu\Kernel\Site\Service',
-        'renderer'      => '\Mu\Kernel\Renderer\Service',
+        'view'          => '\Mu\Kernel\View\Service',
+        'volt'          => '\Mu\Kernel\View\Volt\Service',
     );
     protected $serviceList = array();
     protected $projectList = array();
@@ -124,7 +125,7 @@ abstract class Application extends \Phalcon\Mvc\Application
 
     abstract protected function registerBundles();
 
-    abstract public function configureService($name, Kernel\Service\Core $service);
+    abstract public function configureService($name, $service);
 
     protected function defineTriggers()
     {
@@ -168,7 +169,17 @@ abstract class Application extends \Phalcon\Mvc\Application
         // Create a DI
         $di = new \Phalcon\DI\FactoryDefault();
 
-        // Set the database service
+        foreach ($this->defaultServiceList as $name => $class) {
+            $di[$name] = function() use ($name, $class) {
+                $service = new $class();
+                $service->setApp($this);
+                $this->configureService($name, $service);
+
+                return $service;
+            };
+        }
+
+/*        // Set the database service
         $di['db'] = function() {
             return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
                 "host"     => "localhost",
@@ -176,52 +187,7 @@ abstract class Application extends \Phalcon\Mvc\Application
                 "password" => "secret",
                 "dbname"   => "tutorial"
             ));
-        };
-
-        // Volt engine
-        $di['volt'] = function($view, $di) {
-            $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
-
-            if (!file_exists(COMPILE_VIEW_TEMP_PATH)) {
-                mkdir(COMPILE_VIEW_TEMP_PATH, 0777, true);
-            }
-
-            $volt->setOptions(
-                array(
-                    "compiledPath" => COMPILE_VIEW_TEMP_PATH,
-                    "compiledExtension" => ".compiled"
-                )
-            );
-
-            return $volt;
-        };
-
-        // Setting up the view component
-        $di['view'] = function() {
-            $view = new \Phalcon\Mvc\View();
-
-            $view->setViewsDir(VIEW_PATH);
-            $view->registerEngines(array(
-                ".volt" => 'volt'
-            ));
-
-            return $view;
-        };
-
-        // Setup a base URI so that all generated URIs include the "tutorial" folder
-        $di['url'] = function() {
-            $url = new \Phalcon\Mvc\Url();
-            return $url;
-        };
-
-        // Setup the tag helpers
-        $di['tag'] = function() {
-            return new \Phalcon\Tag();
-        };
-
-        $di['config'] = function() {
-            return new Kernel\Config\Service();
-        };
+        };*/
 
         $this->setDI($di);
     }
