@@ -3,21 +3,17 @@ namespace Mu\Kernel;
 
 use Mu\Kernel;
 
-abstract class Application
+abstract class Application extends \Phalcon\Mvc\Application
 {
     protected $boMultiLang = false;
     protected $controller;
     protected $route;
-    protected $servicer;
     protected $bundler;
     protected $statics = array();
     protected $updateFunctions = array();
     protected $installFunctions = array();
     protected $startMicrotime = 0;
     protected $defaultDbContext;
-    protected $production = true;
-    protected $enableEsi = false;
-    protected $enableSsi = false;
     protected $defaultDatabase;
     protected $siteUrl;
     protected $cookycryptKey = 'murloc1234567890';
@@ -48,30 +44,25 @@ abstract class Application
     /************************************************************************************
      **  INITIALISATION                                                                **
      ************************************************************************************/
-    public function __construct($environment = null)
-    {
+    public function __construct($environment = null) {
+        ob_start();
+        $this->startMicrotime = microtime(true);
+        if (isset($_GET['XHPROF'])) {
+            \xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+        }
+
+        // Force environment if needed:
+        if (!empty($environment)) {
+            $this->environment = $environment;
+        }
+
         try {
-            ob_start();
-            $this->startMicrotime = microtime(true);
-            if (isset($_GET['XHPROF'])) {
-                \xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
-            }
-
-            // Force environment if needed:
-            if (!empty($environment)) {
-                $this->environment = $environment;
-            }
-
             // Init:
             $this->initialize();
 
-            $this->setExtensions(array('SPL', 'xhprof', 'redis', 'igbinary', 'Zend OPcache'));
+            $this->setExtensions(array('SPL', 'xhprof', 'redis', 'igbinary', 'Zend OPcache', 'phalcon'));
 
-            #region Register Servicer
-            $servicer = new Service\Servicer();
-            $servicer->setApp($this);
-            $this->setServicer($servicer);
-
+            #Register DI
             $this->registerServices();
             $this->loadConfiguration();
             $this->initConfiguration();
@@ -86,6 +77,10 @@ abstract class Application
         } catch (Kernel\EndException $e) {
             // Normal exception (end of execution)
         }
+    }
+
+    public function start() {
+        echo $this->handle()->getContent();
     }
 
     public function __destruct()
@@ -113,14 +108,12 @@ abstract class Application
      */
     private function initConfiguration()
     {
-        $configManager = $this->getConfigManager();
-        $statics = $configManager->get('url.statics', array());
+        $config = $this->getConfigManager();
+        $statics = $config->get('url.statics', array());
 
         foreach ($statics as $staticUrl) {
             $this->registerStatic($staticUrl);
         }
-
-        $this->production = (bool)$this->getConfigManager()->get('general.production', true);
     }
 
     abstract public function getProjectName();
@@ -172,19 +165,65 @@ abstract class Application
 
     protected function registerServices()
     {
-        $servicer = $this->getServicer();
-        // Register all default services
-        foreach ($this->defaultServiceList as $serviceName => $serviceClass) {
-            $servicer->register($serviceName, $serviceClass);
-        }
+        // Create a DI
+        $di = new \Phalcon\DI\FactoryDefault();
 
-        // Register all custom services
-        foreach ($this->serviceList as $serviceName => $serviceClass) {
-            $servicer->register($serviceName, $serviceClass);
-        }
+        // Set the database service
+        $di['db'] = function() {
+            return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
+                "host"     => "localhost",
+                "username" => "root",
+                "password" => "secret",
+                "dbname"   => "tutorial"
+            ));
+        };
 
-        // Force error service initialization
-        $this->getErrorService();
+        // Volt engine
+        $di['volt'] = function($view, $di) {
+            $volt = new \Phalcon\Mvc\View\Engine\Volt($view, $di);
+
+            if (!file_exists(COMPILE_VIEW_TEMP_PATH)) {
+                mkdir(COMPILE_VIEW_TEMP_PATH, 0777, true);
+            }
+
+            $volt->setOptions(
+                array(
+                    "compiledPath" => COMPILE_VIEW_TEMP_PATH,
+                    "compiledExtension" => ".compiled"
+                )
+            );
+
+            return $volt;
+        };
+
+        // Setting up the view component
+        $di['view'] = function() {
+            $view = new \Phalcon\Mvc\View();
+
+            $view->setViewsDir(VIEW_PATH);
+            $view->registerEngines(array(
+                ".volt" => 'volt'
+            ));
+
+            return $view;
+        };
+
+        // Setup a base URI so that all generated URIs include the "tutorial" folder
+        $di['url'] = function() {
+            $url = new \Phalcon\Mvc\Url();
+            return $url;
+        };
+
+        // Setup the tag helpers
+        $di['tag'] = function() {
+            return new \Phalcon\Tag();
+        };
+
+        $di['config'] = function() {
+            return new Kernel\Config\Service();
+        };
+
+        $this->setDI($di);
     }
 
     /**
@@ -339,11 +378,11 @@ abstract class Application
     }
 
     /**
-     * @return Service\Servicer
+     * @return \Phalcon\DiInterface
      */
     public function getServicer()
     {
-        return $this->servicer;
+        return $this->getDI();
     }
 
     /**
@@ -620,24 +659,6 @@ abstract class Application
         }
 
         return $this->getFactory()->getController($classname);
-    }
-
-    public function start()
-    {
-        try {
-            // Initialize bundles
-            $bundler = $this->getBundler();
-            $bundler->getAll();
-
-            // Define triggers:
-            $this->defineTriggers();
-
-            // Get route and dispatch it:
-            $this->route = $this->getRouteManager()->selectRoute();
-            $this->dispatch();
-        } catch (Kernel\EndException $e) {
-            // Normal exception (end of execution)
-        }
     }
 
     /**
