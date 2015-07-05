@@ -1,27 +1,55 @@
 <?php
 
-function autoLoader($name)
-{
-    $path = '';
-    $prefix = substr($name, 0, 7);
-    if ($prefix === 'Mu\\Kern') {
-        $name = str_replace(array('Mu\\Kernel\\', '\\'), array('/', '/'), $name);
-        $path = KERNEL_PATH;
-    } elseif ($prefix === 'Mu\\App\\') {
-        $name = str_replace(array('Mu\\App\\', '\\'), array('/', '/'), $name);
-        $path = APP_PATH;
-    } elseif ($prefix === 'Mu\\Bund') {
-        $name = str_replace(array('Mu\\Bundle\\', '\\'), array('/', '/'), $name);
-        $path = BUNDLE_PATH;
-    }
+// Register an autoloader
+$loader = new Phalcon\Loader();
+$loader->registerDirs(
+array(
+CONTROLLER_PATH,
+MODEL_PATH,
+)
+)->register();
 
-    if ($path) {
-        $file = $path . '/' . strtolower($name) . '.php';
+$autoloadFile = ROOT_PATH.'/autoload.php';
+if (!file_exists($autoloadFile)) {
+$psr = require(VENDOR_PATH.'/composer/autoload_namespaces.php');
 
-        if (file_exists($file)) {
-            require($file);
-        }
-    }
+$fullPsr = array();
+foreach ($psr as $namespace=>$dirPath) {
+$realPath = reset($dirPath);
+$fullPsr[$namespace] = $realPath;
+$fullPsr = readDirNamespace($realPath, $namespace, $fullPsr);
 }
 
-spl_autoload_register('autoLoader');
+$file = fopen($autoloadFile, 'w');
+fwrite($file, '<?php'."\n");
+    fwrite($file, 'return array('."\n");
+    foreach ($fullPsr as $namespace => $dirPath) {
+        if (strrpos($namespace, '\\') == strlen($namespace)-1) {
+            $namespace = substr($namespace, 0, -1);
+        }
+        fwrite($file, "\t".'"'.str_replace('\\', '\\\\', $namespace).'" => "'.str_replace(array('\\', '/'), '\\\\', $dirPath).'",'."\n");
+    }
+    fwrite($file, ');'."\n");
+    fclose($file);
+}
+
+$realPsr = require($autoloadFile);
+$loader->registerNamespaces(
+    $realPsr
+);
+
+function readDirNamespace($dirPath, $currentNamespace, $fullPsr) {
+    $dir = opendir($dirPath);
+    while($file = readdir($dir)) {
+        if (is_dir($dirPath.'/'.$file) && substr($file, 0, 1) != '.') {
+            $newNamespace = $currentNamespace.ucfirst($file).'\\';
+            $newPath = $dirPath.'/'.$file;
+            $fullPsr[$newNamespace] = $newPath;
+
+            $fullPsr = array_merge($fullPsr, readDirNamespace($newPath, $newNamespace, $fullPsr));
+        }
+    }
+    closedir($dir);
+
+    return $fullPsr;
+}
