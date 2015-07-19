@@ -5,8 +5,9 @@ use Mu\Kernel;
 
 class Service extends Kernel\Service\Core {
     private $volt;
-    public function __construct() {
+    public function initialize() {
         $this->volt = new \Phalcon\Mvc\View\Engine\Volt($this->getApp()->getViewManager()->getPhalconView(), $this->getApp()->getServicer());
+        $this->volt->setDI($this->getApp()->getDI());
     }
 
     public function __call($fct, $arguments) {
