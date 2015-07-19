@@ -28,7 +28,7 @@ abstract class Generator extends Kernel\Core
 	{
 		$content = '';
 		foreach ($this->getAsset()->getFileList() as $file) {
-			$content .= file_get_contents(APP_STATIC_PATH . '/' . $file);
+			$content .= file_get_contents(STATIC_PATH . '/' . $file);
 
 			if (!$content) {
 				throw new Exception($file, Exception::FILE_NOT_FOUND);

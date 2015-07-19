@@ -32,6 +32,7 @@ abstract class Application extends \Phalcon\Mvc\Application
         'site'          => '\Mu\Kernel\Site\Service',
         'view'          => '\Mu\Kernel\View\Service',
         'volt'          => '\Mu\Kernel\View\Volt\Service',
+        'asset'         => '\Mu\Kernel\Asset\Service',
     );
     protected $serviceList = array();
     protected $projectList = array();

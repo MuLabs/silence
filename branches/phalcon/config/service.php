@@ -57,7 +57,7 @@ class Service extends Kernel\Service\Core
 	 */
 	public function loadIniFile($file)
 	{
-        $path = APP_CONFIGURATION_PATH . '/' . $this->getApp()->getEnvironment();
+        $path = CONFIGURATION_PATH . '/' . $this->getApp()->getEnvironment();
         $filePath =  $path . '/' . $file;
 		if (!file_exists($filePath)) {
 			$dir = dirname($filePath);
