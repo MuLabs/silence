@@ -428,17 +428,9 @@ abstract class Application extends \Phalcon\Mvc\Application
     /**
      * @return View\Service
      */
-    public function getViewManager()
+    public function getViewService()
     {
         return $this->getServicer()->get('view');
-    }
-
-    /**
-     * @return Renderer\Service
-     */
-    public function getRendererManager()
-    {
-        return $this->getServicer()->get('renderer');
     }
 
     /**
