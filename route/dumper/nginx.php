@@ -26,7 +26,7 @@ class Nginx extends Kernel\Route\Dumper
             $content .= "server {\n";
             $content .= "\tlisten       80;\n";
             $content .= "\tserver_name $oneStatic;\n";
-            $content .= "\troot " . APP_STATIC_PATH . ";\n";
+            $content .= "\troot " . STATIC_PATH . ";\n";
 
             $content .= "\tlocation ~* \\.(eot|ttf|woff|woff2)$ {\n";
             $content .= "\t\tadd_header Access-Control-Allow-Origin *;\n";

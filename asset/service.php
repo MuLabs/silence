@@ -16,7 +16,7 @@ class Service extends Kernel\Service\Core
 	 * @param array $fileList
 	 * @return string
 	 */
-	public function getAsset(array $fileList)
+	public function get(...$fileList)
 	{
 		$asset = new Asset($this, $fileList);
 		if (!$asset->exists() || $this->forceRegenerate) {
@@ -79,7 +79,7 @@ class Service extends Kernel\Service\Core
 
 	public function flush()
 	{
-		$this->getApp()->getToolbox()->recursiveRmdir(APP_STATIC_PATH . '/assets');
+		$this->getApp()->getToolbox()->recursiveRmdir(STATIC_PATH . '/assets');
 	}
 
 	public function setForceRegenerate($force = false)

@@ -60,7 +60,7 @@ class Asset extends Kernel\Core
 	 */
 	public function getPath()
 	{
-		return APP_STATIC_PATH . '/' . Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager(
+		return STATIC_PATH . '/' . Service::ASSET_DIR . '/' . $this->getKey() . '.' . $this->getManager(
 		)->getGenerator($this)->getOutExt();
 	}
 
