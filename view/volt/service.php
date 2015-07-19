@@ -6,7 +6,7 @@ use Mu\Kernel;
 class Service extends Kernel\Service\Core {
     private $volt;
     public function initialize() {
-        $this->volt = new \Phalcon\Mvc\View\Engine\Volt($this->getApp()->getViewManager()->getPhalconView(), $this->getApp()->getServicer());
+        $this->volt = new \Phalcon\Mvc\View\Engine\Volt($this->getApp()->getViewService()->getPhalconView(), $this->getApp()->getServicer());
         $this->volt->setDI($this->getApp()->getDI());
     }
 
