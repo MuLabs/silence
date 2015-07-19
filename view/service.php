@@ -4,8 +4,10 @@ namespace Mu\Kernel\View;
 use Mu\Kernel;
 class Service extends Kernel\Service\Core {
     private $view;
-    public function __construct() {
+
+    public function initialize() {
         $this->view = new \Phalcon\Mvc\View();
+        $this->view->setDI($this->getApp()->getDI());
     }
 
     /**

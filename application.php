@@ -171,8 +171,10 @@ abstract class Application extends \Phalcon\Mvc\Application
 
         foreach ($this->defaultServiceList as $name => $class) {
             $di[$name] = function() use ($name, $class) {
+                /** @var Kernel\Service\Core $service */
                 $service = new $class();
                 $service->setApp($this);
+                $service->initialize();
                 $this->configureService($name, $service);
 
                 return $service;
