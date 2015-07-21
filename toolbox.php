@@ -817,7 +817,7 @@ class Toolbox extends Service\Core
      * @param $string
      * @return array|mixed
      */
-    function realEscapeString($string)
+    public function realEscapeString($string)
     {
         if (is_array($string))
             return array_map(__METHOD__, $string);
