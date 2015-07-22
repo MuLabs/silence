@@ -121,12 +121,13 @@ abstract class Manager extends Kernel\Core implements Kernel\Db\Interfaces\Reque
 			unset($toRetrieve);
 		}
 
-		// Purge nulls if not allowed
-		if (!$keepNull) {
-			foreach ($entities as $id => $value) {
-				if ($value === null) {
-					unset($entities[$id]);
-				}
+		foreach ($entities as $id => $value) {
+			if (!is_object($value)) {
+				$entities[$id] = $value = null;
+			}
+
+			if ($value === null && !$keepNull) {
+				unset($entities[$id]);
 			}
 		}
 
