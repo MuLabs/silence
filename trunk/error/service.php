@@ -179,6 +179,16 @@ class Service extends Kernel\Service\Core
     }
 
     /**
+     * Server exception
+     */
+    public function error403()
+    {
+        $response = $this->getApp()->getHttp()->getResponse();
+        $response->getHeader()->setCode(403);
+        $response->send();
+    }
+
+    /**
      * Check if a PHP fatal error occurs, and log it
      *
      * @return bool
