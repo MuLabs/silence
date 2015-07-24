@@ -53,7 +53,9 @@ abstract class Core extends Kernel\Core
     public function log($message)
     {
         $date = new \DateTime();
-        error_log($date->format('Y/m/d H:i:s') . ' ' . $message);
+        echo $date->format('Y/m/d H:i:s') . ' ' . $message."\n";
+        flush();
+        ob_flush();
     }
 
     public function exceptionsFatalError()
