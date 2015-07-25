@@ -35,11 +35,6 @@ class Caller extends Kernel\Service\Core
             );
         }
 
-        if (isset($params['referer'])) {
-            curl_setopt($this->curlHandler, CURLOPT_REFERER, $params['referer']);
-            unset($params['referer']);
-        }
-
         if (isset($params['agent'])) {
             $agent = $params['agent'];
             unset($params['agent']);
@@ -54,6 +49,11 @@ class Caller extends Kernel\Service\Core
             curl_setopt($this->curlHandler, CURLOPT_HTTPHEADER, $headers);
         }
         $curl = $this->curlHandler;
+
+        if (isset($params['referer'])) {
+            curl_setopt($this->curlHandler, CURLOPT_REFERER, $params['referer']);
+            unset($params['referer']);
+        }
 
         // Set parameters:
         curl_setopt_array ($curl, array(
