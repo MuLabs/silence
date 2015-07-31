@@ -20,8 +20,10 @@ class Handler extends Kernel\Db\Handler
 		'char' => 'CHAR',
 		'blob' => 'BLOB',
 		'text' => 'TEXT',
-		'long_blob' => 'LONG_BLOB',
-		'long_text' => 'LONG_TEXT',
+		'medium_text' => 'MEDIUMTEXT',
+		'medium_blob' => 'MEDIUMBLOB',
+		'long_blob' => 'LONGBLOB',
+		'long_text' => 'LONGTEXT',
 		'date' => 'DATETIME',
 		'ip' => 'INT',
 	);
