@@ -25,6 +25,7 @@ abstract class Handler extends Kernel\Core
         'blob' => self::PARAM_STR,
         'text' => self::PARAM_STR,
         'medium_text' => self::PARAM_STR,
+        'medium_blob' => self::PARAM_STR,
         'long_blob' => self::PARAM_STR,
         'long_text' => self::PARAM_STR,
         'date' => self::PARAM_STR,
