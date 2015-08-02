@@ -1,0 +1,17 @@
+{
+	"name": "mu/silence",
+	"type": "library",
+	"description": "PHP 5.4 Simple and efficient Framework",
+	"keywords": [],
+	"authors": [
+		{
+			"name": "Romain Schiano",
+			"email": "romain.schiano@beable.fr",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"phalcon/zephir": "dev-master"
+	}
+}
