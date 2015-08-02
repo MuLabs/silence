@@ -1,0 +1,21 @@
+{% if section['menu'] is defined and section['menu'] is iterable %}
+	<li {% if section['menu']['class'] is defined %}class="{{ section['menu']['class'] }}"{% endif %}>
+		<a {% if section['menu']['route'] is defined %}href="{{ getUrl(section['menu']['route'], section['menu']['param']) }}"{% endif %}>
+			<span>{{ section['title'] }}</span>
+		</a>
+		{% if section['sub'] is defined and section['sub'] is iterable and section['sub'] is not empty %}
+			<ul>
+				<li>
+					{% for subSection in section['sub'] %}
+						{% include 'backoffice/common/oneSection.twig' with {'section':subSection} %}
+					{% endfor %}
+				</li>
+			</ul>
+		{% endif %}
+		{% if isset(section['menu']['add']) %}
+            {% set param = section['menu']['add']|merge(section['menu']['param']) %}
+		<a class="i_plus menu_ext"
+		   href="{{ getUrl(section['menu']['route'], param) }}"></a>
+        {% endif %}
+	</li>
+{% endif %}
