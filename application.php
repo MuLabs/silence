@@ -883,19 +883,17 @@ abstract class Application
             return true;
         }
 
-        // Try to connect to the default DB, else create it:
-        try {
-            $handler = $dbManager->getHandler($this->getDefaultDbContext());
-            $handler->query('DROP DATABASE IF EXISTS `' . $this->getDefaultDatabase() . '`');
-            call_user_func($stdOut, 'Removing database...');
-        } catch(\Exception $e) {
-            $handler = $dbManager->getHandler($dbManager->getConstant('CONTEXT_INSTALL'));
-            call_user_func($stdOut, 'Creating database...');
-        }
+        // Get system handler:
+        $handler = $dbManager->getHandler($dbManager->getConstant('CONTEXT_SYSTEM'));
+
+        // Remove previous DB:
+        call_user_func($stdOut, 'Removing database...');
+        $handler->query('DROP DATABASE IF EXISTS `' . $this->getDefaultDatabase() . '`');
 
         // Then create DB:
         $handler->query('CREATE DATABASE IF NOT EXISTS `sys_empty`');
         $handler->query('USE `sys_empty`');
+        call_user_func($stdOut, 'Creating database...');
         $handler->query('CREATE DATABASE `' . $this->getDefaultDatabase() . '`');
         $handler->query('USE `' . $this->getDefaultDatabase() . '`');
         $handler->query('DROP DATABASE `sys_empty`');
