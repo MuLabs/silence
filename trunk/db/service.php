@@ -6,6 +6,7 @@ use Mu\Kernel;
 abstract class Service extends Kernel\Service\Core
 {
     const CONTEXT_INSTALL = 'install';
+    const CONTEXT_SYSTEM  = 'sys';
 
     protected $logs = array();
     protected $handlers = array();
@@ -98,7 +99,7 @@ abstract class Service extends Kernel\Service\Core
     public function registerContext(Context $context)
     {
         // Register installation context:
-        if (empty($this->contexts)) {
+        if ($context->getName() == $this->getConstant('CONTEXT_SYSTEM')) {
             $params = $context->getParameters();
             $params['dsn'] = preg_replace('#;dbname=\w+#', '', $params['dsn']);
             $install = new Kernel\Db\Context($this->getConstant('CONTEXT_INSTALL'), $params);
