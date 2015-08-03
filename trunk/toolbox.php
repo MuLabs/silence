@@ -459,7 +459,7 @@ class Toolbox extends Service\Core
      */
     public function getDistanceBetweenQuery($latitude = 0, $longitude = 0, $fieldLat = ':latitude', $fieldLon = ':longitude', $bRound = false, $bKm = false)
     {
-        // Compute distance reference:
+        // Earth radius : distance from the Earth's center to its surface
         $meters = 6353000;
         if ($bKm) {
             $meters /= 1000;
